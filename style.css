@@ -1,0 +1,130 @@
+/* --- Custom Font --- */
+@font-face {
+  font-family: 'Minecraft';
+  src: url('settings/fonts/Minecraft.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* --- Base --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none; /* disables text selection */
+}
+
+body {
+  font-family: 'Minecraft', sans-serif;
+  scroll-behavior: smooth;
+  background: #111;
+  color: #eee;
+}
+
+/* --- Navbar --- */
+nav {
+  position: sticky;
+  top: 0;
+  background: #222;
+  z-index: 100;
+}
+
+nav ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+}
+
+nav ul li {
+  margin: 0 20px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #eee;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+nav ul li a:hover {
+  color: #1e90ff;
+}
+
+/* --- Sections --- */
+section {
+  padding: 100px 20px;
+  min-height: 100vh;
+}
+
+/* Hero */
+#hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: linear-gradient(135deg, #1e90ff, #4b0082);
+  text-align: center;
+}
+
+#hero h1 {
+  font-size: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.verified {
+  width: 40px;
+  height: 40px;
+}
+
+#hero button {
+  margin-top: 20px;
+  padding: 10px 25px;
+  font-size: 1rem;
+  border: none;
+  background: #fff;
+  color: #111;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+#hero button:hover {
+  background: #1e90ff;
+  color: #fff;
+}
+
+/* Tutorial Cards */
+.tutorial-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.card {
+  background: #222;
+  padding: 20px;
+  border-radius: 10px;
+  width: 250px;
+  transition: transform 0.3s, background 0.3s;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  background: #1e1e1e;
+}
+
+/* Scripts list */
+#scriptList {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Disable highlight click */
+a, button {
+  -webkit-tap-highlight-color: transparent;
+}
