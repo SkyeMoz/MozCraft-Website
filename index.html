@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MozCraft</title>
+  <title>MozCraft Legacy 📜</title>
   <link href="style.css" rel="stylesheet">
 </head>
 <body>
@@ -21,33 +21,30 @@
 
   <!-- Hero Section -->
   <section id="hero">
+    <div class="overlay"></div>
     <div class="hero-content">
-      <h1>MozCraft <img src="settings/images/verified.png" alt="Verified" class="verified"></h1>
+      <h1>MozCraft Legacy 📜<img src="settings/images/verified.png" alt="Verified" class="verified"></h1>
       <p>Zynix Studio</p>
-      <button onclick="scrollToSection('about')">Get Started</button>
+      <button id="startBtn">Get Started</button>
     </div>
   </section>
 
   <!-- About Section -->
   <section id="about">
     <h2>About MozCraft</h2>
-    <p>Dynamic Minecraft scripts for every player. Fast, easy, and customizable.</p>
+    <p>Dynamic Roblox Minecraft scripts for every player. Fast, easy, and customizable.</p>
   </section>
 
   <!-- Tutorials Section -->
   <section id="tutorials">
     <h2>Tutorials</h2>
-    <div class="tutorial-cards" id="tutorialCards">
-      <!-- Dynamic cards inserted via JS -->
-    </div>
+    <div class="tutorial-cards" id="tutorialCards"></div>
   </section>
 
   <!-- Scripts Section -->
   <section id="scripts">
     <h2>Scripts</h2>
-    <div id="scriptList">
-      <!-- Dynamic scripts inserted via JS -->
-    </div>
+    <div id="scriptList"></div>
   </section>
 
   <!-- Contact Section -->
@@ -55,6 +52,9 @@
     <h2>Contact / Community</h2>
     <p>Join our Discord, follow on Twitter, or send feedback.</p>
   </section>
+
+  <!-- Notification -->
+  <div id="notification"></div>
 
   <script src="script.js"></script>
 </body>
