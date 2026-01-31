@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MozCraft</title>
+  <link href="style.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav id="navbar">
+    <ul>
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#tutorials">Tutorials</a></li>
+      <li><a href="#scripts">Scripts</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="hero">
+    <div class="hero-content">
+      <h1>MozCraft <img src="settings/images/verified.png" alt="Verified" class="verified"></h1>
+      <p>Zynix Studio</p>
+      <button onclick="scrollToSection('about')">Get Started</button>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about">
+    <h2>About MozCraft</h2>
+    <p>Dynamic Minecraft scripts for every player. Fast, easy, and customizable.</p>
+  </section>
+
+  <!-- Tutorials Section -->
+  <section id="tutorials">
+    <h2>Tutorials</h2>
+    <div class="tutorial-cards" id="tutorialCards">
+      <!-- Dynamic cards inserted via JS -->
+    </div>
+  </section>
+
+  <!-- Scripts Section -->
+  <section id="scripts">
+    <h2>Scripts</h2>
+    <div id="scriptList">
+      <!-- Dynamic scripts inserted via JS -->
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact">
+    <h2>Contact / Community</h2>
+    <p>Join our Discord, follow on Twitter, or send feedback.</p>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
