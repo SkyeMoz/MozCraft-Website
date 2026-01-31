@@ -11,7 +11,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  user-select: none; /* disables text selection */
+  user-select: none;
 }
 
 body {
@@ -19,6 +19,7 @@ body {
   scroll-behavior: smooth;
   background: #111;
   color: #eee;
+  overflow: hidden; /* prevent scroll until started */
 }
 
 /* --- Navbar --- */
@@ -33,10 +34,11 @@ nav ul {
   display: flex;
   justify-content: center;
   list-style: none;
+  flex-wrap: wrap;
 }
 
 nav ul li {
-  margin: 0 20px;
+  margin: 0 15px;
 }
 
 nav ul li a {
@@ -47,13 +49,14 @@ nav ul li a {
 }
 
 nav ul li a:hover {
-  color: #1e90ff;
+  color: orange;
 }
 
 /* --- Sections --- */
 section {
   padding: 100px 20px;
   min-height: 100vh;
+  position: relative;
 }
 
 /* Hero */
@@ -62,8 +65,23 @@ section {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background: linear-gradient(135deg, #1e90ff, #4b0082);
+  background: orange url('settings/images/verified.png') no-repeat center/cover;
+  position: relative;
   text-align: center;
+}
+
+#hero .overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  z-index: 0;
+}
+
+#hero .hero-content {
+  position: relative;
+  z-index: 1;
 }
 
 #hero h1 {
@@ -91,11 +109,11 @@ section {
 }
 
 #hero button:hover {
-  background: #1e90ff;
+  background: orange;
   color: #fff;
 }
 
-/* Tutorial Cards */
+/* --- Tutorial Cards (square) --- */
 .tutorial-cards {
   display: flex;
   flex-wrap: wrap;
@@ -105,16 +123,32 @@ section {
 
 .card {
   background: #222;
-  padding: 20px;
   border-radius: 10px;
   width: 250px;
-  transition: transform 0.3s, background 0.3s;
+  height: 250px;       /* square card */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   cursor: pointer;
+  transition: transform 0.3s, background 0.3s;
 }
 
 .card:hover {
   transform: translateY(-5px);
   background: #1e1e1e;
+}
+
+.card img {
+  width: 100%;
+  height: 60%;          /* top part is image */
+  object-fit: cover;
+}
+
+.card h3 {
+  margin: 10px;
+  font-size: 1rem;
+  text-align: center;
+  flex: 1;
 }
 
 /* Scripts list */
@@ -124,7 +158,35 @@ section {
   gap: 15px;
 }
 
+#scriptList .card {
+  height: 80px;          /* smaller card for scripts */
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
 /* Disable highlight click */
 a, button {
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Notification */
+#notification {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e1e1e;
+  color: #fff;
+  padding: 15px 25px;
+  border-radius: 8px;
+  display: none;
+  font-weight: bold;
+  z-index: 999;
+}
+
+/* Mobile */
+@media (max-width: 768px){
+  #hero h1 { font-size: 2.2rem; }
+  .card { width: 90%; height: 90vw; }  /* square on mobile */
 }
