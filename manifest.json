@@ -1,0 +1,14 @@
+const launchers = [
+  {
+    name: "Among Us VIP",
+    version: "2026.4.7",
+    size: "844MB",
+    creator: "SkyeMoz",
+    uid: "Obfuscated",
+    pack: "APK",
+    views: 0,
+    icon: "settings/icons/amongus.png",
+    url: "https://example.com/amongus-vip",
+    available: true
+  }
+];
