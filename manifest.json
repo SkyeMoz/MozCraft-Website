@@ -1,14 +1,29 @@
-const launchers = [
-  {
-    name: "Among Us VIP",
-    version: "2026.4.7",
-    size: "844MB",
-    creator: "SkyeMoz",
-    uid: "Obfuscated",
-    pack: "APK",
-    views: 0,
-    icon: "settings/icons/amongus.png",
-    url: "https://example.com/amongus-vip",
-    available: true
-  }
-];
+{
+  "manifest_version": 3,
+  "name": "Zevioth Launcher",
+  "version": "1.0",
+  "description": "Clean launcher with search + nav UI",
+
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
+
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "assets/icons/icon48.png"
+  },
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "permissions": [
+    "storage"
+  ],
+
+  "host_permissions": [
+    "<all_urls>"
+  ]
+}
