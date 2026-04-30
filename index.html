@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,28 +7,23 @@
   <title>Among Us Launcher</title>
   <style>
     :root{
-      --bg: #05070d;
-      --bg2: #090d17;
-      --glass: rgba(255,255,255,.08);
-      --glass2: rgba(255,255,255,.12);
-      --stroke: rgba(255,255,255,.14);
-      --text: rgba(255,255,255,.94);
-      --muted: rgba(255,255,255,.68);
-      --soft: rgba(255,255,255,.38);
-      --accent: #7cdaff;
-      --accent2: #9b7bff;
-      --good: #49f0a4;
-      --bad: #ff5d7a;
-      --warn: #ffcb6b;
-      --shadow: 0 28px 80px rgba(0,0,0,.48);
-      --radius-xl: 30px;
-      --radius-lg: 22px;
-      --radius-md: 18px;
-      --radius-sm: 14px;
+      --bg:#05070d;
+      --stroke:rgba(255,255,255,.14);
+      --text:rgba(255,255,255,.94);
+      --muted:rgba(255,255,255,.68);
+      --soft:rgba(255,255,255,.38);
+      --accent:#7cdaff;
+      --accent2:#9b7bff;
+      --good:#34d399;
+      --bad:#ff5d7a;
+      --shadow:0 28px 80px rgba(0,0,0,.48);
+      --radius-xl:30px;
+      --radius-lg:22px;
+      --radius-md:18px;
     }
 
     *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
+    html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
     body{
       margin:0;
       min-height:100vh;
@@ -41,708 +35,168 @@
         radial-gradient(900px 700px at 50% 90%, rgba(73,240,164,.07), transparent 40%),
         linear-gradient(180deg, #04060b 0%, #05070d 35%, #05070d 100%);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      user-select:none;
+      -webkit-user-select:none;
+      touch-action:manipulation;
     }
-
-    /* subtle texture */
+    ::selection{background:transparent;color:inherit}
     body::before{
       content:"";
-      position:fixed;
-      inset:0;
+      position:fixed; inset:0;
       pointer-events:none;
       background-image:
         linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
-      background-size: 72px 72px;
-      mask-image: radial-gradient(circle at center, rgba(0,0,0,.8), transparent 82%);
+      background-size:72px 72px;
+      mask-image:radial-gradient(circle at center, rgba(0,0,0,.8), transparent 82%);
       opacity:.35;
       z-index:0;
     }
+    #bgCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;filter:saturate(1.08)}
 
-    #bgCanvas{
-      position:fixed;
-      inset:0;
-      width:100%;
-      height:100%;
-      z-index:0;
-      pointer-events:none;
-      filter: saturate(1.08);
-    }
+    .wrap{position:relative;z-index:1;width:min(1180px, calc(100% - 28px));margin:0 auto;padding:18px 0 56px}
 
-    .wrap{
-      position:relative;
-      z-index:1;
-      width:min(1180px, calc(100% - 28px));
-      margin:0 auto;
-      padding:18px 0 56px;
-    }
-
-    .topbar{
-      position:sticky;
-      top:14px;
-      z-index:30;
-      margin-bottom:22px;
-      display:flex;
-      justify-content:center;
-      pointer-events:none;
-    }
-
+    .topbar{position:sticky;top:14px;z-index:30;margin-bottom:22px;display:flex;justify-content:center;pointer-events:none}
     .dock{
-      pointer-events:auto;
-      display:flex;
-      gap:10px;
-      padding:10px;
-      border:1px solid var(--stroke);
-      border-radius:999px;
-      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.05));
-      backdrop-filter: blur(22px) saturate(170%);
-      -webkit-backdrop-filter: blur(22px) saturate(170%);
-      box-shadow: var(--shadow);
-      overflow:auto;
-      max-width:100%;
+      pointer-events:auto; display:flex; gap:10px; padding:10px;
+      border:1px solid var(--stroke); border-radius:999px;
+      background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.05));
+      backdrop-filter:blur(22px) saturate(17l0%);
+      box-shadow:var(--shadow); overflow:auto; max-width:100%;
     }
-
     .dock::-webkit-scrollbar{height:0;width:0}
     .nav-btn{
-      appearance:none;
-      border:0;
-      color:var(--muted);
-      background:transparent;
-      padding:12px 16px;
-      border-radius:999px;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-size:14px;
-      font-weight:650;
-      letter-spacing:.2px;
-      cursor:pointer;
-      transition: transform .25s ease, background .25s ease, color .25s ease, box-shadow .25s ease;
-      position:relative;
-      white-space:nowrap;
+      appearance:none;border:0;color:var(--muted);background:transparent;padding:12px 16px;border-radius:999px;
+      display:flex;align-items:center;gap:10px;font-size:14px;font-weight:650;letter-spacing:.2px;cursor:pointer;
+      transition:transform .25s ease, background .25s ease, color .25s ease;white-space:nowrap;
     }
-    .nav-btn:hover{transform:translateY(-1px); color:var(--text); background:rgba(255,255,255,.06)}
-    .nav-btn.active{
-      color:#09111d;
-      background:linear-gradient(135deg, rgba(124,218,255,1), rgba(155,123,255,1));
-      box-shadow:0 10px 24px rgba(124,218,255,.28);
-    }
-    .nav-btn .icon{width:16px;height:16px;flex:none;opacity:.96}
+    .nav-btn:hover{transform:translateY(-1px);color:var(--text);background:rgba(255,255,255,.06)}
+    .nav-btn.active{color:#09111d;background:linear-gradient(135deg, rgba(124,218,255,1), rgba(155,123,255,1));box-shadow:0 10px 24px rgba(124,218,255,.28)}
+    .icon{width:16px;height:16px;flex:none;opacity:.96}
 
-    .hero{
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap:22px;
-      align-items:stretch;
-      padding:8px 0 26px;
+    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:stretch;padding:8px 0 26px}
+    .panel,.glass-card,.modal{
+      position:relative;border:1px solid var(--stroke);border-radius:var(--radius-xl);
+      background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+      backdrop-filter:blur(20px) saturate(170%);
+      box-shadow:var(--shadow);overflow:hidden;
+    }
+    .panel::before,.glass-card::after,.modal::before{
+      content:"";position:absolute;inset:0;background:radial-gradient(600px 220px at var(--mx, 50%) var(--my, 0%), rgba(255,255,255,.13), transparent 38%);pointer-events:none;opacity:.85;
     }
 
-    .panel{
-      position:relative;
-      border:1px solid var(--stroke);
-      border-radius:var(--radius-xl);
-      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
-      backdrop-filter: blur(20px) saturate(170%);
-      -webkit-backdrop-filter: blur(20px) saturate(170%);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-
-    .panel::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background: radial-gradient(600px 220px at var(--mx, 50%) var(--my, 0%), rgba(255,255,255,.13), transparent 38%);
-      pointer-events:none;
-      transition:opacity .25s ease;
-      opacity:.85;
-    }
-
-    .hero-main{
-      padding:28px;
-      min-height:350px;
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-      gap:22px;
-    }
-
+    .hero-main{padding:28px;min-height:350px;display:flex;flex-direction:column;justify-content:space-between;gap:22px}
     .eyebrow{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      width:max-content;
-      padding:9px 14px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.05);
-      color:var(--muted);
-      font-size:13px;
-      font-weight:700;
-      letter-spacing:.35px;
-      text-transform:uppercase;
+      display:inline-flex;align-items:center;gap:8px;width:max-content;padding:9px 14px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:var(--muted);font-size:13px;font-weight:700;
+      letter-spacing:.35px;text-transform:uppercase;
     }
-
-    .title-row{
-      display:flex;
-      align-items:center;
-      gap:18px;
-      flex-wrap:wrap;
-    }
-
-    .app-icon{
-      width:92px;
-      height:92px;
-      border-radius:26px;
-      object-fit:cover;
-      border:1px solid rgba(255,255,255,.16);
-      background:rgba(255,255,255,.08);
-      box-shadow: 0 16px 32px rgba(0,0,0,.35);
-      transition: transform .35s cubic-bezier(.2,.7,.1,1), box-shadow .35s ease;
-      transform: translateZ(0);
-    }
-    .app-icon:hover{transform:translateY(-4px) scale(1.03); box-shadow:0 22px 40px rgba(0,0,0,.42)}
-    .hero-copy h1{
-      margin:0;
-      font-size: clamp(2.4rem, 5vw, 4.6rem);
-      line-height: .95;
-      letter-spacing: -1.6px;
-    }
-    .hero-copy p{
-      margin:12px 0 0;
-      color:var(--muted);
-      font-size:15px;
-      line-height:1.65;
-      max-width:62ch;
-    }
-
-    .meta-grid{
-      display:grid;
-      grid-template-columns:repeat(4, minmax(0,1fr));
-      gap:12px;
-      margin-top:8px;
-    }
-    .meta{
-      padding:14px 15px;
-      border-radius:18px;
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.11);
-      transition: transform .28s ease, background .28s ease;
-    }
-    .meta:hover{transform:translateY(-2px); background:rgba(255,255,255,.08)}
+    .title-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+    .app-icon{width:92px;height:92px;border-radius:26px;object-fit:cover;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);box-shadow:0 16px 32px rgba(0,0,0,.35)}
+    .hero-copy h1{margin:0;font-size:clamp(2.4rem, 5vw, 4.6rem);line-height:.95;letter-spacing:-1.6px}
+    .hero-copy p{margin:12px 0 0;color:var(--muted);font-size:15px;line-height:1.65;max-width:62ch}
+    .meta-grid{display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:12px;margin-top:8px}
+    .meta{padding:14px 15px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11)}
     .meta .k{display:block;font-size:12px;color:var(--soft);margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px}
     .meta .v{font-size:14px;font-weight:700}
 
-    .actions{
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-      margin-top:4px;
-    }
-
-    .btn{
-      appearance:none;
-      border:0;
-      cursor:pointer;
-      border-radius:999px;
-      padding:13px 18px;
-      font-weight:800;
-      font-size:14px;
-      letter-spacing:.2px;
-      transition: transform .24s ease, box-shadow .24s ease, opacity .24s ease, background .24s ease;
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      position:relative;
-      overflow:hidden;
-      will-change:transform;
-    }
+    .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:4px}
+    .btn{appearance:none;border:0;cursor:pointer;border-radius:999px;padding:13px 18px;font-weight:800;font-size:14px;letter-spacing:.2px;display:inline-flex;align-items:center;gap:10px;position:relative;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:manipulation}
     .btn:hover{transform:translateY(-2px)}
-    .btn:active{transform:translateY(0px) scale(.99)}
-    .btn.primary{
-      color:#081018;
-      background:linear-gradient(135deg, #7cdaff, #9b7bff);
-      box-shadow:0 14px 28px rgba(124,218,255,.22);
-    }
-    .btn.ghost{
-      color:var(--text);
-      background:rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.12);
-    }
+    .btn:active{transform:translateY(0) scale(.99)}
+    .btn.primary{color:#081018;background:linear-gradient(135deg, #7cdaff, #9b7bff);box-shadow:0 14px 28px rgba(124,218,255,.22)}
+    .btn.ghost{color:var(--text);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
     .btn.small{padding:11px 14px;font-size:13px}
-    .btn .icon{width:16px;height:16px}
+    .btn.like{background:rgba(52,211,153,.14);border:1px solid rgba(52,211,153,.28);color:#c9ffe8}
+    .btn.dislike{background:rgba(255,93,122,.14);border:1px solid rgba(255,93,122,.28);color:#ffd6de}
+    .btn.vote-locked{opacity:.62;cursor:not-allowed;filter:saturate(.85)}
+    .btn.like.selected{background:rgba(52,211,153,.24);box-shadow:0 12px 28px rgba(52,211,153,.14)}
+    .btn.dislike.selected{background:rgba(255,93,122,.24);box-shadow:0 12px 28px rgba(255,93,122,.14)}
 
-    .hero-side{
-      padding:24px;
-      display:flex;
-      flex-direction:column;
-      gap:16px;
-    }
-
-    .stat{
-      padding:18px;
-      border-radius:22px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.11);
-      transition: transform .25s ease;
-    }
-    .stat:hover{transform:translateY(-2px)}
-    .stat .label{
-      font-size:12px;
-      letter-spacing:.25px;
-      text-transform:uppercase;
-      color:var(--soft);
-    }
-    .stat .value{
-      display:flex;
-      justify-content:space-between;
-      align-items:baseline;
-      margin-top:8px;
-      gap:12px;
-    }
-    .stat .value strong{
-      font-size:28px;
-      letter-spacing:-.8px;
-    }
+    .hero-side{padding:24px;display:flex;flex-direction:column;gap:16px}
+    .stat{padding:18px;border-radius:22px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11)}
+    .stat .label{font-size:12px;letter-spacing:.25px;text-transform:uppercase;color:var(--soft)}
+    .stat .value{display:flex;justify-content:space-between;align-items:baseline;margin-top:8px;gap:12px}
+    .stat .value strong{font-size:28px;letter-spacing:-.8px}
     .stat .value span{color:var(--muted);font-size:13px}
 
-    section{
-      margin-top:22px;
-    }
+    section{margin-top:22px}
+    .section-title{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:18px 2px 14px}
+    .section-title h2{margin:0;font-size:22px;letter-spacing:-.5px}
+    .section-title p{margin:0;color:var(--muted);font-size:14px;max-width:60ch}
+    .grid{display:grid;grid-template-columns:repeat(12, minmax(0,1fr));gap:16px}
 
-    .section-title{
-      display:flex;
-      align-items:end;
-      justify-content:space-between;
-      gap:16px;
-      margin:18px 2px 14px;
-    }
-    .section-title h2{
-      margin:0;
-      font-size:22px;
-      letter-spacing:-.5px;
-    }
-    .section-title p{
-      margin:0;
-      color:var(--muted);
-      font-size:14px;
-      max-width:60ch;
-    }
+    .tutorial{grid-column:span 4;min-height:250px;padding:16px;display:flex;flex-direction:column;gap:12px}
+    .thumb{height:124px;border-radius:20px;overflow:hidden;position:relative;background:linear-gradient(135deg, rgba(124,218,255,.26), rgba(155,123,255,.22), rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.12)}
+    .thumb img{width:100%;height:100%;object-fit:cover;filter:saturate(1.03) contrast(1.02);transform:scale(1.02)}
+    .tag{position:absolute;left:12px;top:12px;padding:7px 10px;border-radius:999px;background:rgba(0,0,0,.42);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(12px);font-size:12px;font-weight:700}
+    .tutorial h3{margin:0;font-size:17px;letter-spacing:-.3px}
+    .tutorial p{margin:0;color:var(--muted);font-size:13px;line-height:1.6;flex:1}
+    .tutorial .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
 
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(12, minmax(0,1fr));
-      gap:16px;
-    }
+    .launch-main{padding:18px}
+    .launcher-card{display:grid;grid-template-columns:140px 1fr;gap:16px;padding:16px;border-radius:24px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11)}
+    .launcher-thumb{width:100%;aspect-ratio:1/1;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:linear-gradient(135deg, rgba(124,218,255,.2), rgba(155,123,255,.2))}
+    .launcher-thumb img{width:100%;height:100%;object-fit:cover}
+    .launcher-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+    .launcher-copy h3{margin:0;font-size:24px;letter-spacing:-.4px}
+    .launcher-copy p{margin:8px 0 0;color:var(--muted);line-height:1.7;font-size:14px}
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+    .chip{padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);color:var(--muted);font-size:12px;font-weight:700}
+    .launch-actions{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+    .vote-row{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
+    .vote-count{margin-left:4px;opacity:.9}
 
-    .glass-card{
-      position:relative;
-      border-radius:26px;
-      border:1px solid rgba(255,255,255,.12);
-      background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.05));
-      backdrop-filter: blur(18px) saturate(160%);
-      -webkit-backdrop-filter: blur(18px) saturate(160%);
-      box-shadow: 0 22px 65px rgba(0,0,0,.3);
-      overflow:hidden;
-      transform: translateZ(0);
-      transition: transform .28s ease, border-color .28s ease, box-shadow .28s ease, background .28s ease;
-    }
-    .glass-card:hover{
-      transform:translateY(-4px);
-      border-color: rgba(124,218,255,.28);
-      box-shadow: 0 28px 85px rgba(0,0,0,.42);
-    }
-    .glass-card::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      background: radial-gradient(500px 220px at var(--mx, 50%) var(--my, 0%), rgba(255,255,255,.13), transparent 36%);
-      opacity:.85;
-      pointer-events:none;
-    }
+    .community{margin:24px 0 8px;padding:22px 24px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px}
+    .brand{display:flex;flex-direction:column;gap:6px}
+    .brand strong{font-size:18px;letter-spacing:-.25px}
+    .brand span{color:var(--muted);font-size:13px;line-height:1.6}
+    .links{display:flex;flex-wrap:wrap;gap:10px}
+    .links a{color:var(--text);text-decoration:none}
 
-    .tutorial{
-      grid-column: span 3;
-      min-height: 240px;
-      padding:16px;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-    }
-    .tutorial .thumb{
-      height:124px;
-      border-radius:20px;
-      overflow:hidden;
-      position:relative;
-      background: linear-gradient(135deg, rgba(124,218,255,.26), rgba(155,123,255,.22), rgba(255,255,255,.04));
-      border:1px solid rgba(255,255,255,.12);
-    }
-    .tutorial .thumb img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      filter:saturate(1.03) contrast(1.02);
-      transform:scale(1.02);
-    }
-    .tutorial .thumb .tag{
-      position:absolute;
-      left:12px;
-      top:12px;
-      padding:7px 10px;
-      border-radius:999px;
-      background:rgba(0,0,0,.42);
-      border:1px solid rgba(255,255,255,.14);
-      backdrop-filter: blur(12px);
-      font-size:12px;
-      font-weight:700;
-    }
-    .tutorial h3{
-      margin:0;
-      font-size:17px;
-      letter-spacing:-.3px;
-    }
-    .tutorial p{
-      margin:0;
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.6;
-      flex:1;
-    }
-    .tutorial .row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-    }
-
-    .launchers{
-      grid-column: span 12;
-      padding:18px;
-    }
-
-    .launcher-list{
-      display:grid;
-      grid-template-columns:repeat(4, minmax(0,1fr));
-      gap:14px;
-    }
-
-    .launcher{
-      padding:16px;
-      border-radius:22px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.11);
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-      min-height: 222px;
-      position:relative;
-      overflow:hidden;
-    }
-
-    .launcher .head{
-      display:flex;
-      align-items:center;
-      gap:12px;
-    }
-    .launcher .badge{
-      width:52px;
-      height:52px;
-      border-radius:16px;
-      background: linear-gradient(135deg, rgba(124,218,255,.28), rgba(155,123,255,.22));
-      border:1px solid rgba(255,255,255,.12);
-      display:grid;
-      place-items:center;
-      flex:none;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.14);
-    }
-    .launcher .badge svg{width:26px;height:26px}
-    .launcher h3{
-      margin:0;
-      font-size:16px;
-      letter-spacing:-.25px;
-      line-height:1.2;
-    }
-    .launcher .sub{
-      margin:4px 0 0;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.55;
-    }
-    .chips{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-    }
-    .chip{
-      padding:7px 10px;
-      border-radius:999px;
-      background: rgba(255,255,255,.06);
-      border:1px solid rgba(255,255,255,.11);
-      color:var(--muted);
-      font-size:12px;
-      font-weight:700;
-    }
-    .status{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      margin-top:auto;
-    }
-    .status .state{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      font-size:13px;
-      font-weight:800;
-      letter-spacing:.15px;
-    }
-    .dot{
-      width:10px;
-      height:10px;
-      border-radius:50%;
-      background:var(--good);
-      box-shadow:0 0 0 6px rgba(73,240,164,.12);
-    }
-    .dot.bad{
-      background:var(--bad);
-      box-shadow:0 0 0 6px rgba(255,93,122,.12);
-    }
-    .dot.warn{
-      background:var(--warn);
-      box-shadow:0 0 0 6px rgba(255,203,107,.12);
-    }
-    .launcher .mini{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      color:var(--muted);
-      font-size:12px;
-      margin-top:2px;
-    }
-    .launcher .launch{
-      width:100%;
-      justify-content:center;
-    }
-    .launcher.unavailable .launch{
-      opacity:.45;
-      cursor:not-allowed;
-      filter:saturate(.65);
-    }
-    .launcher.unavailable::before{
-      content:"";
-      position:absolute;
-      inset:-1px;
-      background: linear-gradient(180deg, rgba(255,93,122,.08), transparent 52%);
-      pointer-events:none;
-    }
-
-    .footer{
-      margin:24px 0 8px;
-      padding:22px 24px;
-      display:flex;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-    }
-    .footer .brand{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-    }
-    .footer .brand strong{
-      font-size:18px;
-      letter-spacing:-.25px;
-    }
-    .footer .brand span{
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.6;
-    }
-    .footer .links{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-    }
-    .footer .links a{
-      color:var(--text);
-      text-decoration:none;
-    }
-
-    /* Modal */
-    .modal-backdrop{
-      position:fixed;
-      inset:0;
-      background:rgba(2,4,8,.62);
-      backdrop-filter: blur(10px);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      z-index:60;
-      padding:18px;
-    }
+    .modal-backdrop{position:fixed;inset:0;background:rgba(2,4,8,.62);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;z-index:60;padding:18px}
     .modal-backdrop.show{display:flex}
-    .modal{
-      width:min(720px, 100%);
-      border-radius:32px;
-      border:1px solid rgba(255,255,255,.14);
-      background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
-      box-shadow: 0 36px 100px rgba(0,0,0,.58);
-      overflow:hidden;
-      position:relative;
-    }
-    .modal::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      background: radial-gradient(700px 300px at var(--mx, 50%) var(--my, 0%), rgba(255,255,255,.12), transparent 38%);
-      pointer-events:none;
-    }
-    .modal .inner{
-      padding:22px;
-      display:grid;
-      grid-template-columns: 88px 1fr;
-      gap:18px;
-    }
-    .modal .avatar{
-      width:88px;
-      height:88px;
-      border-radius:26px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.16);
-      box-shadow: 0 18px 38px rgba(0,0,0,.42);
-    }
+    .modal{width:min(820px, 100%);border-radius:32px;overflow:hidden;position:relative}
+    .modal .inner{padding:22px;display:grid;grid-template-columns:88px 1fr;gap:18px}
+    .modal .avatar{width:88px;height:88px;border-radius:26px;overflow:hidden;border:1px solid rgba(255,255,255,.16);box-shadow:0 18px 38px rgba(0,0,0,.42);background:rgba(255,255,255,.06)}
     .modal .avatar img{width:100%;height:100%;object-fit:cover}
     .modal h3{margin:0;font-size:24px;letter-spacing:-.5px}
-    .modal .info{
-      margin-top:6px;
-      color:var(--muted);
-      line-height:1.7;
-      font-size:13px;
-    }
-    .modal .specs{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns:repeat(2, minmax(0,1fr));
-      gap:10px;
-    }
-    .spec{
-      padding:12px 14px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.11);
-      background:rgba(255,255,255,.06);
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-    }
+    .modal .info{margin-top:6px;color:var(--muted);line-height:1.7;font-size:13px}
+    .modal .specs{margin-top:14px;display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:10px}
+    .spec{padding:12px 14px;border-radius:18px;border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.06);display:flex;flex-direction:column;gap:4px}
     .spec span{font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.3px}
     .spec strong{font-size:14px}
-    .modal .actions-row{
-      margin-top:16px;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-
-    .progress-wrap{
-      margin-top:18px;
-      padding:14px;
-      border-radius:20px;
-      border:1px solid rgba(255,255,255,.1);
-      background:rgba(255,255,255,.05);
-    }
-    .progress-top{
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      color:var(--muted);
-      font-size:12px;
-      margin-bottom:10px;
-    }
-    .progress{
-      height:12px;
-      border-radius:999px;
-      overflow:hidden;
-      background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.09);
-    }
-    .progress > span{
-      display:block;
-      height:100%;
-      width:0%;
-      border-radius:inherit;
-      background:linear-gradient(135deg, #7cdaff, #9b7bff, #49f0a4);
-      box-shadow: 0 10px 18px rgba(124,218,255,.22);
-      transition: width .15s linear;
-    }
-
-    .log{
-      margin-top:14px;
-      display:grid;
-      gap:8px;
-      max-height:170px;
-      overflow:auto;
-      padding-right:4px;
-    }
+    .modal .actions-row{margin-top:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .progress-wrap{margin-top:18px;padding:14px;border-radius:20px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05)}
+    .progress-top{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:12px;margin-bottom:10px}
+    .progress{height:12px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.09)}
+    .progress>span{display:block;height:100%;width:0%;border-radius:inherit;background:linear-gradient(135deg, #7cdaff, #9b7bff, #49f0a4);box-shadow:0 10px 18px rgba(124,218,255,.22);transition:width .15s linear}
+    .log{margin-top:14px;display:grid;gap:8px;max-height:170px;overflow:auto;padding-right:4px}
     .log::-webkit-scrollbar{width:6px}
     .log::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:999px}
-    .entry{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      color:var(--muted);
-      font-size:13px;
-    }
-    .entry .pulse{
-      width:8px;height:8px;border-radius:50%;
-      background:var(--accent);
-      box-shadow:0 0 0 5px rgba(124,218,255,.12);
-      flex:none;
-    }
-
-    .close{
-      position:absolute;
-      top:14px;
-      right:14px;
-      width:42px;
-      height:42px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.06);
-      color:var(--text);
-      cursor:pointer;
-      display:grid;
-      place-items:center;
-      transition:transform .22s ease, background .22s ease;
-      z-index:2;
-    }
-    .close:hover{transform:rotate(6deg) scale(1.03); background:rgba(255,255,255,.09)}
+    .entry{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px}
+    .entry .pulse{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 5px rgba(124,218,255,.12);flex:none}
+    .close{position:absolute;top:14px;right:14px;width:42px;height:42px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:var(--text);cursor:pointer;display:grid;place-items:center;transition:transform .22s ease, background .22s ease;z-index:2}
+    .close:hover{transform:rotate(6deg) scale(1.03);background:rgba(255,255,255,.09)}
     .close svg{width:18px;height:18px}
-
     .hidden{display:none !important}
+    .video-box{margin-top:14px;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.28)}
+    .video-box video{display:block;width:100%;max-height:420px;background:#000}
 
-    @media (max-width: 1020px){
-      .hero{grid-template-columns:1fr}
-      .meta-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
-      .launcher-list{grid-template-columns:repeat(2, minmax(0,1fr))}
-      .tutorial{grid-column: span 6}
+    @media (max-width:1020px){
+      .hero{grid-template-columns:1fr}.meta-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tutorial{grid-column:span 6}
     }
-    @media (max-width: 640px){
+    @media (max-width:640px){
       .wrap{width:min(100% - 18px, 1180px)}
-      .hero-main,.hero-side,.launchers,.footer{padding:18px}
+      .hero-main,.hero-side,.community,.launch-main{padding:18px}
       .meta-grid{grid-template-columns:1fr}
-      .launcher-list{grid-template-columns:1fr}
-      .tutorial{grid-column: span 12}
-      .modal .inner{grid-template-columns:1fr}
-      .modal .avatar{width:76px;height:76px}
+      .tutorial{grid-column:span 12}
+      .modal .inner{grid-template-columns:1fr}.modal .avatar{width:76px;height:76px}
       .section-title{align-items:flex-start;flex-direction:column}
-      .dock{justify-content:flex-start}
-      .hero-copy h1{font-size:2.45rem}
+      .dock{justify-content:flex-start}.hero-copy h1{font-size:2.45rem}.launcher-card{grid-template-columns:1fr}
     }
-
-    @media (prefers-reduced-motion: reduce){
-      *{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important;}
+    @media (prefers-reduced-motion:reduce){
+      *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
       #bgCanvas{display:none}
     }
   </style>
@@ -753,69 +207,63 @@
   <div class="wrap">
     <div class="topbar">
       <nav class="dock" id="dock">
-        <button class="nav-btn active" data-target="home"><svg class="icon"><use href="#i-home"></use></svg>Home</button>
-        <button class="nav-btn" data-target="guide"><svg class="icon"><use href="#i-download"></use></svg>Guide</button>
-        <button class="nav-btn" data-target="launchers"><svg class="icon"><use href="#i-grid"></use></svg>Launchers</button>
-        <button class="nav-btn" data-target="community"><svg class="icon"><use href="#i-people"></use></svg>Community</button>
-        <button class="nav-btn" data-target="discord"><svg class="icon"><use href="#i-link"></use></svg>Discord</button>
+        <button class="nav-btn active" data-target="home"><svg class="icon"><use href="#i-home"></use></svg></button>
+        <button class="nav-btn" data-target="guide"><svg class="icon"><use href="#i-book"></use></svg></button>
+        <button class="nav-btn" data-target="keyAccessCard"><svg class="icon"><use href="#i-key"></use></svg></button>
+        <button class="nav-btn" data-target="discord"><svg class="icon"><use href="#i-link"></use></svg></button>
       </nav>
     </div>
 
     <main id="home" class="hero">
       <section class="panel hero-main">
         <div>
-          <span class="eyebrow"><svg class="icon" style="width:14px;height:14px"><use href="#i-spark"></use></svg>Modern glass launcher hub</span>
+          <span class="eyebrow"><svg class="icon" style="width:14px;height:14px"><use href="#i-spark"></use></svg><span id="subtitleText">👁 0 Views</span></span>
           <div class="title-row" style="margin-top:18px">
             <img class="app-icon" id="appIcon" alt="Launcher icon" />
             <div class="hero-copy">
-              <h1>Among Us Launcher</h1>
-              <p>
-                A smooth, high-motion launcher experience with animated cards, a live install flow, and a polished black glassmorphism layout.
-                The interface below uses local manifest data and live status simulation for a premium app-style presentation.
-              </p>
+              <h1 id="appName">Among Us Launcher</h1>
+              <p id="appDesc">A smooth launcher hub with animated cards, a clean glass layout, and quick access to the key tutorial.</p>
             </div>
           </div>
 
           <div class="meta-grid">
-            <div class="meta"><span class="k">Version</span><span class="v">2026.4.7</span></div>
-            <div class="meta"><span class="k">Pack Type</span><span class="v">Apk</span></div>
-            <div class="meta"><span class="k">Uid</span><span class="v">Obfuscated</span></div>
-            <div class="meta"><span class="k">Creator</span><span class="v">Moz Studio &amp; AN1-com</span></div>
+            <div class="meta"><span class="k">Version</span><span class="v" id="appVersion">2026.4.7</span></div>
+            <div class="meta"><span class="k">Pack Type</span><span class="v" id="mainPackType">APK</span></div>
+            <div class="meta"><span class="k">Uid</span><span class="v" id="mainUid">Obfuscated</span></div>
+            <div class="meta"><span class="k">Creator</span><span class="v" id="appCreator">Moz Studio &amp; AN1-com</span></div>
           </div>
         </div>
 
-        <div class="actions">
-          <button class="btn primary" id="launchBtn">
-            <svg class="icon"><use href="#i-play"></use></svg>
-            Initialize Launcher
-          </button>
-          <button class="btn ghost" id="tutorialBtn">
-            <svg class="icon"><use href="#i-book"></use></svg>
-            View Tutorials
-          </button>
-          <a class="btn ghost" href="https://discord.gg/QHg5c96dGK" target="_blank" rel="noreferrer">
-            <svg class="icon"><use href="#i-discord"></use></svg>
-            Discord Community
-          </a>
+        <div>
+          <div class="actions">
+            <button class="btn primary" id="launchBtn"><svg class="icon"><use href="#i-play"></use></svg>Launch Now</button>
+            <button class="btn ghost" id="tutorialBtn"><svg class="icon"><use href="#i-book"></use></svg>View Tutorial</button>
+            <a class="btn ghost" id="discordBtn" href="#" target="_blank" rel="noreferrer"><svg class="icon"><use href="#i-discord"></use></svg>Discord Community</a>
+          </div>
+
+          <div class="vote-row">
+            <button class="btn like" id="likeBtn"><svg class="icon"><use href="#i-thumbs-up"></use></svg>Like <span class="vote-count" id="likesCount">0</span></button>
+            <button class="btn dislike" id="dislikeBtn"><svg class="icon"><use href="#i-thumbs-down"></use></svg>Dislike <span class="vote-count" id="dislikesCount">0</span></button>
+          </div>
         </div>
       </section>
 
       <aside class="panel hero-side">
         <div class="stat">
-          <div class="label">Launcher file</div>
-          <div class="value"><strong>844 MB</strong><span>Install package</span></div>
-        </div>
-        <div class="stat">
-          <div class="label">Initialization</div>
-          <div class="value"><strong>10–32s</strong><span>Random boot window</span></div>
-        </div>
-        <div class="stat">
-          <div class="label">Suggestion rotation</div>
-          <div class="value"><strong>60s</strong><span>Alternating state</span></div>
-        </div>
-        <div class="stat">
           <div class="label">Views</div>
-          <div class="value"><strong id="totalViews">0</strong><span>Saved locally</span></div>
+          <div class="value"><strong id="viewsCount">0</strong><span>Total</span></div>
+        </div>
+        <div class="stat">
+          <div class="label">Average Likes</div>
+          <div class="value"><strong id="likesStat">4.7⭐</strong><span>Community</span></div>
+        </div>
+        <div class="stat">
+          <div class="label">File Size</div>
+          <div class="value"><strong>844mb</strong><span>File size</span></div>
+        </div>
+        <div class="stat">
+          <div class="label">Updated On</div>
+          <div class="value"><strong id="themeHighlight">2025, May 01</strong><span>Last update</span></div>
         </div>
       </aside>
     </main>
@@ -823,556 +271,579 @@
     <section id="guide">
       <div class="section-title">
         <div>
-          <h2>Guides and thumbnails</h2>
-          <p>Tap a card to jump to the guide, open a demo video panel, or review creator details.</p>
+          <h2>Tutorial</h2>
+          <p>Only one video tutorial is shown here now.</p>
         </div>
       </div>
-      <div class="grid">
-        <article class="glass-card tutorial" data-action="guide">
-          <div class="thumb">
-            <img alt="Download tutorial thumbnail" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201200%20700%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%237cdaff%22/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%239b7bff%22/%3E%0A%20%20%20%20%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%20%20%20%20%3CradialGradient%20id%3D%22r%22%20cx%3D%2250%25%22%20cy%3D%2245%25%22%20r%3D%2270%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ffffff%22%20stop-opacity%3D%22.22%22/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23ffffff%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%20%20%20%20%3C/radialGradient%3E%0A%20%20%20%20%20%20%3C/defs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22700%22%20fill%3D%22%230a0d16%22/%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22700%22%20fill%3D%22url%28%23g%29%22%20opacity%3D%22.35%22/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22180%22%20cy%3D%22160%22%20r%3D%22220%22%20fill%3D%22url%28%23r%29%22/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22980%22%20cy%3D%22100%22%20r%3D%22280%22%20fill%3D%22url%28%23r%29%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%22.14%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M70%20540%20C%20240%20430%2C%20420%20640%2C%20600%20500%20S%20960%20420%2C%201130%20540%22%20stroke-width%3D%226%22/%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M90%20590%20C%20270%20480%2C%20430%20670%2C%20620%20540%20S%20960%20460%2C%201110%20610%22%20stroke-width%3D%224%22/%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%20%20%3Cg%20transform%3D%22translate%2870%2C70%29%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%220%22%20y%3D%220%22%20rx%3D%2234%22%20ry%3D%2234%22%20width%3D%22360%22%20height%3D%22120%22%20fill%3D%22rgba%28255%2C255%2C255%2C.08%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C.14%29%22/%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2230%22%20y%3D%2255%22%20fill%3D%22%23ffffff%22%20font-size%3D%2234%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-weight%3D%22700%22%3EDownload%3C/text%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2230%22%20y%3D%2292%22%20fill%3D%22%23dbe8ff%22%20opacity%3D%22.85%22%20font-size%3D%2220%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%3EStep-by-step%20install%20flow%3C/text%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%20%20%3Cg%20transform%3D%22translate%28780%2C245%29%22%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2290%22%20cy%3D%22120%22%20r%3D%2288%22%20fill%3D%22rgba%28255%2C255%2C255%2C.10%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C.16%29%22%20stroke-width%3D%224%22/%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M70%2090c0-38%2016-70%2050-70s50%2032%2050%2070v105H70V90Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.72%22/%3E%0A%20%20%20%20%20%20%20%20%3Cellipse%20cx%3D%22120%22%20cy%3D%22115%22%20rx%3D%2228%22%20ry%3D%2234%22%20fill%3D%22%230b1621%22%20opacity%3D%22.8%22/%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%2258%22%20y%3D%22170%22%20width%3D%22124%22%20height%3D%2298%22%20rx%3D%2228%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.72%22/%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2291%22%20cy%3D%22146%22%20r%3D%2210%22%20fill%3D%22%230b1621%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22128%22%20cy%3D%22146%22%20r%3D%2210%22%20fill%3D%22%230b1621%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%3C/svg%3E">
-            <div class="tag">Download</div>
-          </div>
-          <h3>How to download</h3>
-          <p>Open the launcher modal, tap initialize, and watch the loading bar complete before the package is ready.</p>
-          <div class="row">
-            <span class="chip">Step-by-step</span>
-            <button class="btn ghost small">Open</button>
-          </div>
-        </article>
-
-        <article class="glass-card tutorial" data-action="video">
-          <div class="thumb">
-            <img alt="Video tutorial thumbnail" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201200%20700%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2349f0a4%22/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%237cdaff%22/%3E%0A%20%20%20%20%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%20%20%20%20%3CradialGradient%20id%3D%22r%22%20cx%3D%2250%25%22%20cy%3D%2245%25%22%20r%3D%2270%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ffffff%22%20stop-opacity%3D%22.22%22/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23ffffff%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%20%20%20%20%3C/radialGradient%3E%0A%20%20%20%20%20%20%3C/defs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22700%22%20fill%3D%22%230a0d16%22/%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22700%22%20fill%3D%22url%28%23g%29%22%20opacity%3D%22.35%22/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22180%22%20cy%3D%22160%22%20r%3D%22220%22%20fill%3D%22url%28%23r%29%22/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22980%22%20cy%3D%22100%22%20r%3D%22280%22%20fill%3D%22url%28%23r%29%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%22.14%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M70%20540%20C%20240%20430%2C%20420%20640%2C%20600%20500%20S%20960%20420%2C%201130%20540%22%20stroke-width%3D%226%22/%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M90%20590%20C%20270%20480%2C%20430%20670%2C%20620%20540%20S%20960%20460%2C%201110%20610%22%20stroke-width%3D%224%22/%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%20%20%3Cg%20transform%3D%22translate%2870%2C70%29%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%220%22%20y%3D%220%22%20rx%3D%2234%22%20ry%3D%2234%22%20width%3D%22360%22%20height%3D%22120%22%20fill%3D%22rgba%28255%2C255%2C255%2C.08%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C.14%29%22/%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2230%22%20y%3D%2255%22%20fill%3D%22%23ffffff%22%20font-size%3D%2234%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-weight%3D%22700%22%3EVideo%3C/text%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2230%22%20y%3D%2292%22%20fill%3D%22%23dbe8ff%22%20opacity%3D%22.85%22%20font-size%3D%2220%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%3EWatch%20the%20walkthrough%3C/text%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%20%20%3Cg%20transform%3D%22translate%28780%2C245%29%22%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2290%22%20cy%3D%22120%22%20r%3D%2288%22%20fill%3D%22rgba%28255%2C255%2C255%2C.10%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C.16%29%22%20stroke-width%3D%224%22/%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M70%2090c0-38%2016-70%2050-70s50%2032%2050%2070v105H70V90Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.72%22/%3E%0A%20%20%20%20%20%20%20%20%3Cellipse%20cx%3D%22120%22%20cy%3D%22115%22%20rx%3D%2228%22%20ry%3D%2234%22%20fill%3D%22%230b1621%22%20opacity%3D%22.8%22/%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%2258%22%20y%3D%22170%22%20width%3D%22124%22%20height%3D%2298%22%20rx%3D%2228%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.72%22/%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2291%22%20cy%3D%22146%22%20r%3D%2210%22%20fill%3D%22%230b1621%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22128%22%20cy%3D%22146%22%20r%3D%2210%22%20fill%3D%22%230b1621%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%3C/svg%3E">
-            <div class="tag">Video</div>
-          </div>
-          <h3>Video walkthrough</h3>
-          <p>A short visual guide layout for installing, checking status, and exploring launcher cards.</p>
-          <div class="row">
-            <span class="chip">Preview</span>
-            <button class="btn ghost small">Play</button>
-          </div>
-        </article>
-
-        <article class="glass-card tutorial" data-action="creator">
-          <div class="thumb">
-            <img alt="Creator thumbnail" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201200%20700%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%239b7bff%22/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23ff5d7a%22/%3E%0A%20%20%20%20%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%20%20%20%20%3CradialGradient%20id%3D%22r%22%20cx%3D%2250%25%22%20cy%3D%2245%25%22%20r%3D%2270%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ffffff%22%20stop-opacity%3D%22.22%22/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23ffffff%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%20%20%20%20%3C/radialGradient%3E%0A%20%20%20%20%20%20%3C/defs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22700%22%20fill%3D%22%230a0d16%22/%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22700%22%20fill%3D%22url%28%23g%29%22%20opacity%3D%22.35%22/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22180%22%20cy%3D%22160%22%20r%3D%22220%22%20fill%3D%22url%28%23r%29%22/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22980%22%20cy%3D%22100%22%20r%3D%22280%22%20fill%3D%22url%28%23r%29%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%22.14%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M70%20540%20C%20240%20430%2C%20420%20640%2C%20600%20500%20S%20960%20420%2C%201130%20540%22%20stroke-width%3D%226%22/%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M90%20590%20C%20270%20480%2C%20430%20670%2C%20620%20540%20S%20960%20460%2C%201110%20610%22%20stroke-width%3D%224%22/%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%20%20%3Cg%20transform%3D%22translate%2870%2C70%29%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%220%22%20y%3D%220%22%20rx%3D%2234%22%20ry%3D%2234%22%20width%3D%22360%22%20height%3D%22120%22%20fill%3D%22rgba%28255%2C255%2C255%2C.08%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C.14%29%22/%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2230%22%20y%3D%2255%22%20fill%3D%22%23ffffff%22%20font-size%3D%2234%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-weight%3D%22700%22%3ECreator%3C/text%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2230%22%20y%3D%2292%22%20fill%3D%22%23dbe8ff%22%20opacity%3D%22.85%22%20font-size%3D%2220%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%3ESkyeMoz%20spotlight%3C/text%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%20%20%3Cg%20transform%3D%22translate%28780%2C245%29%22%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2290%22%20cy%3D%22120%22%20r%3D%2288%22%20fill%3D%22rgba%28255%2C255%2C255%2C.10%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C.16%29%22%20stroke-width%3D%224%22/%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M70%2090c0-38%2016-70%2050-70s50%2032%2050%2070v105H70V90Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.72%22/%3E%0A%20%20%20%20%20%20%20%20%3Cellipse%20cx%3D%22120%22%20cy%3D%22115%22%20rx%3D%2228%22%20ry%3D%2234%22%20fill%3D%22%230b1621%22%20opacity%3D%22.8%22/%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%2258%22%20y%3D%22170%22%20width%3D%22124%22%20height%3D%2298%22%20rx%3D%2228%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.72%22/%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2291%22%20cy%3D%22146%22%20r%3D%2210%22%20fill%3D%22%230b1621%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22128%22%20cy%3D%22146%22%20r%3D%2210%22%20fill%3D%22%230b1621%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%3C/svg%3E">
-            <div class="tag">Creator</div>
-          </div>
-          <h3>Creator links</h3>
-          <p>SkyeMoz on YouTube and TikTok, presented as a clean creator spotlight inside the interface.</p>
-          <div class="row">
-            <span class="chip">SkyeMozMods</span>
-            <button class="btn ghost small">Open</button>
-          </div>
-        </article>
-
-        <article class="glass-card tutorial" data-action="support">
-          <div class="thumb">
-            <img alt="Support thumbnail" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201200%20700%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ffcb6b%22/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%237cdaff%22/%3E%0A%20%20%20%20%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%20%20%20%20%3CradialGradient%20id%3D%22r%22%20cx%3D%2250%25%22%20cy%3D%2245%25%22%20r%3D%2270%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ffffff%22%20stop-opacity%3D%22.22%22/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23ffffff%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%20%20%20%20%3C/radialGradient%3E%0A%20%20%20%20%20%20%3C/defs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22700%22%20fill%3D%22%230a0d16%22/%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22700%22%20fill%3D%22url%28%23g%29%22%20opacity%3D%22.35%22/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22180%22%20cy%3D%22160%22%20r%3D%22220%22%20fill%3D%22url%28%23r%29%22/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22980%22%20cy%3D%22100%22%20r%3D%22280%22%20fill%3D%22url%28%23r%29%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%22.14%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M70%20540%20C%20240%20430%2C%20420%20640%2C%20600%20500%20S%20960%20420%2C%201130%20540%22%20stroke-width%3D%226%22/%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M90%20590%20C%20270%20480%2C%20430%20670%2C%20620%20540%20S%20960%20460%2C%201110%20610%22%20stroke-width%3D%224%22/%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%20%20%3Cg%20transform%3D%22translate%2870%2C70%29%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%220%22%20y%3D%220%22%20rx%3D%2234%22%20ry%3D%2234%22%20width%3D%22360%22%20height%3D%22120%22%20fill%3D%22rgba%28255%2C255%2C255%2C.08%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C.14%29%22/%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2230%22%20y%3D%2255%22%20fill%3D%22%23ffffff%22%20font-size%3D%2234%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-weight%3D%22700%22%3ESupport%3C/text%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2230%22%20y%3D%2292%22%20fill%3D%22%23dbe8ff%22%20opacity%3D%22.85%22%20font-size%3D%2220%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%3EDiscord%20and%20updates%3C/text%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%20%20%3Cg%20transform%3D%22translate%28780%2C245%29%22%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2290%22%20cy%3D%22120%22%20r%3D%2288%22%20fill%3D%22rgba%28255%2C255%2C255%2C.10%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C.16%29%22%20stroke-width%3D%224%22/%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M70%2090c0-38%2016-70%2050-70s50%2032%2050%2070v105H70V90Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.72%22/%3E%0A%20%20%20%20%20%20%20%20%3Cellipse%20cx%3D%22120%22%20cy%3D%22115%22%20rx%3D%2228%22%20ry%3D%2234%22%20fill%3D%22%230b1621%22%20opacity%3D%22.8%22/%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%2258%22%20y%3D%22170%22%20width%3D%22124%22%20height%3D%2298%22%20rx%3D%2228%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.72%22/%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2291%22%20cy%3D%22146%22%20r%3D%2210%22%20fill%3D%22%230b1621%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22128%22%20cy%3D%22146%22%20r%3D%2210%22%20fill%3D%22%230b1621%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%3C/svg%3E">
-            <div class="tag">Support</div>
-          </div>
-          <h3>Support and community</h3>
-          <p>Jump to Discord for updates and community discussion. Everything stays fluid and glassy.</p>
-          <div class="row">
-            <span class="chip">Discord</span>
-            <button class="btn ghost small">Join</button>
-          </div>
-        </article>
-      </div>
+      <div class="grid" id="tutorialGrid"></div>
     </section>
 
-    <section id="launchers">
+    <section id="keyAccessCard">
       <div class="section-title">
         <div>
-          <h2>Other launcher suggestions</h2>
-          <p>Availability alternates every minute. Unavailable launchers stay locked until the status flips to active.</p>
+          <h2>Key Accession</h2>
+          <p>Get the key, then jump back to the tutorial anytime you need a quick reminder.</p>
         </div>
       </div>
-      <div class="panel launchers">
-        <div class="launcher-list" id="launcherList"></div>
+      <div class="panel launch-main">
+        <div class="launcher-card">
+          <div class="launcher-thumb"><img id="keyThumb" alt="Key access thumbnail" /></div>
+          <div>
+            <div class="launcher-head">
+              <div class="launcher-copy">
+                <h3 id="keyTitle">Key Access</h3>
+                <p id="keyDesc">Open the key page with a short loading step, then return here to watch the tutorial video whenever you need help.</p>
+              </div>
+            </div>
+            <div class="chips">
+              <span class="chip">Video tutorial</span>
+              <span class="chip">Fast redirect</span>
+              <span class="chip">Auto saved</span>
+            </div>
+            <div class="launch-actions">
+              <button class="btn primary" id="getKeyBtn"><svg class="icon"><use href="#i-key"></use></svg>Get Key</button>
+              <button class="btn ghost" id="scrollTutorialBtn"><svg class="icon"><use href="#i-book"></use></svg>Tutorial</button>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
     <section id="community">
-      <div class="panel footer">
+      <div class="panel community">
         <div class="brand">
-          <strong>Among Us Launcher</strong>
-          <span>
-            Creator: SkyeMoz<br>
-            YouTube: SkyeMozMods<br>
-            TikTok: SkyeMozMods
-          </span>
+          <strong id="footerName">Among Us Launcher</strong>
+          <span id="footerInfo">Creator: Moz Studio &amp; AN1-com</span>
         </div>
         <div class="links" id="discord">
-          <a class="btn ghost small" href="https://discord.gg/QHg5c96dGK" target="_blank" rel="noreferrer">
-            <svg class="icon"><use href="#i-discord"></use></svg>
-            Discord Invite
-          </a>
-          <button class="btn ghost small" id="copyInvite">
-            <svg class="icon"><use href="#i-copy"></use></svg>
-            Copy Invite
-          </button>
+          <a class="btn ghost small" id="discordLink" href="#" target="_blank" rel="noreferrer"><svg class="icon"><use href="#i-discord"></use></svg>Discord Invite</a>
+          <button class="btn ghost small" id="copyInvite"><svg class="icon"><use href="#i-copy"></use></svg>Copy Invite</button>
         </div>
       </div>
     </section>
   </div>
 
-  <!-- Modal -->
   <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <button class="close" id="closeModal" aria-label="Close modal">
-        <svg><use href="#i-close"></use></svg>
-      </button>
+      <button class="close" id="closeModal" aria-label="Close modal"><svg><use href="#i-close"></use></svg></button>
       <div class="inner">
-        <div class="avatar">
-          <img id="modalIcon" alt="App icon">
-        </div>
+        <div class="avatar"><img id="modalIcon" alt="Modal icon"></div>
         <div>
-          <span class="eyebrow" style="margin-bottom:10px"><svg class="icon" style="width:14px;height:14px"><use href="#i-chip"></use></svg>Launcher initialization</span>
-          <h3 id="modalTitle">Install Among Us VIP? (844Mb)</h3>
-          <div class="info" id="modalInfo">
-            Version: 2026.4.7<br>
-            Pack Type: Apk<br>
-            Uid: Obfuscated<br>
-            Creator: Moz Studio &amp; AN1-com
+          <span class="eyebrow" style="margin-bottom:10px"><svg class="icon" style="width:14px;height:14px"><use href="#i-chip"></use></svg><span id="modalTag">Launcher</span></span>
+          <h3 id="modalTitle">Modal</h3>
+          <div class="info" id="modalInfo"></div>
+
+          <div id="modalVideoWrap" class="video-box hidden">
+            <video id="tutorialVideo" controls playsinline preload="metadata" src="settings/media/key.mp4"></video>
           </div>
 
-          <div class="specs">
-            <div class="spec"><span>Package size</span><strong>844 MB</strong></div>
+          <div class="specs" id="modalSpecs">
             <div class="spec"><span>State</span><strong id="modalState">Waiting</strong></div>
-            <div class="spec"><span>Install window</span><strong id="modalWindow">10–32 s</strong></div>
-            <div class="spec"><span>Source</span><strong>Local manifest</strong></div>
+            <div class="spec"><span>Timer</span><strong id="modalWindow">1s</strong></div>
+            <div class="spec"><span>Progress</span><strong id="progressLabel">0%</strong></div>
+            <div class="spec"><span>Source</span><strong id="modalSource">Local</strong></div>
           </div>
 
-          <div class="actions-row">
+          <div class="actions-row" id="modalActions">
             <button class="btn ghost" id="cancelBtn">Cancel</button>
-            <button class="btn primary" id="initBtn">
-              <svg class="icon"><use href="#i-play"></use></svg>
-              Initialize
-            </button>
+            <button class="btn primary" id="initBtn"><svg class="icon"><use href="#i-play"></use></svg>Start</button>
           </div>
 
-          <div class="progress-wrap">
-            <div class="progress-top">
-              <span>Loading package</span>
-              <span id="progressLabel">0%</span>
-            </div>
+          <div class="progress-wrap" id="modalProgressWrap">
+            <div class="progress-top"><span>Loading</span><span id="progressLabelTop">0%</span></div>
             <div class="progress"><span id="progressFill"></span></div>
           </div>
 
           <div class="log" id="modalLog">
-            <div class="entry"><span class="pulse"></span><span>Ready to initialize package.</span></div>
+            <div class="entry"><span class="pulse"></span><span>Ready.</span></div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- SVG Icon Sprite -->
   <svg width="0" height="0" style="position:absolute;left:-9999px;top:-9999px" aria-hidden="true" focusable="false">
-    <symbol id="i-home" viewBox="0 0 24 24">
-      <path fill="currentColor" d="M12 3.1 3 10.4v9.6h5.7v-6.3h6.6V20H21v-9.6L12 3.1Z"/>
-    </symbol>
-    <symbol id="i-download" viewBox="0 0 24 24">
-      <path fill="currentColor" d="M12 3v10.1l3.5-3.5 1.4 1.4-5.9 5.9-5.9-5.9 1.4-1.4L10 13.1V3h2Zm-7 15h14v2H5z"/>
-    </symbol>
-    <symbol id="i-grid" viewBox="0 0 24 24">
-      <path fill="currentColor" d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z"/>
-    </symbol>
-    <symbol id="i-people" viewBox="0 0 24 24">
-      <path fill="currentColor" d="M16 12a3.4 3.4 0 1 0-3.4-3.4A3.4 3.4 0 0 0 16 12Zm-8 0a3 3 0 1 0-3-3 3 3 0 0 0 3 3Zm0 2c-2.8 0-7 1.4-7 4v2h7v-2c0-1.3.3-2.5.9-3.6A9.1 9.1 0 0 0 8 14Zm8-.2c-1.9 0-5.8.9-6.8 2.8.5.7.8 1.6.8 2.4v2h13v-2c0-2.7-4.2-4.2-7-4.2Z"/>
-    </symbol>
-    <symbol id="i-link" viewBox="0 0 24 24">
-      <path fill="currentColor" d="M10.6 13.4a1 1 0 0 0 1.4 1.4l4.3-4.3a3.5 3.5 0 0 0-5-5L9 6.8a1 1 0 1 0 1.4 1.4l2.4-2.4a1.5 1.5 0 0 1 2.1 2.1l-4.3 4.3Zm2.8-2.8a1 1 0 0 0-1.4-1.4l-4.3 4.3a3.5 3.5 0 1 0 5 5l1.3-1.3a1 1 0 0 0-1.4-1.4l-1.3 1.3a1.5 1.5 0 0 1-2.1-2.1l4.3-4.3Z"/>
-    </symbol>
-    <symbol id="i-spark" viewBox="0 0 24 24">
-      <path fill="currentColor" d="m12 2 1.7 5.1L19 9l-5.3 1.9L12 16l-1.7-5.1L5 9l5.3-1.9L12 2Zm7 8 1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3ZM5 13l1.2 3.6L10 18l-3.8 1.4L5 23l-1.2-3.6L0 18l3.8-1.4L5 13Z"/>
-    </symbol>
-    <symbol id="i-play" viewBox="0 0 24 24">
-      <path fill="currentColor" d="M8 5.6v12.8c0 1 1.1 1.6 1.9 1.1l10.2-6.4a1.3 1.3 0 0 0 0-2.2L9.9 4.5A1.3 1.3 0 0 0 8 5.6Z"/>
-    </symbol>
-    <symbol id="i-book" viewBox="0 0 24 24">
-      <path fill="currentColor" d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3Zm0 2a1 1 0 0 0-1 1v11.1A3 3 0 0 1 6 17h12V5H6Z"/>
-    </symbol>
-    <symbol id="i-discord" viewBox="0 0 24 24">
-      <path fill="currentColor" d="M19.5 5.1A16.4 16.4 0 0 0 15.7 4l-.2.4a13.3 13.3 0 0 1 2.4 1.2 11.9 11.9 0 0 0-4.8-1.5 11.9 11.9 0 0 0-4.8 1.5A13.3 13.3 0 0 1 10.7 4l-.2-.4a16.4 16.4 0 0 0-3.8 1.1C4 8 3.5 10.7 3.7 13.3c1.7 1.3 3.3 2 4.8 2.4.4-.6.7-1.2 1-1.9-.6-.2-1.2-.4-1.8-.8.2-.2.4-.4.6-.6 3.3 1.6 6.9 1.6 10.2 0 .2.2.4.4.6.6-.6.4-1.2.6-1.8.8.3.7.6 1.3 1 1.9 1.5-.4 3.1-1.1 4.8-2.4.2-2.6-.3-5.3-2.4-8.2ZM9.3 12.7c-.8 0-1.5-.8-1.5-1.8s.7-1.8 1.5-1.8 1.5.8 1.5 1.8-.7 1.8-1.5 1.8Zm5.4 0c-.8 0-1.5-.8-1.5-1.8s.7-1.8 1.5-1.8 1.5.8 1.5 1.8-.7 1.8-1.5 1.8Z"/>
-    </symbol>
-    <symbol id="i-copy" viewBox="0 0 24 24">
-      <path fill="currentColor" d="M8 7V5a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h3Zm2 0h7a2 2 0 0 1 2 2v7h1a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1h-9a1 1 0 0 0-1 1v2Zm-5 3a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V10a1 1 0 0 0-1-1H5Z"/>
-    </symbol>
-    <symbol id="i-close" viewBox="0 0 24 24">
-      <path fill="currentColor" d="m6.4 5 5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6-5.6 5.6L5 17.6l5.6-5.6L5 6.4 6.4 5Z"/>
-    </symbol>
-    <symbol id="i-chip" viewBox="0 0 24 24">
-      <path fill="currentColor" d="M8 2h2v2h4V2h2v2h2a2 2 0 0 1 2 2v2h2v2h-2v4h2v2h-2v2a2 2 0 0 1-2 2h-2v2h-2v-2h-4v2H8v-2H6a2 2 0 0 1-2-2v-2H2v-2h2v-4H2V8h2V6a2 2 0 0 1 2-2h2V2Zm0 4H6v12h12V6H8Zm2 2h6v8h-6V8Z"/>
-    </symbol>
-    <symbol id="i-eye" viewBox="0 0 24 24">
-      <path fill="currentColor" d="M12 5c5.2 0 9.6 3.2 11 7.9-1.4 4.7-5.8 7.9-11 7.9S2.4 17.6 1 12.9C2.4 8.2 6.8 5 12 5Zm0 2C8 7 4.6 9.3 3.4 12.9 4.6 16.5 8 18.8 12 18.8s7.4-2.3 8.6-5.9C19.4 9.3 16 7 12 7Zm0 1.7a4.2 4.2 0 1 1 0 8.4 4.2 4.2 0 0 1 0-8.4Zm0 2a2.2 2.2 0 1 0 0 4.4 2.2 2.2 0 0 0 0-4.4Z"/>
-    </symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3.1 3 10.4v9.6h5.7v-6.3h6.6V20H21v-9.6L12 3.1Z"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path fill="currentColor" d="M6 4.5A2.5 2.5 0 0 1 8.5 2H20v16.5A2.5 2.5 0 0 1 17.5 21H7a3 3 0 0 0-3 3V4.5Z"/><path fill="currentColor" d="M7 7h9v2H7z"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path fill="currentColor" d="M10.5 13.5a4.7 4.7 0 0 1 0-6.7l1.5-1.5a4.7 4.7 0 0 1 6.7 6.7l-1.4 1.4-1.4-1.4 1.4-1.4a2.7 2.7 0 1 0-3.8-3.8L12 8.3a2.7 2.7 0 0 0 0 3.8z"/><path fill="currentColor" d="M13.5 10.5a4.7 4.7 0 0 1 0 6.7L12 18.7a4.7 4.7 0 0 1-6.7-6.7l1.4-1.4 1.4 1.4-1.4 1.4a2.7 2.7 0 1 0 3.8 3.8l1.5-1.5a2.7 2.7 0 0 0 0-3.8z"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l1.9 5.2L19 9.1l-5.1 1.9L12 16l-1.9-5.1L5 9.1l5.1-1.9z"/><path fill="currentColor" d="M18 14l.9 2.4 2.4.9-2.4.9L18 21l-.9-2.4-2.4-.9 2.4-.9z"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l12-7z"/></symbol>
+    <symbol id="i-discord" viewBox="0 0 24 24"><path fill="currentColor" d="M20.5 4.5a16 16 0 0 0-4-1.3l-.2.4a14 14 0 0 1 3 1.2 12.2 12.2 0 0 0-1.6-.8A11 11 0 0 0 15.6 3a15.4 15.4 0 0 0-.5 1.1 13.3 13.3 0 0 0-6.2 0A15.4 15.4 0 0 0 8.4 3a11 11 0 0 0-2.5.9 12.2 12.2 0 0 0-1.6.8 14 14 0 0 1 3-1.2l-.2-.4a16 16 0 0 0-4 1.3C1.2 8.2.7 11.8 1 15.4a16 16 0 0 0 4.9 2.5l.6-.8a10.7 10.7 0 0 1-1.2-.6 8.3 8.3 0 0 0 .4-.3 11.5 11.5 0 0 0 9.1 0 8.3 8.3 0 0 0 .4.3c-.4.2-.8.4-1.2.6l.6.8a16 16 0 0 0 4.9-2.5c.3-3.6-.2-7.2-2.5-10.9Zm-11.9 9.3c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Zm7.8 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Z"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><path fill="currentColor" d="M8 8h11v13H8z"/><path fill="currentColor" d="M5 3h11v2H7v11H5z"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path fill="currentColor" d="m6.4 5 5.6 5.6L17.6 5 19 6.4 13.4 12 19 17.6 17.6 19l-5.6-5.6L6.4 19 5 17.6 10.6 12 5 6.4Z"/></symbol>
+    <symbol id="i-chip" viewBox="0 0 24 24"><path fill="currentColor" d="M9 3h2v2h2V3h2v2h2v2h2v2h2v2h-2v2h2v2h-2v2h-2v2h-2v2h-2v-2h-2v2H9v-2H7v2H5v-2H3v-2h2v-2H3v-2h2v-2H3V9h2V7H3V5h2V3h2v2h2z"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><path fill="currentColor" d="M14 3a7 7 0 1 0 4.2 12.6L23 20.4 20.4 23l-4.8-4.8A7 7 0 1 0 14 3Zm0 2.2A4.8 4.8 0 1 1 14 15a4.8 4.8 0 0 1 0-9.8Z"/></symbol>
+    <symbol id="i-thumbs-up" viewBox="0 0 24 24"><path fill="currentColor" d="M9 21h8a2 2 0 0 0 2-1.5l1.5-7.5a2 2 0 0 0-2-2.5h-6V7a4 4 0 0 0-4-4h-.5L5 10v11h4z"/></symbol>
+    <symbol id="i-thumbs-down" viewBox="0 0 24 24"><path fill="currentColor" d="M15 3H7a2 2 0 0 0-2 1.5L3.5 12A2 2 0 0 0 5.5 14h6v3a4 4 0 0 0 4 4h.5l2-8V3h-3z"/></symbol>
   </svg>
 
+  <script id="manifestFallback" type="application/json">{
+    "app": {
+      "name": "Among Us VIP",
+      "version": "2026.4.7",
+      "creator": "Moz Studio",
+      "description": "Among Us VIP – Free Skins & Avatars Edition etc. Packed in Vercel.com, modified By Moz Studio..",
+      "icon": "github/settings/media/app-icon.png",
+      "subtitle": "Views"
+    },
+    "mainLauncher": {
+      "name": "Among us Vip",
+      "description": "5.6k Has downloaded this app!",
+      "button": "Launch & Install",
+      "link": "https://www.mediafire.com/file/aj14i8nkmf4unua/among-us-mod_2026.4.7-an1.com.apk.bak/file",
+      "thumbnail": "github/settings/media/app.png",
+      "icon": "github/settings/media/appicon.png",
+      "size": "844 MB",
+      "packType": "APK",
+      "uid": "Obfuscated",
+      "version": "2026.4.7"
+    },
+    "tutorials": [
+      {
+        "name": "Key Access | 🔑",
+        "description": "This video walks you through how to access the app with a key.",
+        "button": "Preview",
+        "action": "preview",
+        "thumbnail": "settings/media/key-thumb.png",
+        "icon": "settings/media/key-thumb.png"
+      }
+    ],
+    "keyAccess": {
+      "name": "Key Accession",
+      "description": "Open the key page, wait for the short loading screen, and then continue to the website.",
+      "button": "Get Key",
+      "tutorialButton": "Tutorial",
+      "link": "https://among-us-key.vercel.app/",
+      "thumbnail": "settings/media/getkey-thumb.png"
+    },
+    "community": {
+      "discord": "https://discord.gg/QHg5c96dGK",
+      "youtube": "https://youtube.com/@SkyeMoz",
+      "tiktok": "https://tiktok.com/@SkyeMoz"
+    },
+    "stats": {
+      "views": 2700,
+      "likes": 1420,
+      "dislikes": 52
+    }
+  }</script>
+
   <script>
-    const ICON_DATA = "data:image/webp;base64,UklGRkwUAABXRUJQVlA4WAoAAAAIAAAAjwEAKwEAVlA4IGwTAACwdQCdASqQASwBPnU4mEkkoyKkIhGq6JAOiWlDTqHVBRI35xvnX+6/hx4Yf2b8qOw28ge2/yW4G7T/479nvyX93/dX45/0nen8WNQL8o/mX+O/Mn0Hdqppv+r/0XqBet30b/R/3794ves+g/wnoJ9T/87/ZfyA+wD+Pf0//Rce/9z/zP+39wD+Ofzz/Sf4D8gPj6/0/7r/kv2v9w35t/g/+h/kfgH/k/9N/2n97/Kn5nv//7Yv3k9kD9bf/QRZ9PfKmukc7G3p9PfKntS6kOzP08+goAZg/lu3pL9gFTX5KVYNCJUQfYJLPb7eYNF/zlYMm+pyMiF/EaPaPJyWylwmrG65Lj6HJ65wkSPhrDmCHH58ObICRertdKILQoI8V79zBHJGapSpY0tcln75Y2oe970t/A0KklsU1BDaGUBarVoPuXOW5C/uNDTEQbiBaA/Qzhc9WfJN9QCZvz0wwuTAhMWDE71Jl0d+GnxreYNF3yWzVjRmBmtbf9slxSMHnVBxN7y3uLEkXs+fdi6h7AoK43fIVIJSiE/+7fZ7Lsk5/1aBcjoEokS0q4VZeKzKxxBtUSy5dJ6sPH1r4NkOZ4f15gsCEJBHlusmxp7wIxU2FJRtoou8A6MLQt3SM/zZGRr8lZpRYynzK9DHokENB6HlCcVyLhWcHsCuS35iQ4PRHq2E3Qc7IDyRoDRj+nI1EnHO/e3Uf6+D0rtZigkLA0NO9uw0jrjLbUg9qSqaxrEQVz2fZ3e2ut6BhREWE23WCkygd4F3ApS3tJQ9TMQuN5V0esGb0jcKxjEp1cLeyJptwf49J71vktlu7OHL4su5mHb0NO2mbiMOfXbHVk4z1bbyHgfPX0ZUyyxEbMwNhjXHXCEqu7Om3SloX1RbmlT6POQwncyu3QblZJrZXk2WcGHzh3zWnUmM+xQ/A2NEK1WXyuWyUfedxvM24IkOW81Bz6rzIch1hbMas+xEhXjFOGd/bqn6sxujN8a3kNPls63s9HjjkMenJ8KrG5Ctj3xJHnsMd/MJG7uzIjJPZe4T4gYbnBRQlqoopSRSoMGq4RhOE9dKZG2Esm6aGri9Imuw+egVvzAiLowZx2mppzaoZi8YKCYKcrNrI7rchdAWpaFWAukLT1P40/3wr2igDOrDWq0LoOShDWhu9jP9Tfg4htPV9dLhXPE3MgJ2vvxYkN1od3Ob6BH4mgdQy5bJO82DK8HscGi0VkUAunA0QaMyK3GzArEyjR8DRcytySVmzqbLMq5Z1A9HgAD++aFpiMZPHPT+JNgpIeAYXyP7AjuwpJfBo9iS0NuCSIgsFx3KhwTuc7QDTGkUf4nhbvmzhKdRrp2MHijJujuT2DVAIhn+HhivsDrQu67KkSY4KmvTYam24qxI/XAio8trPuDWGTKclW6e/mLYETD4AmwJ/v7H7abf5oVinYPZt9XFJ8cZ7uimRHBKcdgVYdBXlQwNM4vXfjYilzrcxZNyaOB3yDdmsVowb2SQijUKaIp78rIvjBnYBDLYGyGSOIcIrxjylFaDhQGDUbvQ4/+L62bn/qoexFGqnidV4EJAFx9vg/bWX+XJcOOZkP+y43Zi4ZwT9YkicKqgJioTJquRZ8QMNWn/P6wGteRmtgFaVT2r86Nr6bp/+rD/SsGDEy8oT7DC6Qg//RCZArzqJ1QN9dc0zP8nRP/R9560cn6vDBupxNCRYqq/OKxgAMFcp/u2IPyVGkSu3Tv5fg/f4PvocDBulozEquKaFeJWtw/JI4puf8/sff/hDBHk9MFS9ecTF3xeVy3pTH+2IGHm0FD06sXyeRkTjRBaGlrnjPP4iUIARxscqO67rcWrYm0F0lb0aG/2BbOfxJzKvfv/USpE7DD4vlMB1nlpoTmSlf3XowRjY3piMV/Nvv51wNQ8x9czFJII+L5Ctt/jDlC14VrNlinIQ005BayTmKM/CLaxxcVGmMGtblKPxr89P26EcrIDFDKjyqhFju1O19tSBVQU0cQK1bdrDIHNtZtm6kNn43jCqN7gFgRCfXpqfgyY8DsCVr2TbcyMVAuY+smKi+Gs1lC6BymwMB/x5QZlnBqqJ7ignQ8QCmKWnd4/gupSXn4dcA4bfWQ0yUHNbvuePGQJa5M9LMX8ZrcMGjxDuubpmLLoYrxVtVRXBRHcKSpCpJ7kMMuG89cfLCAjki0HAcssnW9NWYwLgcwnlHrgvwqjv5Cob9cb/KXXD7JEFbKEp9XH4cfaHCjYYoqSth02XHqsnGfj4PsIVFW3KYTDU6dUjRArloF6sxnku9pNAGhMktarapjulAggL0kQ/IDZ9AkTuFjavx4qJt/U8Kd32yraDlXHuVTlLqb9dg8jfxXsLjHI+AgMfpUjnFhSJesEAGEQHS1n8Fbaeiv1x6bbajvMW/VhJuQ9SWUjsXIFbBtDWeZQJliLyCwtvBLQTQ0UbA2NXhj5K5EDJzfzLIPMCNvpcB/3L25DMarzimYggSRZzdR2LBgJtaXHmGaMxH+BOWL6Uu/y1Kgw3oxnwwhvNy0BCmoAco+LQOjQc31xc8ugH0UsfZJVXBYU5lKrcWcjgsEXWCqc9jgDb8Pr7+FTw8+Exzu7BxAuSp8EWneUkOADiAX/Qp2EpJ7VURLjv7yj+3yXLDPqyUHMejG9OKVwYRsN2/x14HPH3pMQTHS1CVvg75hbZWoPVco2UQXRs/BaCSBS81Pzxfxnf+T3safy23YJ/DBOuR5XJNLYJ8/pSG8b4Qg/n7e8QoHg1sDTT7nEiu0iSfxUWFR69cX+Q6rs85bRW+OBMHyNdUbLJjViaPlZyjbAapu9p+c4CVMM3nqfCKfV9qa54sHhqKb5SucAI9AO91Yn1NuVWnn1Cp59Zxo1J36ICjMkxNUINFFOSq8PEma2hFBmg1KcB0JxxjvtB1NX8Oa+1wxOrZME/U49zMP28a5SKA9wwXrlUbGzHFwj1TFLnugHTbDZHgAon2ZiSAwYYeNf6cXutC8EYZGM30thP2S6B6aE6CNCADOYWkW3JwVD3gildiHGhSav8QqEcqbf7/jvMbT/k0AHfKZJX+D+PD8ljilhY1pZi/L14smQPfgnOdYh1+o9D6a0u/G12Qngn6/YVIXHvkimSORqtRvP7XHuTWVb4ylQCCUU17WiYC97iSXXpyMWXCeYPevQlpKXF6qcTUbEyDDx3TDOTtqEFGc4WobFVJwxEI6l1VUdRFgIbWRxbHqZPxliiBtIgbpUINk8Zfm98NXGi+7BqbL2H9d2yYFS01uxPgZF2DXG8ccAfA61QgD99xf7ivXPSqJzz7QbmR2ulrnHo59AkTuFRHm8n0iq/SuikE41UkkPbimQDJRYrkzDsinfLf8HZsRVmgwQoLAks6ZLlmEqXTH+PHUFQeWO8TM8h4RDTKp4OmK44WLzlQ6MnE/EbjsdjlbSlCPT18MtuLkTfwwm2SMNIKrQ17Zl8zQIysRA9slk+xewC5exaP7WBAi1xN/wX7I+p2hdc6fYXVNy9tWwnu2NEuCDGU4qf74i9SbliYo2oA3rvQw6FGYDrN8WsNNQotWB+Cdy8CsUARZsPLJLQikdBP2XF659u9GFGFviGsRsElexSriOVTBUStwrZIj/Mc6MvzNAEs4TBsXsUsBr9s96NbrWvV+LZFrXCn87eHigc25PmJDI2f7+eKdLTXQD4319elGr6lrEesL/I2bgAiEzjhk/+UTl7ooyFm7QKHyd4I5jqlelf3eUU+Mq3x8bnUC/glx7hoBs8MbSSDaBvMkTtdfi9MbvDwtEFTIUFUNJp1N8lFfuqKfSKOk8AEC/m6KgvPkw0lwTUiIJfjeLRzYi5jzdhhZREKRmccWyagVHObtCp1pi5NY46MpRd37lsswAA3Qv5RfZeSqE7LzWnkoCzqnMXFsI/taHeicpQHDWBFATGUmp6sJVjCzLOlluAf5dwIDh9NJq8ok5d9cnfNt9CyNN24xToIuU/Hn5T+jk0tc8Z5/IUdUjoOJDBgpISy8Etu/PkQeEOR8ac2a4Xg7p3Ovv+LWwdMFNeLWamELGgbLOwYO0kg8zrq/r0v5eLhdgEqmbvvSTSuqPcYUKjm4KFLvtKyye5MYH+g0H/BFJCcIL7ZiaoPfgXEEyGCAGPBXVYMhloWk9Y5v1GdjWwcUafsI6VIdjdLVJAy2FuxObfnXPQmWrgquAx2qkQzNdNQ1p1Dc0JBqg+ZOjZLj/M7WOjQY8P86rbehlV97B5lHl0mZ5k3nCIJVCXhVa+LOSeII63ZkNRWLCEfIKFkoGECKBLIQWQutPRCASNivv4xE+NQt+izT/uXHgUFUp3qH+iz8dUeRRco+HDoRMSBQsFfrLX8HduPQ0S6QkFmV+ED1+g7h8cZB+F7mD2vf599ZMRbDJwXWN+sEtE1NqytIzpp58w0IqTXZQSZ2G0CzLQSkK+IMkV335cbMNciT5nxD77ysDSYwZY7cc1sm1zfwTgmruCsJRcomE1s24YdEqogKNCnytDTOz+rY4p32J+sgnth/w8gQdwWZln2tJYLz9sH0zgpcJjarhktBPcP7P3bdQz+xSIywQdJraXNTmtWJLv7b11T3uAqY3t6rw8Mw1ClI4F7w2Syz2k2WueLE9CbNBIVLIeISIc6AV8mIfqKZnpo5hNZpwMwuIF+GA+sEoYsuKZ2lvTvG9aTfe9c/l6DhPjSgLbDOrcsbiqPBDqzHVQdM7tWRVxCzbbHxVHoFJd5+beEFoFGCKMh6HuygoLDdhjnjRitqPF35LzMRD4ZL2ItECvIiDeLjZ6FmPinMUZT3BEFhbheiGBivxNBQl0+lcORQmHF4zQsXWpDIG8G1rJ6aLWtG525qens96w9AutX+BtHugdIEmSdca0SRkSaP5ejd5Z3IqLXLs6v+uzg6IxCnnv3sApgsuRSMkwfsvDWgwG/7suwn023RgJWvLBE6eq3vR4RLxbBMaN+QcSfAbSOoIJ6xBfasBwtkmQ1ZS2TuNSh4rJvbFWOCeISJtIV5UnpB6BFuGufVVd3yYRNlDk5rhQSEFCXQvY9Mqx2VzXPB4d/KELScKRANiYG+384Xch+Y4zgHqIho3smK1M7m3t9NKSpbqEoGdEyvl9REqWWD4GpKc+f1vWaelpd1aQeb7E0nw49eiqqvBU8FopM1HvkF/gyOUiS+3F+bLIVOatWYI5SEZwnUGdCMPZlpM62TWDtglVOw6Zdup3l0CWFSyGR1MPNnBGRk7CiojiMcSHC7ZeitWqYckYFzSPpHrgyLm4Z0jygFI1exWyT7HF846llNRWx27fgraHnWH9ox8FM4mcV96eeMebKx1ZYP0Vi/e1XphEgbwgioE0QTLSB2D5j9J61CljeiFlwvmu5vHsUSiIVP9gYUJvGoRkx+XfNgNx64MPOX7/E9nQZF+Bz+LBA9keBQOMnOBp1oiJlWpDwmYwxILzyBj0TkvsdEO1R75Zosm55X4xBLt+2QDATUr4gYcFSCsadjNZw0hkQf8SH8TUhhMoJSZeAdyXLmktXRmYg/8KAnBtd4sEP6mMXUz6YRudNyuQAQkcUH2zfKwhlxaptw9T2Pz8EXdXxhR2R0CZheaawTARVmLsHLykBjyJssnTRzl26Ak2JhuLPPf3Bn6g80yrtbGbY/NAx1bBnOIJm5mF4B+9v1iGj35XLNAejO0ZeSjk6oCHCQ0nmtYJOrOPdqQqWrg+bj41FpNn6Nzd5wbF0PEBcERkQD3ULwcx6XBtj5asKTzISamJ6aJaGCkIi++7mbFRMAfC/JK385zbzGber9wpCZKhRiTLVS4Ec4o6bKyKv+vGn9ZmEShmHYiV0roKBwuBrfyn1jxN0ZA6kmNoSS49nttEkpbgoHVDpk5hovbqCYiXwZkNxjYof/pXyurpzj+tEouWN1AAES0GMp0I7+LG5zZbYAUfCNTBKCaMuQHZrRzGbpC93xDsO+s4fTYGbs8ZT/fHpNlJijAIG8sJYO6sxwxIMZzP96uC7NMxaaxfgkXpWoI2AXshacX06p+ztIk7tQH8GJO8p7szThjCsQaoeMUUORok0xv+9anwmCpVhlOy9KPFXlRdTGj6QZeRo58qyTF4f1KjK5BaFfErzKtUxtLhV2iQufQ1Ii1dJ9gfjONK25CP1OVsJ9+vDsHPpk1m4TF2vGWrjbhuTx/KXzcjm+xHyAtuim6q/LQBB1YBVlGBttKccfnPCMdYvunR1z5ehiz1BIf/1+Ye6SHkCyckAxiCjH6Fr+DTzn05RA2JiGiUHp3caqU1i9XsmJRmM9E/0D4Y9k1xrNWYZydxdVhhj/G2SPN9Dca95wU0KIfBFn46CGs9efl9zcuc+LWcAKqhd7BRCNyjTa9rJcGIOXap9BUtP4sr4UPI4l0THsWz4FbcZyBkAVAqZiuJbhEXn5xfh6AGwZ4TicYCOTd/KjirsnzA3bJh3Gd+0Q5XhSR9cK8b5WSWreEJWeCNBAfa7Re1XwaJL17AHT+EFcGbxkWsJ/G1NYKlGnS/mKkfN2UCW59gGiCuSBq/Xw5d8XgGxFmHZ3c/666orJ3+J5hkAEHmY4hEJ9N0hFXIL5adiPnX+oV+TFsO3F60p8/F5itRbf7xdte0WfdOR9jPU++46stTvGQ8odjyG1G5ZR+gyYV74AARVhJRroAAABFeGlmAABJSSoACAAAAAYAEgEDAAEAAAABAAAAGgEFAAEAAABWAAAAGwEFAAEAAABeAAAAKAEDAAEAAAACAAAAEwIDAAEAAAABAAAAaYcEAAEAAABmAAAAAAAAAEgAAAABAAAASAAAAAEAAAAGAACQBwAEAAAAMDIxMAGRBwAEAAAAAQIDAACgBwAEAAAAMDEwMAGgAwABAAAA//8AAAKgBAABAAAAkAEAAAOgBAABAAAALAEAAAAAAAA=";
-    document.getElementById('appIcon').src = ICON_DATA;
-    document.getElementById('modalIcon').src = ICON_DATA;
+    const DEFAULT_MANIFEST = JSON.parse(document.getElementById('manifestFallback').textContent);
+    const PLACEHOLDER = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700">
+        <defs>
+          <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stop-color="#7cdaff"/>
+            <stop offset="100%" stop-color="#9b7bff"/>
+          </linearGradient>
+          <radialGradient id="r" cx="50%" cy="45%" r="70%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity=".22"/>
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <rect width="1200" height="700" fill="#0a0d16"/>
+        <rect width="1200" height="700" fill="url(#g)" opacity=".30"/>
+        <circle cx="180" cy="160" r="220" fill="url(#r)"/>
+        <circle cx="980" cy="100" r="280" fill="url(#r)" opacity=".85"/>
+      </svg>
+    `);
+    const KEY_THUMB = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+        <defs>
+          <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stop-color="#7cdaff"/>
+            <stop offset="100%" stop-color="#9b7bff"/>
+          </linearGradient>
+        </defs>
+        <rect width="800" height="800" rx="60" fill="#081018"/>
+        <circle cx="400" cy="400" r="235" fill="url(#g)" opacity=".20"/>
+        <path d="M268 434a88 88 0 1 1 110-110l131 131-45 45-32-32-34 34-36-36-34 34-60-60z" fill="url(#g)"/>
+        <rect x="460" y="342" width="98" height="36" rx="18" fill="#fff" opacity=".9"/>
+        <rect x="548" y="342" width="54" height="18" rx="9" fill="#fff" opacity=".7"/>
+      </svg>
+    `);
 
-    const manifest = [
-      {
-        id: "luna",
-        name: "Luna Dock",
-        version: "7.2.1",
-        size: "412 MB",
-        creator: "Luna Labs",
-        uid: "Masked",
-        packType: "Apk",
-        subtitle: "Night UI and fast load cards.",
-        link: "#",
-        viewsKey: "views_luna",
-        thumb: "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201200%20700%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%237cdaff%22/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%239b7bff%22/%3E%0A%20%20%20%20%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%20%20%20%20%3CradialGradient%20id%3D%22r%22%20cx%3D%2250%25%22%20cy%3D%2245%25%22%20r%3D%2270%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ffffff%22%20stop-opacity%3D%22.22%22/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23ffffff%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%20%20%20%20%3C/radialGradient%3E%0A%20%20%20%20%20%20%3C/defs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22700%22%20fill%3D%22%230a0d16%22/%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22700%22%20fill%3D%22url%28%23g%29%22%20opacity%3D%22.35%22/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22180%22%20cy%3D%22160%22%20r%3D%22220%22%20fill%3D%22url%28%23r%29%22/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22980%22%20cy%3D%22100%22%20r%3D%22280%22%20fill%3D%22url%28%23r%29%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%22.14%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M70%20540%20C%20240%20430%2C%20420%20640%2C%20600%20500%20S%20960%20420%2C%201130%20540%22%20stroke-width%3D%226%22/%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M90%20590%20C%20270%20480%2C%20430%20670%2C%20620%20540%20S%20960%20460%2C%201110%20610%22%20stroke-width%3D%224%22/%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%20%20%3Cg%20transform%3D%22translate%2870%2C70%29%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%220%22%20y%3D%220%22%20rx%3D%2234%22%20ry%3D%2234%22%20width%3D%22360%22%20height%3D%22120%22%20fill%3D%22rgba%28255%2C255%2C255%2C.08%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C.14%29%22/%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2230%22%20y%3D%2255%22%20fill%3D%22%23ffffff%22%20font-size%3D%2234%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-weight%3D%22700%22%3EDownload%3C/text%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2230%22%20y%3D%2292%22%20fill%3D%22%23dbe8ff%22%20opacity%3D%22.85%22%20font-size%3D%2220%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%3EStep-by-step%20install%20flow%3C/text%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%20%20%3Cg%20transform%3D%22translate%28780%2C245%29%22%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2290%22%20cy%3D%22120%22%20r%3D%2288%22%20fill%3D%22rgba%28255%2C255%2C255%2C.10%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C.16%29%22%20stroke-width%3D%224%22/%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M70%2090c0-38%2016-70%2050-70s50%2032%2050%2070v105H70V90Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.72%22/%3E%0A%20%20%20%20%20%20%20%20%3Cellipse%20cx%3D%22120%22%20cy%3D%22115%22%20rx%3D%2228%22%20ry%3D%2234%22%20fill%3D%22%230b1621%22%20opacity%3D%22.8%22/%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%2258%22%20y%3D%22170%22%20width%3D%22124%22%20height%3D%2298%22%20rx%3D%2228%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.72%22/%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2291%22%20cy%3D%22146%22%20r%3D%2210%22%20fill%3D%22%230b1621%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22128%22%20cy%3D%22146%22%20r%3D%2210%22%20fill%3D%22%230b1621%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%3C/svg%3E"
-      },
-      {
-        id: "orbit",
-        name: "Orbit Stack",
-        version: "4.9.0",
-        size: "621 MB",
-        creator: "Orbit Forge",
-        uid: "Hidden",
-        packType: "Apk",
-        subtitle: "Animated pack previews and status rings.",
-        link: "#",
-        viewsKey: "views_orbit",
-        thumb: "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201200%20700%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2349f0a4%22/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%237cdaff%22/%3E%0A%20%20%20%20%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%20%20%20%20%3CradialGradient%20id%3D%22r%22%20cx%3D%2250%25%22%20cy%3D%2245%25%22%20r%3D%2270%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ffffff%22%20stop-opacity%3D%22.22%22/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23ffffff%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%20%20%20%20%3C/radialGradient%3E%0A%20%20%20%20%20%20%3C/defs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22700%22%20fill%3D%22%230a0d16%22/%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22700%22%20fill%3D%22url%28%23g%29%22%20opacity%3D%22.35%22/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22180%22%20cy%3D%22160%22%20r%3D%22220%22%20fill%3D%22url%28%23r%29%22/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22980%22%20cy%3D%22100%22%20r%3D%22280%22%20fill%3D%22url%28%23r%29%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%22.14%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M70%20540%20C%20240%20430%2C%20420%20640%2C%20600%20500%20S%20960%20420%2C%201130%20540%22%20stroke-width%3D%226%22/%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M90%20590%20C%20270%20480%2C%20430%20670%2C%20620%20540%20S%20960%20460%2C%201110%20610%22%20stroke-width%3D%224%22/%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%20%20%3Cg%20transform%3D%22translate%2870%2C70%29%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%220%22%20y%3D%220%22%20rx%3D%2234%22%20ry%3D%2234%22%20width%3D%22360%22%20height%3D%22120%22%20fill%3D%22rgba%28255%2C255%2C255%2C.08%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C.14%29%22/%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2230%22%20y%3D%2255%22%20fill%3D%22%23ffffff%22%20font-size%3D%2234%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-weight%3D%22700%22%3EVideo%3C/text%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2230%22%20y%3D%2292%22%20fill%3D%22%23dbe8ff%22%20opacity%3D%22.85%22%20font-size%3D%2220%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%3EWatch%20the%20walkthrough%3C/text%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%20%20%3Cg%20transform%3D%22translate%28780%2C245%29%22%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2290%22%20cy%3D%22120%22%20r%3D%2288%22%20fill%3D%22rgba%28255%2C255%2C255%2C.10%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C.16%29%22%20stroke-width%3D%224%22/%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M70%2090c0-38%2016-70%2050-70s50%2032%2050%2070v105H70V90Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.72%22/%3E%0A%20%20%20%20%20%20%20%20%3Cellipse%20cx%3D%22120%22%20cy%3D%22115%22%20rx%3D%2228%22%20ry%3D%2234%22%20fill%3D%22%230b1621%22%20opacity%3D%22.8%22/%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%2258%22%20y%3D%22170%22%20width%3D%22124%22%20height%3D%2298%22%20rx%3D%2228%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.72%22/%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2291%22%20cy%3D%22146%22%20r%3D%2210%22%20fill%3D%22%230b1621%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22128%22%20cy%3D%22146%22%20r%3D%2210%22%20fill%3D%22%230b1621%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%3C/svg%3E"
-      },
-      {
-        id: "nova",
-        name: "Nova Relay",
-        version: "3.8.6",
-        size: "777 MB",
-        creator: "Nova Room",
-        uid: "Encoded",
-        packType: "Apk",
-        subtitle: "Quick launch flow with glass controls.",
-        link: "#",
-        viewsKey: "views_nova",
-        thumb: "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201200%20700%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%239b7bff%22/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23ff5d7a%22/%3E%0A%20%20%20%20%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%20%20%20%20%3CradialGradient%20id%3D%22r%22%20cx%3D%2250%25%22%20cy%3D%2245%25%22%20r%3D%2270%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ffffff%22%20stop-opacity%3D%22.22%22/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23ffffff%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%20%20%20%20%3C/radialGradient%3E%0A%20%20%20%20%20%20%3C/defs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22700%22%20fill%3D%22%230a0d16%22/%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22700%22%20fill%3D%22url%28%23g%29%22%20opacity%3D%22.35%22/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22180%22%20cy%3D%22160%22%20r%3D%22220%22%20fill%3D%22url%28%23r%29%22/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22980%22%20cy%3D%22100%22%20r%3D%22280%22%20fill%3D%22url%28%23r%29%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%22.14%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M70%20540%20C%20240%20430%2C%20420%20640%2C%20600%20500%20S%20960%20420%2C%201130%20540%22%20stroke-width%3D%226%22/%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M90%20590%20C%20270%20480%2C%20430%20670%2C%20620%20540%20S%20960%20460%2C%201110%20610%22%20stroke-width%3D%224%22/%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%20%20%3Cg%20transform%3D%22translate%2870%2C70%29%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%220%22%20y%3D%220%22%20rx%3D%2234%22%20ry%3D%2234%22%20width%3D%22360%22%20height%3D%22120%22%20fill%3D%22rgba%28255%2C255%2C255%2C.08%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C.14%29%22/%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2230%22%20y%3D%2255%22%20fill%3D%22%23ffffff%22%20font-size%3D%2234%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-weight%3D%22700%22%3ECreator%3C/text%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2230%22%20y%3D%2292%22%20fill%3D%22%23dbe8ff%22%20opacity%3D%22.85%22%20font-size%3D%2220%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%3ESkyeMoz%20spotlight%3C/text%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%20%20%3Cg%20transform%3D%22translate%28780%2C245%29%22%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2290%22%20cy%3D%22120%22%20r%3D%2288%22%20fill%3D%22rgba%28255%2C255%2C255%2C.10%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C.16%29%22%20stroke-width%3D%224%22/%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M70%2090c0-38%2016-70%2050-70s50%2032%2050%2070v105H70V90Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.72%22/%3E%0A%20%20%20%20%20%20%20%20%3Cellipse%20cx%3D%22120%22%20cy%3D%22115%22%20rx%3D%2228%22%20ry%3D%2234%22%20fill%3D%22%230b1621%22%20opacity%3D%22.8%22/%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%2258%22%20y%3D%22170%22%20width%3D%22124%22%20height%3D%2298%22%20rx%3D%2228%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.72%22/%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2291%22%20cy%3D%22146%22%20r%3D%2210%22%20fill%3D%22%230b1621%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22128%22%20cy%3D%22146%22%20r%3D%2210%22%20fill%3D%22%230b1621%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%3C/svg%3E"
-      },
-      {
-        id: "pulse",
-        name: "Pulse Grid",
-        version: "2.1.4",
-        size: "905 MB",
-        creator: "Pulse Works",
-        uid: "Obfuscated",
-        packType: "Apk",
-        subtitle: "Current availability moves every minute.",
-        link: "#",
-        viewsKey: "views_pulse",
-        thumb: "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201200%20700%22%3E%0A%20%20%20%20%20%20%3Cdefs%3E%0A%20%20%20%20%20%20%20%20%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20x2%3D%221%22%20y1%3D%220%22%20y2%3D%221%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ffcb6b%22/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%237cdaff%22/%3E%0A%20%20%20%20%20%20%20%20%3C/linearGradient%3E%0A%20%20%20%20%20%20%20%20%3CradialGradient%20id%3D%22r%22%20cx%3D%2250%25%22%20cy%3D%2245%25%22%20r%3D%2270%25%22%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ffffff%22%20stop-opacity%3D%22.22%22/%3E%0A%20%20%20%20%20%20%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23ffffff%22%20stop-opacity%3D%220%22/%3E%0A%20%20%20%20%20%20%20%20%3C/radialGradient%3E%0A%20%20%20%20%20%20%3C/defs%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22700%22%20fill%3D%22%230a0d16%22/%3E%0A%20%20%20%20%20%20%3Crect%20width%3D%221200%22%20height%3D%22700%22%20fill%3D%22url%28%23g%29%22%20opacity%3D%22.35%22/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22180%22%20cy%3D%22160%22%20r%3D%22220%22%20fill%3D%22url%28%23r%29%22/%3E%0A%20%20%20%20%20%20%3Ccircle%20cx%3D%22980%22%20cy%3D%22100%22%20r%3D%22280%22%20fill%3D%22url%28%23r%29%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%22.14%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M70%20540%20C%20240%20430%2C%20420%20640%2C%20600%20500%20S%20960%20420%2C%201130%20540%22%20stroke-width%3D%226%22/%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M90%20590%20C%20270%20480%2C%20430%20670%2C%20620%20540%20S%20960%20460%2C%201110%20610%22%20stroke-width%3D%224%22/%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%20%20%3Cg%20transform%3D%22translate%2870%2C70%29%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%220%22%20y%3D%220%22%20rx%3D%2234%22%20ry%3D%2234%22%20width%3D%22360%22%20height%3D%22120%22%20fill%3D%22rgba%28255%2C255%2C255%2C.08%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C.14%29%22/%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2230%22%20y%3D%2255%22%20fill%3D%22%23ffffff%22%20font-size%3D%2234%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%20font-weight%3D%22700%22%3ESupport%3C/text%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2230%22%20y%3D%2292%22%20fill%3D%22%23dbe8ff%22%20opacity%3D%22.85%22%20font-size%3D%2220%22%20font-family%3D%22Arial%2C%20Helvetica%2C%20sans-serif%22%3EDiscord%20and%20updates%3C/text%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%20%20%3Cg%20transform%3D%22translate%28780%2C245%29%22%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2290%22%20cy%3D%22120%22%20r%3D%2288%22%20fill%3D%22rgba%28255%2C255%2C255%2C.10%29%22%20stroke%3D%22rgba%28255%2C255%2C255%2C.16%29%22%20stroke-width%3D%224%22/%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20d%3D%22M70%2090c0-38%2016-70%2050-70s50%2032%2050%2070v105H70V90Z%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.72%22/%3E%0A%20%20%20%20%20%20%20%20%3Cellipse%20cx%3D%22120%22%20cy%3D%22115%22%20rx%3D%2228%22%20ry%3D%2234%22%20fill%3D%22%230b1621%22%20opacity%3D%22.8%22/%3E%0A%20%20%20%20%20%20%20%20%3Crect%20x%3D%2258%22%20y%3D%22170%22%20width%3D%22124%22%20height%3D%2298%22%20rx%3D%2228%22%20fill%3D%22%23ffffff%22%20opacity%3D%22.72%22/%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2291%22%20cy%3D%22146%22%20r%3D%2210%22%20fill%3D%22%230b1621%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%22128%22%20cy%3D%22146%22%20r%3D%2210%22%20fill%3D%22%230b1621%22%20opacity%3D%22.85%22/%3E%0A%20%20%20%20%20%20%3C/g%3E%0A%20%20%20%20%3C/svg%3E"
+    const ui = {
+      appIcon: document.getElementById('appIcon'),
+      appName: document.getElementById('appName'),
+      appDesc: document.getElementById('appDesc'),
+      appVersion: document.getElementById('appVersion'),
+      appCreator: document.getElementById('appCreator'),
+      subtitleText: document.getElementById('subtitleText'),
+      mainPackType: document.getElementById('mainPackType'),
+      mainUid: document.getElementById('mainUid'),
+      tutorialGrid: document.getElementById('tutorialGrid'),
+      footerName: document.getElementById('footerName'),
+      footerInfo: document.getElementById('footerInfo'),
+      discordBtn: document.getElementById('discordBtn'),
+      discordLink: document.getElementById('discordLink'),
+      launchBtn: document.getElementById('launchBtn'),
+      tutorialBtn: document.getElementById('tutorialBtn'),
+      likeBtn: document.getElementById('likeBtn'),
+      dislikeBtn: document.getElementById('dislikeBtn'),
+      likesCount: document.getElementById('likesCount'),
+      dislikesCount: document.getElementById('dislikesCount'),
+      likesStat: document.getElementById('likesStat'),
+      viewsCount: document.getElementById('viewsCount'),
+      themeHighlight: document.getElementById('themeHighlight'),
+      keyThumb: document.getElementById('keyThumb'),
+      keyTitle: document.getElementById('keyTitle'),
+      keyDesc: document.getElementById('keyDesc'),
+      getKeyBtn: document.getElementById('getKeyBtn'),
+      scrollTutorialBtn: document.getElementById('scrollTutorialBtn'),
+      modalBackdrop: document.getElementById('modalBackdrop'),
+      closeModal: document.getElementById('closeModal'),
+      cancelBtn: document.getElementById('cancelBtn'),
+      initBtn: document.getElementById('initBtn'),
+      modalTag: document.getElementById('modalTag'),
+      modalTitle: document.getElementById('modalTitle'),
+      modalInfo: document.getElementById('modalInfo'),
+      modalState: document.getElementById('modalState'),
+      modalWindow: document.getElementById('modalWindow'),
+      modalSource: document.getElementById('modalSource'),
+      modalLog: document.getElementById('modalLog'),
+      modalIcon: document.getElementById('modalIcon'),
+      progressFill: document.getElementById('progressFill'),
+      progressLabel: document.getElementById('progressLabel'),
+      progressLabelTop: document.getElementById('progressLabelTop'),
+      modalProgressWrap: document.getElementById('modalProgressWrap'),
+      modalActions: document.getElementById('modalActions'),
+      modalSpecs: document.getElementById('modalSpecs'),
+      modalVideoWrap: document.getElementById('modalVideoWrap'),
+      tutorialVideo: document.getElementById('tutorialVideo'),
+      copyInvite: document.getElementById('copyInvite')
+    };
+
+    const state = {
+      manifest: DEFAULT_MANIFEST,
+      currentMode: null,
+      currentTarget: '#',
+      timer: null,
+      progressTimer: null,
+      storageKey: {
+        views: 'amongus_views',
+        likes: 'amongus_likes',
+        dislikes: 'amongus_dislikes',
+        voteChoice: 'amongus_vote_choice'
       }
-    ];
+    };
 
-    const launcherList = document.getElementById('launcherList');
-    const totalViewsEl = document.getElementById('totalViews');
-    const viewsStoreKey = "among_us_launcher_views_store_v1";
+    const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+    const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
-    function rand(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function applyImage(el, src, fallback = PLACEHOLDER){
+      if(!el) return;
+      el.src = src || fallback;
+      el.onerror = () => { if(el.src !== fallback) el.src = fallback; };
+    }
 
-    function loadViewsState(){
-      try{
-        return JSON.parse(localStorage.getItem(viewsStoreKey) || "{}");
-      }catch(e){
-        return {};
+    function getCounts(){
+      const stats = state.manifest.stats || {};
+      const views = Number(localStorage.getItem(state.storageKey.views) || stats.views || 0);
+      const likes = Number(localStorage.getItem(state.storageKey.likes) || stats.likes || 0);
+      const dislikes = Number(localStorage.getItem(state.storageKey.dislikes) || stats.dislikes || 0);
+      return { views, likes, dislikes };
+    }
+
+    function getVoteChoice(){
+      const choice = localStorage.getItem(state.storageKey.voteChoice);
+      return choice === 'like' || choice === 'dislike' ? choice : null;
+    }
+
+    function saveCounts(counts){
+      localStorage.setItem(state.storageKey.views, String(counts.views));
+      localStorage.setItem(state.storageKey.likes, String(counts.likes));
+      localStorage.setItem(state.storageKey.dislikes, String(counts.dislikes));
+    }
+
+    function renderVoteState(){
+      const choice = getVoteChoice();
+      const locked = !!choice;
+      ui.likeBtn.disabled = locked;
+      ui.dislikeBtn.disabled = locked;
+      ui.likeBtn.classList.toggle('vote-locked', locked);
+      ui.dislikeBtn.classList.toggle('vote-locked', locked);
+      ui.likeBtn.classList.toggle('selected', choice === 'like');
+      ui.dislikeBtn.classList.toggle('selected', choice === 'dislike');
+      ui.likeBtn.setAttribute('aria-pressed', choice === 'like' ? 'true' : 'false');
+      ui.dislikeBtn.setAttribute('aria-pressed', choice === 'dislike' ? 'true' : 'false');
+    }
+
+    function renderCounts(){
+      const c = getCounts();
+      ui.viewsCount.textContent = formatNumber(c.views);
+      ui.subtitleText.textContent = `👁 ${formatNumber(c.views)} Views`;
+      ui.likesCount.textContent = formatNumber(c.likes);
+      ui.dislikesCount.textContent = formatNumber(c.dislikes);
+      ui.likesStat.textContent = formatNumber(c.likes);
+      ui.themeHighlight.textContent = '2025, May 01';
+      renderVoteState();
+    }
+
+    function formatNumber(n){
+      return new Intl.NumberFormat().format(n);
+    }
+
+    function incrementView(){
+      const c = getCounts();
+      c.views += 1;
+      saveCounts(c);
+      renderCounts();
+    }
+
+    function bumpLike(){
+      if (getVoteChoice()) {
+        toast('You can only vote once.');
+        return;
       }
+      const c = getCounts();
+      c.likes += 1;
+      saveCounts(c);
+      localStorage.setItem(state.storageKey.voteChoice, 'like');
+      renderCounts();
+      toast('Like saved.');
     }
 
-    function saveViewsState(state){
-      localStorage.setItem(viewsStoreKey, JSON.stringify(state));
+    function bumpDislike(){
+      if (getVoteChoice()) {
+        toast('You can only vote once.');
+        return;
+      }
+      const c = getCounts();
+      c.dislikes += 1;
+      saveCounts(c);
+      localStorage.setItem(state.storageKey.voteChoice, 'dislike');
+      renderCounts();
+      toast('Dislike saved.');
     }
-
-    function ensureViewsBoost(state){
-      const now = Date.now();
-      const interval = 5 * 60 * 1000;
-      let changed = false;
-      manifest.forEach(item => {
-        let record = state[item.id];
-        if (!record || typeof record !== 'object'){
-          record = { views: rand(25, 100), lastBoost: now };
-          changed = true;
-        }
-        const elapsed = now - (record.lastBoost || now);
-        const boosts = Math.floor(elapsed / interval);
-        if (boosts > 0){
-          for(let i=0;i<boosts;i++) record.views += rand(25, 100);
-          record.lastBoost = (record.lastBoost || now) + boosts * interval;
-          changed = true;
-        }
-        if (typeof record.views !== 'number'){
-          record.views = rand(25, 100);
-          changed = true;
-        }
-        state[item.id] = record;
-      });
-      if (changed) saveViewsState(state);
-      return state;
-    }
-
-    function getViews(state, id, fallback){
-      return state[id]?.views ?? fallback;
-    }
-
-    function renderLaunchers(){
-      let state = ensureViewsBoost(loadViewsState());
-      const minutePhase = Math.floor(Date.now() / 60000) % 2;
-
-      launcherList.innerHTML = "";
-      let total = 0;
-
-      manifest.forEach((item, index) => {
-        const active = ((index + minutePhase) % 2 === 0);
-        const views = getViews(state, item.id, rand(25, 100));
-        total += views;
-
-        const card = document.createElement('article');
-        card.className = `launcher glass-card ${active ? 'active' : 'unavailable'}`;
-        card.innerHTML = `
-          <div class="head">
-            <div class="badge"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M12 2c4.8 0 8.7 3.9 8.7 8.7 0 3.1-1.6 5.9-4.1 7.4l1.5 3.1-3.7-.9A8.6 8.6 0 0 1 12 19.4a8.7 8.7 0 1 1 0-17.4Zm-2.9 7.9a1.5 1.5 0 1 0 0 3.1 1.5 1.5 0 0 0 0-3.1Zm5.8 0a1.5 1.5 0 1 0 0 3.1 1.5 1.5 0 0 0 0-3.1Z"/></svg></div>
-            <div>
-              <h3>${item.name}</h3>
-              <div class="sub">${item.subtitle}</div>
-            </div>
-          </div>
-          <div class="chips">
-            <span class="chip">${item.version}</span>
-            <span class="chip">${item.size}</span>
-            <span class="chip">${item.packType}</span>
-          </div>
-          <div class="mini">
-            <span>Creator: ${item.creator}</span>
-            <span>Uid: ${item.uid}</span>
-          </div>
-          <div class="status">
-            <div class="state">
-              <span class="dot ${active ? '' : 'bad'}"></span>
-              <span>${active ? 'Active' : 'Unavailable'}</span>
-            </div>
-            <div class="state" style="gap:6px; color:var(--soft)">
-              <svg class="icon" style="width:15px;height:15px"><use href="#i-eye"></use></svg>
-              <span data-views>${views.toLocaleString()}</span>
-            </div>
-          </div>
-          <button class="btn primary launch" ${active ? '' : 'disabled'}>
-            <svg class="icon"><use href="${active ? '#i-play' : '#i-close'}"></use></svg>
-            ${active ? 'Open Launcher' : 'Locked'}
-          </button>
-        `;
-
-        const launchBtn = card.querySelector('.launch');
-        launchBtn.addEventListener('click', () => {
-          if (!active) return;
-          openModal(item);
-        });
-
-        launcherList.appendChild(card);
-      });
-
-      totalViewsEl.textContent = total.toLocaleString();
-    }
-
-    function openModal(item){
-      modalBackdrop.classList.add('show');
-      modalBackdrop.setAttribute('aria-hidden', 'false');
-      modalState.textContent = "Waiting";
-      progressFill.style.width = "0%";
-      progressLabel.textContent = "0%";
-      modalTitle.textContent = `Install Among Us VIP? (${item.size})`;
-      modalInfo.innerHTML = `Version: 2026.4.7<br>Pack Type: Apk<br>Uid: Obfuscated<br>Creator: Moz Studio &amp; AN1-com`;
-      modalLog.innerHTML = `
-        <div class="entry"><span class="pulse"></span><span>Ready to initialize package.</span></div>
-      `;
-      initBtn.disabled = false;
-      initBtn.innerHTML = '<svg class="icon"><use href="#i-play"></use></svg>Initialize';
-    }
-
-    const modalBackdrop = document.getElementById('modalBackdrop');
-    const closeModal = document.getElementById('closeModal');
-    const cancelBtn = document.getElementById('cancelBtn');
-    const initBtn = document.getElementById('initBtn');
-    const progressFill = document.getElementById('progressFill');
-    const progressLabel = document.getElementById('progressLabel');
-    const modalState = document.getElementById('modalState');
-    const modalWindow = document.getElementById('modalWindow');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalInfo = document.getElementById('modalInfo');
-    const modalLog = document.getElementById('modalLog');
-
-    let loadingTimer = null;
-    let loadingStart = 0;
-    let loadingDuration = 0;
-    let progressTick = null;
 
     function logLine(text){
       const row = document.createElement('div');
       row.className = 'entry';
-      row.innerHTML = `<span class="pulse"></span><span>${text}</span>`;
-      modalLog.prepend(row);
+      row.innerHTML = '<span class="pulse"></span><span>' + text + '</span>';
+      ui.modalLog.prepend(row);
     }
 
-    function startLoading(){
-      clearInterval(progressTick);
-      clearTimeout(loadingTimer);
-      loadingDuration = rand(10000, 32000);
-      loadingStart = Date.now();
-      modalState.textContent = "Initializing";
-      modalWindow.textContent = `${Math.round(loadingDuration / 1000)} s`;
-      initBtn.disabled = true;
-      initBtn.innerHTML = '<svg class="icon"><use href="#i-chip"></use></svg>Loading';
-      logLine('Package handshake created.');
-      logLine('Verifying file integrity.');
-      logLine('Preparing glass UI runtime.');
+    function openModal(mode, data = {}){
+      state.currentMode = mode;
+      state.currentTarget = data.link || '#';
+      ui.modalBackdrop.classList.add('show');
+      ui.modalBackdrop.setAttribute('aria-hidden', 'false');
 
-      progressTick = setInterval(() => {
-        const elapsed = Date.now() - loadingStart;
-        const pct = clamp((elapsed / loadingDuration) * 100, 0, 100);
-        progressFill.style.width = pct.toFixed(1) + '%';
-        progressLabel.textContent = Math.round(pct) + '%';
-        if (pct >= 100) {
-          clearInterval(progressTick);
-        }
-      }, 100);
+      ui.modalTitle.textContent = data.title || 'Modal';
+      ui.modalInfo.innerHTML = data.info || '';
+      ui.modalIcon.src = data.icon || PLACEHOLDER;
+      ui.modalState.textContent = data.state || 'Ready';
+      ui.modalWindow.textContent = data.window || '1s';
+      ui.modalSource.textContent = data.source || 'Local';
+      ui.modalTag.textContent = data.tag || 'Launcher';
+      ui.modalLog.innerHTML = '<div class="entry"><span class="pulse"></span><span>Ready.</span></div>';
+      ui.progressFill.style.width = '0%';
+      ui.progressLabel.textContent = '0%';
+      ui.progressLabelTop.textContent = '0%';
 
-      loadingTimer = setTimeout(() => {
-        clearInterval(progressTick);
-        progressFill.style.width = '100%';
-        progressLabel.textContent = '100%';
-        modalState.textContent = "Initialized";
-        logLine('Initialization completed successfully.');
-        logLine('Package ready for launch.');
-        initBtn.disabled = false;
-        initBtn.innerHTML = '<svg class="icon"><use href="#i-play"></use></svg>Launch Ready';
-      }, loadingDuration);
-    }
-
-    closeModal.addEventListener('click', () => {
-      modalBackdrop.classList.remove('show');
-      modalBackdrop.setAttribute('aria-hidden', 'true');
-      clearInterval(progressTick);
-      clearTimeout(loadingTimer);
-    });
-    cancelBtn.addEventListener('click', () => {
-      modalBackdrop.classList.remove('show');
-      modalBackdrop.setAttribute('aria-hidden', 'true');
-      clearInterval(progressTick);
-      clearTimeout(loadingTimer);
-    });
-    initBtn.addEventListener('click', startLoading);
-    modalBackdrop.addEventListener('click', (e) => {
-      if (e.target === modalBackdrop) cancelBtn.click();
-    });
-
-    document.getElementById('launchBtn').addEventListener('click', () => {
-      openModal(manifest[0]);
-    });
-
-    document.getElementById('tutorialBtn').addEventListener('click', () => {
-      document.getElementById('guide').scrollIntoView({behavior:'smooth', block:'start'});
-    });
-
-    document.getElementById('copyInvite').addEventListener('click', async () => {
-      try{
-        await navigator.clipboard.writeText('https://discord.gg/QHg5c96dGK');
-        toast('Invite copied to clipboard.');
-      }catch(e){
-        toast('Copy failed on this device.');
+      if(mode === 'preview'){
+        ui.modalVideoWrap.classList.remove('hidden');
+        ui.modalProgressWrap.classList.add('hidden');
+        ui.modalSpecs.classList.add('hidden');
+        ui.modalActions.classList.add('hidden');
+        ui.tutorialVideo.currentTime = 0;
+        ui.tutorialVideo.play().catch(() => {});
+        ui.modalLog.innerHTML = `
+          <div class="entry"><span class="pulse"></span><span>Watch the walkthrough video.</span></div>
+          <div class="entry"><span class="pulse"></span><span>Close the panel anytime with X.</span></div>
+        `;
+      } else {
+        ui.modalVideoWrap.classList.add('hidden');
+        ui.modalProgressWrap.classList.remove('hidden');
+        ui.modalSpecs.classList.remove('hidden');
+        ui.modalActions.classList.remove('hidden');
       }
-    });
+    }
 
-    document.querySelectorAll('.tutorial').forEach(card => {
-      const action = card.dataset.action;
-      card.addEventListener('click', () => {
-        if (action === 'guide'){
-          document.getElementById('guide').scrollIntoView({behavior:'smooth', block:'start'});
-          toast('Jumped to the install guide.');
-        } else if (action === 'video'){
-          toast('Video preview section activated.');
-          modalBackdrop.classList.add('show');
-          modalBackdrop.setAttribute('aria-hidden', 'false');
-          modalTitle.textContent = 'Video walkthrough';
-          modalInfo.innerHTML = 'A demo-style walkthrough panel for the launcher experience.';
-          modalState.textContent = 'Preview';
-          modalWindow.textContent = 'Short';
-          progressFill.style.width = '34%';
-          progressLabel.textContent = '34%';
-          modalLog.innerHTML = `
-            <div class="entry"><span class="pulse"></span><span>Watch the walkthrough layout.</span></div>
-            <div class="entry"><span class="pulse"></span><span>See the glass install flow.</span></div>
-          `;
-          initBtn.disabled = true;
-          initBtn.innerHTML = '<svg class="icon"><use href="#i-play"></use></svg>Preview';
-        } else if (action === 'creator'){
-          toast('Creator spotlight opened.');
-          document.getElementById('community').scrollIntoView({behavior:'smooth', block:'start'});
-        } else if (action === 'support'){
-          window.open('https://discord.gg/QHg5c96dGK', '_blank', 'noreferrer');
-        }
+    function closeModal(){
+      ui.modalBackdrop.classList.remove('show');
+      ui.modalBackdrop.setAttribute('aria-hidden', 'true');
+      ui.tutorialVideo.pause();
+      clearTimeout(state.timer);
+      clearInterval(state.progressTimer);
+      state.currentMode = null;
+    }
+
+    function startLoadingAndRedirect(){
+      if(!state.currentTarget || state.currentTarget === '#') return;
+      clearTimeout(state.timer);
+      clearInterval(state.progressTimer);
+      ui.initBtn.disabled = true;
+      ui.modalState.textContent = 'Loading';
+      ui.modalWindow.textContent = '1s';
+      ui.modalSource.textContent = 'Redirect';
+      ui.modalLog.innerHTML = '';
+      logLine('Preparing redirect.');
+      logLine('Saving key access state.');
+      logLine('Opening destination.');
+
+      const loadingMs = 1000;
+      const start = Date.now();
+      state.progressTimer = setInterval(() => {
+        const pct = clamp(((Date.now() - start) / loadingMs) * 100, 0, 100);
+        ui.progressFill.style.width = pct.toFixed(1) + '%';
+        ui.progressLabel.textContent = Math.round(pct) + '%';
+        ui.progressLabelTop.textContent = Math.round(pct) + '%';
+        if(pct >= 100) clearInterval(state.progressTimer);
+      }, 40);
+
+      state.timer = setTimeout(() => {
+        ui.progressFill.style.width = '100%';
+        ui.progressLabel.textContent = '100%';
+        ui.progressLabelTop.textContent = '100%';
+        ui.modalState.textContent = 'Redirecting';
+        setTimeout(() => {
+          window.location.href = state.currentTarget;
+        }, 200);
+      }, loadingMs);
+    }
+
+    function renderTutorials(items){
+      ui.tutorialGrid.innerHTML = '';
+      items.slice(0, 1).forEach(t => {
+        const card = document.createElement('article');
+        card.className = 'glass-card tutorial';
+        card.innerHTML = `
+          <div class="thumb">
+            <img alt="${t.name}" src="${t.thumbnail || PLACEHOLDER}">
+            <div class="tag">${t.button || 'Open'}</div>
+          </div>
+          <h3>${t.name}</h3>
+          <p>${t.description}</p>
+          <div class="row">
+            <span class="chip">Video</span>
+            <button class="btn ghost small">${t.button || 'Open'}</button>
+          </div>
+        `;
+        const open = () => openModal('preview', {
+          title: t.name,
+          tag: 'Video tutorial',
+          info: 'This video walks you through how to access the app with a key.',
+          icon: t.icon || PLACEHOLDER,
+          source: 'settings/media/key.mp4',
+          state: 'Preview',
+          window: 'Video'
+        });
+        card.addEventListener('click', open);
+        card.querySelector('button').addEventListener('click', e => { e.stopPropagation(); open(); });
+        ui.tutorialGrid.appendChild(card);
       });
-    });
+    }
+
+    function renderApp(manifest){
+      state.manifest = manifest;
+      const app = manifest.app || {};
+      const main = manifest.mainLauncher || {};
+      const tutorials = manifest.tutorials || [];
+      const keyAccess = manifest.keyAccess || {};
+      const community = manifest.community || {};
+      const counts = getCounts();
+      if(!localStorage.getItem(state.storageKey.views)) {
+        saveCounts({
+          views: Number((manifest.stats && manifest.stats.views) || 0),
+          likes: Number((manifest.stats && manifest.stats.likes) || 0),
+          dislikes: Number((manifest.stats && manifest.stats.dislikes) || 0)
+        });
+      }
+      incrementView();
+
+      document.title = app.name || 'Among Us Launcher';
+      ui.appName.textContent = app.name || 'Among Us Launcher';
+      ui.appDesc.textContent = app.description || '';
+      ui.appVersion.textContent = app.version || '';
+      ui.appCreator.textContent = app.creator || '';
+      ui.mainPackType.textContent = main.packType || 'APK';
+      ui.mainUid.textContent = main.uid || 'Obfuscated';
+      ui.footerName.textContent = app.name || 'Among Us Launcher';
+      ui.footerInfo.innerHTML = 'Creator: ' + (app.creator || 'Unknown');
+      ui.discordBtn.href = community.discord || '#';
+      ui.discordLink.href = community.discord || '#';
+
+      applyImage(ui.appIcon, app.icon);
+      applyImage(ui.keyThumb, keyAccess.thumbnail, KEY_THUMB);
+      ui.keyTitle.textContent = keyAccess.name || 'Key Accession';
+      ui.keyDesc.textContent = keyAccess.description || 'Open the key page with a short loading step, then return here to watch the tutorial video whenever you need help.';
+
+      renderCounts();
+      renderTutorials(tutorials);
+
+      ui.launchBtn.onclick = () => openModal('load', {
+        title: main.name || 'Launch Now',
+        tag: 'App launcher',
+        info: main.description || '',
+        icon: main.icon || app.icon,
+        source: 'Android',
+        state: 'Ready',
+        window: '1s',
+        link: main.link || '#'
+      });
+      ui.tutorialBtn.onclick = () => document.getElementById('guide').scrollIntoView({behavior:'smooth', block:'start'});
+      ui.likeBtn.onclick = bumpLike;
+      ui.dislikeBtn.onclick = bumpDislike;
+      ui.getKeyBtn.onclick = () => openModal('load', {
+        title: keyAccess.name || 'Key Accession',
+        tag: 'Get key',
+        info: keyAccess.description || 'Open the key page with a short loading step, then return here to watch the tutorial video whenever you need help.',
+        icon: keyAccess.thumbnail || KEY_THUMB,
+        source: 'Redirect',
+        state: 'Loading',
+        window: '1s',
+        link: keyAccess.link || '#'
+      });
+      ui.scrollTutorialBtn.onclick = () => document.getElementById('guide').scrollIntoView({behavior:'smooth', block:'start'});
+      ui.copyInvite.onclick = async () => {
+        try{ await navigator.clipboard.writeText(community.discord || ''); toast('Invite copied to clipboard.'); }
+        catch{ toast('Copy failed on this device.'); }
+      };
+
+      ui.closeModal.onclick = closeModal;
+      ui.cancelBtn.onclick = closeModal;
+      ui.modalBackdrop.onclick = (e) => { if (e.target === ui.modalBackdrop) closeModal(); };
+      ui.initBtn.onclick = startLoadingAndRedirect;
+
+      wireNavigation();
+    }
+
+    function wireNavigation(){
+      const navBtns = document.querySelectorAll('.nav-btn');
+      navBtns.forEach(btn => btn.onclick = () => {
+        const el = document.getElementById(btn.dataset.target);
+        if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+      const sections = ['home','guide','keyAccessCard','discord'];
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            navBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.target === entry.target.id));
+          }
+        });
+      }, { threshold: 0.45 });
+      sections.forEach(id => { const el = document.getElementById(id); if(el) observer.observe(el); });
+    }
 
     function toast(message){
       let el = document.getElementById('toast');
-      if (!el){
+      if(!el){
         el = document.createElement('div');
         el.id = 'toast';
-        el.style.cssText = `
-          position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);
-          z-index:80;padding:12px 16px;border-radius:999px;background:rgba(255,255,255,.1);
-          border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(18px);
-          color:rgba(255,255,255,.94);box-shadow:0 18px 42px rgba(0,0,0,.4);
-          opacity:0;transition:opacity .25s ease, transform .25s ease;font-size:13px;font-weight:700;
-        `;
+        el.style.cssText = `position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);z-index:80;padding:12px 16px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(18px);color:rgba(255,255,255,.94);box-shadow:0 18px 42px rgba(0,0,0,.4);opacity:0;transition:opacity .25s ease, transform .25s ease;font-size:13px;font-weight:700;`;
         document.body.appendChild(el);
       }
       el.textContent = message;
       el.style.opacity = '1';
       el.style.transform = 'translateX(-50%) translateY(0)';
       clearTimeout(el._t);
-      el._t = setTimeout(() => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateX(-50%) translateY(20px)';
-      }, 1800);
+      el._t = setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateX(-50%) translateY(20px)'; }, 1800);
     }
 
-    // Dock navigation
-    const navBtns = document.querySelectorAll('.nav-btn');
-    navBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const target = btn.dataset.target;
-        if (target === 'discord'){
-          window.open('https://discord.gg/QHg5c96dGK', '_blank', 'noreferrer');
-          return;
-        }
-        const el = document.getElementById(target);
-        if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
-      });
-    });
-
-    const sections = ['home','guide','launchers','community'];
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting){
-          navBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.target === entry.target.id));
-        }
-      });
-    }, { threshold: 0.45 });
-
-    sections.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    // Motion glow tracking
+    // Glow tracking
     document.querySelectorAll('.panel, .glass-card, .modal').forEach(el => {
       el.addEventListener('pointermove', (e) => {
         const r = el.getBoundingClientRect();
@@ -1383,200 +854,26 @@
       });
     });
 
-    // Canvas particle engine: streaks, pods, arcs, not dots
+    // Background particles
     const canvas = document.getElementById('bgCanvas');
     const ctx = canvas.getContext('2d', { alpha: true });
-
     let W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 2);
-    const pods = [];
-    const arcs = [];
-
+    const pods = [], arcs = [];
     function resize(){
       W = canvas.width = Math.floor(window.innerWidth * DPR);
       H = canvas.height = Math.floor(window.innerHeight * DPR);
       canvas.style.width = window.innerWidth + 'px';
       canvas.style.height = window.innerHeight + 'px';
     }
+    class Pod { constructor(){ this.reset(); } reset(){ this.x=Math.random()*W; this.y=Math.random()*H; this.vx=(Math.random()*0.55+.12)*(Math.random()<.5?-1:1)*DPR; this.vy=(Math.random()*0.45+.1)*(Math.random()<.5?-1:1)*DPR; this.r=(Math.random()*1.6+.9)*DPR; this.alpha=Math.random()*.55+.15; } update(){ this.x+=this.vx; this.y+=this.vy; if(this.x<-30*DPR||this.x>W+30*DPR||this.y<-30*DPR||this.y>H+30*DPR) this.reset(); } draw(){ ctx.beginPath(); ctx.fillStyle = `rgba(124,218,255,${this.alpha})`; ctx.arc(this.x,this.y,this.r,0,Math.PI*2); ctx.fill(); } }
+    class Arc { constructor(i){ this.a=Math.random()*Math.PI*2; this.r=(120+i*30)*DPR; this.speed=(Math.random()*0.006+.003)*(Math.random()<.5?-1:1); this.alpha=.04+Math.random()*.05; } update(){ this.a+=this.speed; } draw(cx,cy){ ctx.beginPath(); ctx.strokeStyle=`rgba(255,255,255,${this.alpha})`; ctx.lineWidth=1.2*DPR; ctx.arc(cx,cy,this.r,this.a,this.a+1.8); ctx.stroke(); } }
+    function initParticles(){ pods.length=0; arcs.length=0; for(let i=0;i<64;i++) pods.push(new Pod()); for(let i=0;i<8;i++) arcs.push(new Arc(i)); }
+    function draw(){ ctx.clearRect(0,0,W,H); const cx=W*.52, cy=H*.46; arcs.forEach(a=>{a.update();a.draw(cx,cy)}); pods.forEach(p=>{p.update();p.draw()}); requestAnimationFrame(draw); }
+    window.addEventListener('resize', () => { DPR = Math.min(window.devicePixelRatio || 1, 2); resize(); initParticles(); });
+    resize(); initParticles(); draw();
 
-    class Pod {
-      constructor(){
-        this.reset(true);
-      }
-      reset(initial=false){
-        this.x = Math.random() * W;
-        this.y = Math.random() * H;
-        this.vx = (Math.random() * 0.55 + 0.12) * (Math.random() < .5 ? -1 : 1) * DPR;
-        this.vy = (Math.random() * 0.45 + 0.10) * (Math.random() < .5 ? -1 : 1) * DPR;
-        this.r = (Math.random() * 1.8 + 1.2) * DPR;
-        this.len = (Math.random() * 26 + 16) * DPR;
-        this.angle = Math.random() * Math.PI * 2;
-        this.spin = (Math.random() * 0.012 + 0.004) * (Math.random() < .5 ? -1 : 1);
-        this.hue = Math.random() < .5 ? 190 : 265;
-        this.alpha = Math.random() * .38 + .15;
-        if (!initial){
-          this.x = Math.random() < .5 ? -40 * DPR : W + 40 * DPR;
-          this.y = Math.random() * H;
-        }
-      }
-      step(time){
-        this.angle += this.spin;
-        this.x += this.vx + Math.cos(time * .0003 + this.angle) * .22 * DPR;
-        this.y += this.vy + Math.sin(time * .00025 + this.angle) * .18 * DPR;
-        if (this.x < -80 * DPR || this.x > W + 80 * DPR || this.y < -80 * DPR || this.y > H + 80 * DPR) {
-          this.reset(false);
-        }
-      }
-      draw(){
-        const dx = Math.cos(this.angle);
-        const dy = Math.sin(this.angle);
-        ctx.save();
-        ctx.globalCompositeOperation = 'lighter';
-        ctx.translate(this.x, this.y);
-        ctx.rotate(this.angle);
-
-        const grad = ctx.createLinearGradient(-this.len, 0, this.len, 0);
-        grad.addColorStop(0, `rgba(124,218,255,0)`);
-        grad.addColorStop(.5, `rgba(255,255,255,${this.alpha * .95})`);
-        grad.addColorStop(1, `rgba(155,123,255,0)`);
-
-        ctx.fillStyle = grad;
-        ctx.shadowBlur = 18 * DPR;
-        ctx.shadowColor = `rgba(124,218,255,${this.alpha})`;
-        roundRect(ctx, -this.len, -this.r, this.len * 2, this.r * 2, this.r * 2);
-        ctx.fill();
-
-        ctx.shadowBlur = 0;
-        ctx.fillStyle = `rgba(255,255,255,${this.alpha * .5})`;
-        roundRect(ctx, -this.len * .32, -this.r * .7, this.len * .64, this.r * 1.4, this.r);
-        ctx.fill();
-
-        ctx.restore();
-      }
-    }
-
-    class Arc {
-      constructor(){
-        this.x = Math.random() * W;
-        this.y = Math.random() * H;
-        this.radius = Math.random() * 180 * DPR + 60 * DPR;
-        this.start = Math.random() * Math.PI * 2;
-        this.speed = (Math.random() * 0.0005 + 0.00018) * (Math.random() < .5 ? -1 : 1);
-        this.alpha = Math.random() * .12 + .04;
-      }
-      draw(time){
-        ctx.save();
-        ctx.globalCompositeOperation = 'screen';
-        ctx.strokeStyle = `rgba(124,218,255,${this.alpha})`;
-        ctx.lineWidth = 1 * DPR;
-        ctx.beginPath();
-        const a1 = this.start + time * this.speed;
-        const a2 = a1 + Math.PI * (0.18 + Math.random() * 0.04);
-        ctx.arc(this.x, this.y, this.radius, a1, a2);
-        ctx.stroke();
-        ctx.restore();
-      }
-    }
-
-    function roundRect(ctx, x, y, w, h, r){
-      if (ctx.roundRect){
-        ctx.beginPath();
-        ctx.roundRect(x, y, w, h, r);
-      } else {
-        ctx.beginPath();
-        ctx.moveTo(x + r, y);
-        ctx.arcTo(x + w, y, x + w, y + h, r);
-        ctx.arcTo(x + w, y + h, x, y + h, r);
-        ctx.arcTo(x, y + h, x, y, r);
-        ctx.arcTo(x, y, x + w, y, r);
-        ctx.closePath();
-      }
-    }
-
-    function initParticles(){
-      pods.length = 0;
-      arcs.length = 0;
-      const count = Math.max(16, Math.min(28, Math.floor(window.innerWidth / 60)));
-      const arcCount = Math.max(3, Math.min(7, Math.floor(window.innerWidth / 220)));
-      for (let i=0;i<count;i++) pods.push(new Pod());
-      for (let i=0;i<arcCount;i++) arcs.push(new Arc());
-    }
-
-    function drawNebula(time){
-      ctx.clearRect(0,0,W,H);
-
-      const g1 = ctx.createRadialGradient(W * .2, H * .18, 0, W * .2, H * .18, Math.max(W,H) * .55);
-      g1.addColorStop(0, 'rgba(124,218,255,0.10)');
-      g1.addColorStop(1, 'rgba(124,218,255,0)');
-      ctx.fillStyle = g1;
-      ctx.fillRect(0,0,W,H);
-
-      const g2 = ctx.createRadialGradient(W * .82, H * .18, 0, W * .82, H * .18, Math.max(W,H) * .45);
-      g2.addColorStop(0, 'rgba(155,123,255,0.09)');
-      g2.addColorStop(1, 'rgba(155,123,255,0)');
-      ctx.fillStyle = g2;
-      ctx.fillRect(0,0,W,H);
-
-      arcs.forEach(a => a.draw(time));
-      pods.forEach(p => {
-        p.step(time);
-        p.draw();
-      });
-
-      // soft flowing ribbons
-      ctx.save();
-      ctx.globalCompositeOperation = 'screen';
-      ctx.lineWidth = 2 * DPR;
-      for (let i = 0; i < 5; i++){
-        const y = H * (0.2 + i * 0.17) + Math.sin(time * 0.00022 + i) * 18 * DPR;
-        const grad = ctx.createLinearGradient(W * 0.05, y, W * 0.95, y);
-        grad.addColorStop(0, 'rgba(124,218,255,0)');
-        grad.addColorStop(.5, 'rgba(124,218,255,0.04)');
-        grad.addColorStop(1, 'rgba(155,123,255,0)');
-        ctx.strokeStyle = grad;
-        ctx.beginPath();
-        ctx.moveTo(W * 0.03, y);
-        for (let x = W * 0.08; x < W * .94; x += 60 * DPR){
-          const ny = y + Math.sin(x * 0.002 + time * 0.001 + i) * 10 * DPR;
-          ctx.lineTo(x, ny);
-        }
-        ctx.stroke();
-      }
-      ctx.restore();
-
-      requestAnimationFrame(drawNebula);
-    }
-
-    function tickViewsAndStatus(){
-      renderLaunchers();
-    }
-
-    // Initial render
-    resize();
-    initParticles();
-    drawNebula(0);
-    renderLaunchers();
-
-    window.addEventListener('resize', () => {
-      resize();
-      initParticles();
-    });
-
-    // Keep views and availability fresh
-    setInterval(() => {
-      tickViewsAndStatus();
-    }, 60 * 1000);
-
-    setInterval(() => {
-      const state = ensureViewsBoost(loadViewsState());
-      saveViewsState(state);
-      renderLaunchers();
-    }, 5 * 60 * 1000);
-
-    // extra refresh for active/unavailable parity
-    setInterval(renderLaunchers, 15 * 1000);
-
-    // start animation loop for subtle glow interactions only
-    // no-op; main canvas uses requestAnimationFrame loop
+    // Remove intro screen entirely: just render immediately.
+    renderApp(DEFAULT_MANIFEST);
   </script>
 </body>
 </html>
