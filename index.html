@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,7 +10,7 @@
       --bg:#05070d; --stroke:rgba(255,255,255,.14); --text:rgba(255,255,255,.94);
       --muted:rgba(255,255,255,.68); --soft:rgba(255,255,255,.38);
       --accent:#7cdaff; --accent2:#9b7bff; --good:#34d399; --bad:#ff5d7a;
-      --shadow:0 28px 80px rgba(0,0,0,.48); --radius-xl:30px; --radius-lg:22px; --radius-md:18px;
+      --shadow:0 28px 80px rgba(0,0,0,.48); --radius-xl:30px; --radius-lg:22px;
     }
     *{box-sizing:border-box} html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
     body{
@@ -127,7 +128,9 @@
   </style>
 </head>
 <body>
-  <canvas id="bgCanvas"></canvas>  <div class="wrap">
+  <canvas id="bgCanvas"></canvas>
+
+  <div class="wrap">
     <div class="topbar">
       <nav class="dock" id="dock">
         <button class="nav-btn active" data-target="home"><svg class="icon"><use href="#i-home"></use></svg></button>
@@ -135,86 +138,89 @@
         <button class="nav-btn" data-target="keyAccessCard"><svg class="icon"><use href="#i-key"></use></svg></button>
         <button class="nav-btn" data-target="discord"><svg class="icon"><use href="#i-link"></use></svg></button>
       </nav>
-    </div><main id="home" class="hero">
-  <section class="panel hero-main">
-    <div>
-      <span class="eyebrow"><svg class="icon" style="width:14px;height:14px"><use href="#i-spark"></use></svg><span id="subtitleText">👁 0 Views</span></span>
-      <div class="title-row" style="margin-top:18px">
-        <img class="app-icon" id="appIcon" alt="Launcher icon" />
-        <div class="hero-copy">
-          <h1 id="appName">Among Us Launcher</h1>
-          <p id="appDesc">A smooth launcher hub with animated cards, a clean glass layout, and quick access to the key tutorial.</p>
-        </div>
-      </div>
-      <div class="meta-grid">
-        <div class="meta"><span class="k">Version</span><span class="v" id="appVersion">2026.4.7</span></div>
-        <div class="meta"><span class="k">Pack Type</span><span class="v" id="mainPackType">APK</span></div>
-        <div class="meta"><span class="k">Uid</span><span class="v" id="mainUid">Obfuscated</span></div>
-        <div class="meta"><span class="k">Creator</span><span class="v" id="appCreator">Moz Studio &amp; AN1-com</span></div>
-      </div>
     </div>
-    <div>
-      <div class="actions">
-        <button class="btn primary" id="launchBtn"><svg class="icon"><use href="#i-play"></use></svg>Launch Now</button>
-        <button class="btn ghost" id="tutorialBtn"><svg class="icon"><use href="#i-book"></use></svg>View Tutorial</button>
-        <a class="btn ghost" id="discordBtn" href="#" target="_blank" rel="noreferrer"><svg class="icon"><use href="#i-discord"></use></svg>Discord Community</a>
-      </div>
-      <div class="vote-row">
-        <button class="btn like" id="likeBtn"><svg class="icon"><use href="#i-thumbs-up"></use></svg>Like <span class="vote-count" id="likesCount">0</span></button>
-        <button class="btn dislike" id="dislikeBtn"><svg class="icon"><use href="#i-thumbs-down"></use></svg>Dislike <span class="vote-count" id="dislikesCount">0</span></button>
-      </div>
-    </div>
-  </section>
 
-  <aside class="panel hero-side">
-    <div class="stat"><div class="label">Views</div><div class="value"><strong id="viewsCount">0</strong><span>Total</span></div></div>
-    <div class="stat"><div class="label">Average Likes</div><div class="value"><strong id="likesStat">0.0⭐</strong><span>Community</span></div></div>
-    <div class="stat"><div class="label">File Size</div><div class="value"><strong>844mb</strong><span>File size</span></div></div>
-    <div class="stat"><div class="label">Updated On</div><div class="value"><strong id="themeHighlight">2025, May 01</strong><span>Last update</span></div></div>
-  </aside>
-</main>
-
-<section id="guide">
-  <div class="section-title"><div><h2>Tutorial</h2><p>Only one video tutorial is shown here now.</p></div></div>
-  <div class="grid" id="tutorialGrid"></div>
-</section>
-
-<section id="keyAccessCard">
-  <div class="section-title"><div><h2>Key Accession</h2><p>Get the key, then jump back to the tutorial anytime you need a quick reminder.</p></div></div>
-  <div class="panel launch-main">
-    <div class="launcher-card">
-      <div class="launcher-thumb"><img id="keyThumb" alt="Key access thumbnail" /></div>
-      <div>
-        <div class="launcher-head">
-          <div class="launcher-copy">
-            <h3 id="keyTitle">Key Access</h3>
-            <p id="keyDesc">Open the key page with a short loading step, then return here to watch the tutorial video whenever you need help.</p>
+    <main id="home" class="hero">
+      <section class="panel hero-main">
+        <div>
+          <span class="eyebrow"><svg class="icon" style="width:14px;height:14px"><use href="#i-spark"></use></svg><span id="subtitleText">👁 0 Views</span></span>
+          <div class="title-row" style="margin-top:18px">
+            <img class="app-icon" id="appIcon" alt="Launcher icon" />
+            <div class="hero-copy">
+              <h1 id="appName">Among Us Launcher</h1>
+              <p id="appDesc">A smooth launcher hub with animated cards, a clean glass layout, and quick access to the key tutorial.</p>
+            </div>
+          </div>
+          <div class="meta-grid">
+            <div class="meta"><span class="k">Version</span><span class="v" id="appVersion">2026.4.7</span></div>
+            <div class="meta"><span class="k">Pack Type</span><span class="v" id="mainPackType">APK</span></div>
+            <div class="meta"><span class="k">Uid</span><span class="v" id="mainUid">Obfuscated</span></div>
+            <div class="meta"><span class="k">Creator</span><span class="v" id="appCreator">Moz Studio &amp; AN1-com</span></div>
           </div>
         </div>
-        <div class="chips"><span class="chip">Video tutorial</span><span class="chip">Fast redirect</span><span class="chip">Auto saved</span></div>
-        <div class="launch-actions">
-          <button class="btn primary" id="getKeyBtn"><svg class="icon"><use href="#i-key"></use></svg>Get Key</button>
-          <button class="btn ghost" id="scrollTutorialBtn"><svg class="icon"><use href="#i-book"></use></svg>Tutorial</button>
+        <div>
+          <div class="actions">
+            <button class="btn primary" id="launchBtn"><svg class="icon"><use href="#i-play"></use></svg>Launch Now</button>
+            <button class="btn ghost" id="tutorialBtn"><svg class="icon"><use href="#i-book"></use></svg>View Tutorial</button>
+            <a class="btn ghost" id="discordBtn" href="#" target="_blank" rel="noreferrer"><svg class="icon"><use href="#i-discord"></use></svg>Discord Community</a>
+          </div>
+          <div class="vote-row">
+            <button class="btn like" id="likeBtn"><svg class="icon"><use href="#i-thumbs-up"></use></svg>Like <span class="vote-count" id="likesCount">0</span></button>
+            <button class="btn dislike" id="dislikeBtn"><svg class="icon"><use href="#i-thumbs-down"></use></svg>Dislike <span class="vote-count" id="dislikesCount">0</span></button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel hero-side">
+        <div class="stat"><div class="label">Views</div><div class="value"><strong id="viewsCount">0</strong><span>Total</span></div></div>
+        <div class="stat"><div class="label">Average Likes</div><div class="value"><strong id="likesStat">0.0⭐</strong><span>Community</span></div></div>
+        <div class="stat"><div class="label">File Size</div><div class="value"><strong>844mb</strong><span>File size</span></div></div>
+        <div class="stat"><div class="label">Updated On</div><div class="value"><strong id="themeHighlight">2025, May 01</strong><span>Last update</span></div></div>
+      </aside>
+    </main>
+
+    <section id="guide">
+      <div class="section-title"><div><h2>Tutorial</h2><p>Only one video tutorial is shown here now.</p></div></div>
+      <div class="grid" id="tutorialGrid"></div>
+    </section>
+
+    <section id="keyAccessCard">
+      <div class="section-title"><div><h2>Key Accession</h2><p>Get the key, then jump back to the tutorial anytime you need a quick reminder.</p></div></div>
+      <div class="panel launch-main">
+        <div class="launcher-card">
+          <div class="launcher-thumb"><img id="keyThumb" alt="Key access thumbnail" /></div>
+          <div>
+            <div class="launcher-head">
+              <div class="launcher-copy">
+                <h3 id="keyTitle">Key Access</h3>
+                <p id="keyDesc">Open the key page with a short loading step, then return here to watch the tutorial video whenever you need help.</p>
+              </div>
+            </div>
+            <div class="chips"><span class="chip">Video tutorial</span><span class="chip">Fast redirect</span><span class="chip">Auto saved</span></div>
+            <div class="launch-actions">
+              <button class="btn primary" id="getKeyBtn"><svg class="icon"><use href="#i-key"></use></svg>Get Key</button>
+              <button class="btn ghost" id="scrollTutorialBtn"><svg class="icon"><use href="#i-book"></use></svg>Tutorial</button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<section id="discord">
-  <div class="panel community">
-    <div class="brand">
-      <strong id="footerName">Among Us Launcher</strong>
-      <span id="footerInfo">Creator: Moz Studio &amp; AN1-com</span>
-    </div>
-    <div class="links" id="discordLinks">
-      <a class="btn ghost small" id="discordLink" href="#" target="_blank" rel="noreferrer"><svg class="icon"><use href="#i-discord"></use></svg>Discord Invite</a>
-      <button class="btn ghost small" id="copyInvite"><svg class="icon"><use href="#i-copy"></use></svg>Copy Invite</button>
-    </div>
+    <section id="discord">
+      <div class="panel community">
+        <div class="brand">
+          <strong id="footerName">Among Us Launcher</strong>
+          <span id="footerInfo">Creator: Moz Studio &amp; AN1-com</span>
+        </div>
+        <div class="links" id="discordLinks">
+          <a class="btn ghost small" id="discordLink" href="#" target="_blank" rel="noreferrer"><svg class="icon"><use href="#i-discord"></use></svg>Discord Invite</a>
+          <button class="btn ghost small" id="copyInvite"><svg class="icon"><use href="#i-copy"></use></svg>Copy Invite</button>
+        </div>
+      </div>
+    </section>
   </div>
-</section>
 
-  </div>  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <button class="close" id="closeModal" aria-label="Close modal"><svg><use href="#i-close"></use></svg></button>
       <div class="inner">
@@ -222,33 +228,36 @@
         <div>
           <span class="eyebrow" style="margin-bottom:10px"><svg class="icon" style="width:14px;height:14px"><use href="#i-chip"></use></svg><span id="modalTag">Launcher</span></span>
           <h3 id="modalTitle">Modal</h3>
-          <div class="info" id="modalInfo"></div><div id="modalVideoWrap" class="video-box hidden">
-        <video id="tutorialVideo" controls playsinline preload="metadata" src="settings/media/key.mp4"></video>
-      </div>
+          <div class="info" id="modalInfo"></div>
 
-      <div class="specs" id="modalSpecs">
-        <div class="spec"><span>State</span><strong id="modalState">Waiting</strong></div>
-        <div class="spec"><span>Timer</span><strong id="modalWindow">1s</strong></div>
-        <div class="spec"><span>Progress</span><strong id="progressLabel">0%</strong></div>
-        <div class="spec"><span>Source</span><strong id="modalSource">Local</strong></div>
-      </div>
+          <div id="modalVideoWrap" class="video-box hidden">
+            <video id="tutorialVideo" controls playsinline preload="metadata" src="settings/media/key.mp4"></video>
+          </div>
 
-      <div class="actions-row" id="modalActions">
-        <button class="btn ghost" id="cancelBtn">Cancel</button>
-        <button class="btn primary" id="initBtn"><svg class="icon"><use href="#i-play"></use></svg>Start</button>
-      </div>
+          <div class="specs" id="modalSpecs">
+            <div class="spec"><span>State</span><strong id="modalState">Waiting</strong></div>
+            <div class="spec"><span>Timer</span><strong id="modalWindow">1s</strong></div>
+            <div class="spec"><span>Progress</span><strong id="progressLabel">0%</strong></div>
+            <div class="spec"><span>Source</span><strong id="modalSource">Local</strong></div>
+          </div>
 
-      <div class="progress-wrap" id="modalProgressWrap">
-        <div class="progress-top"><span>Loading</span><span id="progressLabelTop">0%</span></div>
-        <div class="progress"><span id="progressFill"></span></div>
-      </div>
+          <div class="actions-row" id="modalActions">
+            <button class="btn ghost" id="cancelBtn">Cancel</button>
+            <button class="btn primary" id="initBtn"><svg class="icon"><use href="#i-play"></use></svg>Start</button>
+          </div>
 
-      <div class="log" id="modalLog"><div class="entry"><span class="pulse"></span><span>Ready.</span></div></div>
+          <div class="progress-wrap" id="modalProgressWrap">
+            <div class="progress-top"><span>Loading</span><span id="progressLabelTop">0%</span></div>
+            <div class="progress"><span id="progressFill"></span></div>
+          </div>
+
+          <div class="log" id="modalLog"><div class="entry"><span class="pulse"></span><span>Ready.</span></div></div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-  </div>  <svg width="0" height="0" style="position:absolute;left:-9999px;top:-9999px" aria-hidden="true" focusable="false">
+  <svg width="0" height="0" style="position:absolute;left:-9999px;top:-9999px" aria-hidden="true" focusable="false">
     <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3.1 3 10.4v9.6h5.7v-6.3h6.6V20H21v-9.6L12 3.1Z"/></symbol>
     <symbol id="i-book" viewBox="0 0 24 24"><path fill="currentColor" d="M6 4.5A2.5 2.5 0 0 1 8.5 2H20v16.5A2.5 2.5 0 0 1 17.5 21H7a3 3 0 0 0-3 3V4.5Z"/><path fill="currentColor" d="M7 7h9v2H7z"/></symbol>
     <symbol id="i-link" viewBox="0 0 24 24"><path fill="currentColor" d="M10.5 13.5a4.7 4.7 0 0 1 0-6.7l1.5-1.5a4.7 4.7 0 0 1 6.7 6.7l-1.4 1.4-1.4-1.4 1.4-1.4a2.7 2.7 0 1 0-3.8-3.8L12 8.3a2.7 2.7 0 0 0 0 3.8z"/><path fill="currentColor" d="M13.5 10.5a4.7 4.7 0 0 1 0 6.7L12 18.7a4.7 4.7 0 0 1-6.7-6.7l1.4-1.4 1.4 1.4-1.4 1.4a2.7 2.7 0 1 0 3.8 3.8l1.5-1.5a2.7 2.7 0 0 0 0-3.8z"/></symbol>
@@ -261,14 +270,21 @@
     <symbol id="i-key" viewBox="0 0 24 24"><path fill="currentColor" d="M14 3a7 7 0 1 0 4.2 12.6L23 20.4 20.4 23l-4.8-4.8A7 7 0 1 0 14 3Zm0 2.2A4.8 4.8 0 1 1 14 15a4.8 4.8 0 0 1 0-9.8Z"/></symbol>
     <symbol id="i-thumbs-up" viewBox="0 0 24 24"><path fill="currentColor" d="M9 21h8a2 2 0 0 0 2-1.5l1.5-7.5a2 2 0 0 0-2-2.5h-6V7a4 4 0 0 0-4-4h-.5L5 10v11h4z"/></symbol>
     <symbol id="i-thumbs-down" viewBox="0 0 24 24"><path fill="currentColor" d="M15 3H7a2 2 0 0 0-2 1.5L3.5 12A2 2 0 0 0 5.5 14h6v3a4 4 0 0 0 4 4h.5l2-8V3h-3z"/></symbol>
-  </svg>  <script id="manifestFallback" type="application/json">{
+  </svg>
+
+  <script id="manifestFallback" type="application/json">{
     "app": {"name":"Among Us VIP","version":"2026.4.7","creator":"Moz Studio","description":"Among Us VIP – Free Skins & Avatars Edition etc. Packed in Vercel.com, modified By Moz Studio..","icon":"settings/media/app-icon.png","subtitle":"Views"},
     "mainLauncher": {"name":"Among us Vip","description":"5.6k Has downloaded this app!","button":"Launch & Install","link":"https://www.mediafire.com/file/aj14i8nkmf4unua/among-us-mod_2026.4.7-an1.com.apk.bak/file","thumbnail":"github/settings/media/app.png","icon":"settings/media/appicon.png","size":"844 MB","packType":"APK","uid":"Obfuscated","version":"2026.4.7"},
     "tutorials": [{"name":"Key Access | 🔑","description":"This video walks you through how to access the app with a key.","button":"Preview","action":"preview","thumbnail":"settings/media/key-thumb.png","icon":"settings/media/key-thumb.png"}],
-    "keyAccess": {"name":"Key Accession","description":"Open the key page, wait for the short loading screen, and then continue to the website.","button":"Get Key","tutorialButton":"Tutorial","link":"https://among-us-key.vercel.app/","thumbnail":"settings/media/getkey-thumb.png"},
+    "keyAccess": {"name":"Key Accession","description":"Open the key page with a short loading step, then return here to watch the tutorial video whenever you need help.","button":"Get Key","tutorialButton":"Tutorial","link":"https://among-us-key.vercel.app/","thumbnail":"settings/media/getkey-thumb.png"},
     "community": {"discord":"https://discord.gg/QHg5c96dGK","youtube":"https://youtube.com/@SkyeMoz","tiktok":"https://tiktok.com/@SkyeMoz"},
     "stats": {"views":2700,"likes":1420,"dislikes":52}
-  }</script>  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>  <script>
+  }</script>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+
+  <script>
     const DEFAULT_MANIFEST = JSON.parse(document.getElementById('manifestFallback').textContent);
     const PLACEHOLDER = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700">
@@ -300,36 +316,16 @@
     };
 
     const state = {
-      manifest: DEFAULT_MANIFEST,
-      currentMode: null,
-      currentTarget: '#',
-      timer: null,
-      progressTimer: null,
-      storageKey: {
-        voteChoice: 'amongus_vote_choice',
-        viewCounted: 'amongus_view_counted',
-        views: 'amongus_views',
-        likes: 'amongus_likes',
-        dislikes: 'amongus_dislikes'
-      },
-      counterPath: 'launcher_stats_v2'
+      manifest: DEFAULT_MANIFEST, currentMode: null, currentTarget: '#', timer: null, progressTimer: null,
+      storageKey: { voteChoice: 'amongus_vote_choice', viewCounted: 'amongus_view_counted', views: 'amongus_views', likes: 'amongus_likes', dislikes: 'amongus_dislikes' },
+      statsMode: 'local'
     };
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAmOgHjmkKNQ17Q3WzwZJApLgta8Dj_hdw",
-      authDomain: "mozstudio-2a43d.firebaseapp.com",
-      databaseURL: "https://mozstudio-2a43d-default-rtdb.firebaseio.com",
-      projectId: "mozstudio-2a43d",
-      storageBucket: "mozstudio-2a43d.firebasestorage.app",
-      messagingSenderId: "538066492422",
-      appId: "1:538066492422:web:06c2631534b3e35c273787",
-      measurementId: "G-5RZPQFDF75"
-    };
-
-    const hasRealFirebaseConfig = () => {
-      return firebaseConfig && firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.databaseURL;
-    };
     const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+    const hasRealFirebaseConfig = () => {
+      const cfg = firebaseConfig;
+      return cfg && Object.values(cfg).every(v => typeof v === 'string' && v && !v.startsWith('PASTE_'));
+    };
 
     function applyImage(el, src, fallback = PLACEHOLDER){ if(!el) return; el.src = src || fallback; el.onerror = () => { if(el.src !== fallback) el.src = fallback; }; }
     function formatNumber(n){ return new Intl.NumberFormat().format(Number(n || 0)); }
@@ -340,11 +336,8 @@
     function logLine(text){ const row = document.createElement('div'); row.className = 'entry'; row.innerHTML = '<span class="pulse"></span><span>' + text + '</span>'; ui.modalLog.prepend(row); }
 
     function openModal(mode, data = {}){
-      state.currentMode = mode; state.currentTarget = data.link || '#';
-      ui.modalBackdrop.classList.add('show'); ui.modalBackdrop.setAttribute('aria-hidden', 'false');
-      ui.modalTitle.textContent = data.title || 'Modal'; ui.modalInfo.innerHTML = data.info || ''; ui.modalIcon.src = data.icon || PLACEHOLDER;
-      ui.modalState.textContent = data.state || 'Ready'; ui.modalWindow.textContent = data.window || '1s'; ui.modalSource.textContent = data.source || 'Local'; ui.modalTag.textContent = data.tag || 'Launcher';
-      ui.modalLog.innerHTML = '<div class="entry"><span class="pulse"></span><span>Ready.</span></div>'; ui.progressFill.style.width = '0%'; ui.progressLabel.textContent = '0%'; ui.progressLabelTop.textContent = '0%';
+      state.currentMode = mode; state.currentTarget = data.link || '#'; ui.modalBackdrop.classList.add('show'); ui.modalBackdrop.setAttribute('aria-hidden', 'false');
+      ui.modalTitle.textContent = data.title || 'Modal'; ui.modalInfo.innerHTML = data.info || ''; ui.modalIcon.src = data.icon || PLACEHOLDER; ui.modalState.textContent = data.state || 'Ready'; ui.modalWindow.textContent = data.window || '1s'; ui.modalSource.textContent = data.source || 'Local'; ui.modalTag.textContent = data.tag || 'Launcher'; ui.modalLog.innerHTML = '<div class="entry"><span class="pulse"></span><span>Ready.</span></div>'; ui.progressFill.style.width = '0%'; ui.progressLabel.textContent = '0%'; ui.progressLabelTop.textContent = '0%';
       if(mode === 'preview'){
         ui.modalVideoWrap.classList.remove('hidden'); ui.modalProgressWrap.classList.add('hidden'); ui.modalSpecs.classList.add('hidden'); ui.modalActions.classList.add('hidden'); ui.tutorialVideo.currentTime = 0; ui.tutorialVideo.play().catch(() => {});
         ui.modalLog.innerHTML = '<div class="entry"><span class="pulse"></span><span>Watch the walkthrough video.</span></div><div class="entry"><span class="pulse"></span><span>Close the panel anytime with X.</span></div>';
@@ -357,90 +350,75 @@
 
     function wireNavigation(){ const navBtns = document.querySelectorAll('.nav-btn'); navBtns.forEach(btn => btn.onclick = () => { const el = document.getElementById(btn.dataset.target); if(el) el.scrollIntoView({behavior:'smooth', block:'start'}); }); const sections = ['home','guide','keyAccessCard','discord']; const observer = new IntersectionObserver(entries => { entries.forEach(entry => { if(entry.isIntersecting){ navBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.target === entry.target.id)); } }); }, { threshold: 0.45 }); sections.forEach(id => { const el = document.getElementById(id); if(el) observer.observe(el); }); }
     function renderTutorials(items){ ui.tutorialGrid.innerHTML = ''; items.slice(0, 1).forEach(t => { const card = document.createElement('article'); card.className = 'glass-card tutorial'; card.innerHTML = `<div class="thumb"><img alt="${t.name}" src="${t.thumbnail || PLACEHOLDER}"><div class="tag">${t.button || 'Open'}</div></div><h3>${t.name}</h3><p>${t.description}</p><div class="row"><span class="chip">Video</span><button class="btn ghost small">${t.button || 'Open'}</button></div>`; const open = () => openModal('preview', { title: t.name, tag: 'Video tutorial', info: 'This video walks you through how to access the app with a key.', icon: t.icon || PLACEHOLDER, source: 'settings/media/key.mp4', state: 'Preview', window: 'Video' }); card.addEventListener('click', open); card.querySelector('button').addEventListener('click', e => { e.stopPropagation(); open(); }); ui.tutorialGrid.appendChild(card); }); }
-    function renderApp(manifest){ state.manifest = manifest; const app = manifest.app || {}; const main = manifest.mainLauncher || {}; const tutorials = manifest.tutorials || []; const keyAccess = manifest.keyAccess || {}; const community = manifest.community || {}; document.title = app.name || 'Among Us Launcher'; ui.appName.textContent = app.name || 'Among Us Launcher'; ui.appDesc.textContent = app.description || ''; ui.appVersion.textContent = app.version || ''; ui.appCreator.textContent = app.creator || ''; ui.mainPackType.textContent = main.packType || 'APK'; ui.mainUid.textContent = main.uid || 'Obfuscated'; ui.footerName.textContent = app.name || 'Among Us Launcher'; ui.footerInfo.innerHTML = 'Creator: ' + (app.creator || 'Unknown'); ui.discordBtn.href = community.discord || '#'; ui.discordLink.href = community.discord || '#'; applyImage(ui.appIcon, app.icon); applyImage(ui.keyThumb, keyAccess.thumbnail, KEY_THUMB); ui.keyTitle.textContent = keyAccess.name || 'Key Accession'; ui.keyDesc.textContent = keyAccess.description || 'Open the key page with a short loading step, then return here to watch the tutorial video whenever you need help.'; renderTutorials(tutorials); ui.launchBtn.onclick = () => openModal('load', { title: main.name || 'Launch Now', tag: 'App launcher', info: main.description || '', icon: main.icon || app.icon, source: 'Android', state: 'Ready', window: '1s', link: main.link || '#' }); ui.tutorialBtn.onclick = () => document.getElementById('guide').scrollIntoView({behavior:'smooth', block:'start'}); ui.getKeyBtn.onclick = () => openModal('load', { title: keyAccess.name || 'Key Accession', tag: 'Get key', info: keyAccess.description || 'Open the key page with a short loading step, then return here to watch the tutorial video whenever you need help.', icon: keyAccess.thumbnail || KEY_THUMB, source: 'Redirect', state: 'Loading', window: '1s', link: keyAccess.link || '#' }); ui.scrollTutorialBtn.onclick = () => document.getElementById('guide').scrollIntoView({behavior:'smooth', block:'start'}); ui.copyInvite.onclick = async () => { try { await navigator.clipboard.writeText(community.discord || ''); toast('Invite copied to clipboard.'); } catch { toast('Copy failed on this device.'); } }; ui.closeModal.onclick = closeModal; ui.cancelBtn.onclick = closeModal; ui.modalBackdrop.onclick = (e) => { if (e.target === ui.modalBackdrop) closeModal(); }; ui.initBtn.onclick = startLoadingAndRedirect; wireNavigation(); }
+    function renderApp(manifest){ state.manifest = manifest; const app = manifest.app || {}; const main = manifest.mainLauncher || {}; const tutorials = manifest.tutorials || []; const keyAccess = manifest.keyAccess || {}; const community = manifest.community || {}; document.title = app.name || 'Among Us Launcher'; ui.appName.textContent = app.name || 'Among Us Launcher'; ui.appDesc.textContent = app.description || ''; ui.appVersion.textContent = app.version || ''; ui.appCreator.textContent = app.creator || ''; ui.mainPackType.textContent = main.packType || 'APK'; ui.mainUid.textContent = main.uid || 'Obfuscated'; ui.footerName.textContent = app.name || 'Among Us Launcher'; ui.footerInfo.innerHTML = 'Creator: ' + (app.creator || 'Unknown'); ui.discordBtn.href = community.discord || '#'; ui.discordLink.href = community.discord || '#'; applyImage(ui.appIcon, app.icon); applyImage(ui.keyThumb, keyAccess.thumbnail, KEY_THUMB); ui.keyTitle.textContent = keyAccess.name || 'Key Accession'; ui.keyDesc.textContent = keyAccess.description || 'Open the key page with a short loading step, then return here to watch the tutorial video whenever you need help.'; renderTutorials(tutorials); ui.launchBtn.onclick = () => openModal('load', { title: main.name || 'Launch Now', tag: 'App launcher', info: main.description || '', icon: main.icon || app.icon, source: 'Android', state: 'Ready', window: '1s', link: main.link || '#' }); ui.tutorialBtn.onclick = () => document.getElementById('guide').scrollIntoView({behavior:'smooth', block:'start'}); ui.likeBtn.onclick = bumpLike; ui.dislikeBtn.onclick = bumpDislike; ui.getKeyBtn.onclick = () => openModal('load', { title: keyAccess.name || 'Key Accession', tag: 'Get key', info: keyAccess.description || 'Open the key page with a short loading step, then return here to watch the tutorial video whenever you need help.', icon: keyAccess.thumbnail || KEY_THUMB, source: 'Redirect', state: 'Loading', window: '1s', link: keyAccess.link || '#' }); ui.scrollTutorialBtn.onclick = () => document.getElementById('guide').scrollIntoView({behavior:'smooth', block:'start'}); ui.copyInvite.onclick = async () => { try { await navigator.clipboard.writeText(community.discord || ''); toast('Invite copied to clipboard.'); } catch { toast('Copy failed on this device.'); } }; ui.closeModal.onclick = closeModal; ui.cancelBtn.onclick = closeModal; ui.modalBackdrop.onclick = (e) => { if (e.target === ui.modalBackdrop) closeModal(); }; ui.initBtn.onclick = startLoadingAndRedirect; wireNavigation(); }
 
-    // Local fallback if Firebase is not configured or fails.
-    function loadLocalMode(){
-      const counts = { views: 0, likes: 0, dislikes: 0 };
+    // Local fallback so the page still works even if Firebase is not configured yet.
+    function loadLocalStats(){
+      const base = state.manifest.stats || { views: 0, likes: 0, dislikes: 0 };
+      const counts = {
+        views: Number(localStorage.getItem(state.storageKey.views) || base.views || 0),
+        likes: Number(localStorage.getItem(state.storageKey.likes) || base.likes || 0),
+        dislikes: Number(localStorage.getItem(state.storageKey.dislikes) || base.dislikes || 0)
+      };
+      renderCounts(counts);
       if (!sessionStorage.getItem(state.storageKey.viewCounted)) {
         sessionStorage.setItem(state.storageKey.viewCounted, '1');
         counts.views += 1;
-      }
-      renderCounts(counts);
-      ui.likeBtn.onclick = async () => {
-        if (getVoteChoice()) return toast('You can only vote once.');
-        setLocalVote('like');
-        counts.likes += 1;
+        localStorage.setItem(state.storageKey.views, String(counts.views));
         renderCounts(counts);
-        toast('Like saved.');
-      };
-      ui.dislikeBtn.onclick = async () => {
-        if (getVoteChoice()) return toast('You can only vote once.');
-        setLocalVote('dislike');
-        counts.dislikes += 1;
-        renderCounts(counts);
-        toast('Dislike saved.');
-      };
-    }
-    function setLocalVote(choice){ localStorage.setItem(state.storageKey.voteChoice, choice); renderVoteState(); }
-
-    // Firebase Realtime Database boot
-    async function bootFirebase(){
-      if (!window.firebase || !hasRealFirebaseConfig()) return false;
-      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-      const db = firebase.database();
-      const statsRef = db.ref(state.counterPath);
-
-      const snap = await statsRef.get();
-      if (!snap.exists()) {
-        await statsRef.set({ views: 0, likes: 0, dislikes: 0 });
       }
-
-      statsRef.on('value', (snap) => {
-        const data = snap.val() || { views: 0, likes: 0, dislikes: 0 };
-        renderCounts(data);
-      });
-
-      if (!sessionStorage.getItem(state.storageKey.viewCounted)) {
-        sessionStorage.setItem(state.storageKey.viewCounted, '1');
-        await statsRef.child('views').transaction(v => (Number(v) || 0) + 1);
-      }
-
+      state.statsMode = 'local';
       ui.likeBtn.onclick = async () => {
         if (getVoteChoice()) return toast('You can only vote once.');
         localStorage.setItem(state.storageKey.voteChoice, 'like');
-        renderVoteState();
-        await statsRef.child('likes').transaction(v => (Number(v) || 0) + 1);
+        counts.likes += 1;
+        localStorage.setItem(state.storageKey.likes, String(counts.likes));
+        renderCounts(counts);
         toast('Like saved.');
       };
-
       ui.dislikeBtn.onclick = async () => {
         if (getVoteChoice()) return toast('You can only vote once.');
         localStorage.setItem(state.storageKey.voteChoice, 'dislike');
-        renderVoteState();
-        await statsRef.child('dislikes').transaction(v => (Number(v) || 0) + 1);
+        counts.dislikes += 1;
+        localStorage.setItem(state.storageKey.dislikes, String(counts.dislikes));
+        renderCounts(counts);
         toast('Dislike saved.');
       };
+    }
 
+    let db = null; let statsRef = null;
+    async function bootFirebaseStats(){
+      if (!window.firebase || !hasRealFirebaseConfig()) return false;
+      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+      statsRef = db.collection('stats').doc('global');
+      await statsRef.set({ views: 0, likes: 0, dislikes: 0 }, { merge: true });
+      statsRef.onSnapshot((snap) => { const data = snap.exists ? snap.data() : { views: 0, likes: 0, dislikes: 0 }; renderCounts(data); });
+      if (!sessionStorage.getItem(state.storageKey.viewCounted)) {
+        sessionStorage.setItem(state.storageKey.viewCounted, '1');
+        await statsRef.set({ views: firebase.firestore.FieldValue.increment(1) }, { merge: true });
+      }
+      state.statsMode = 'firebase';
+      ui.likeBtn.onclick = async () => {
+        if (getVoteChoice()) return toast('You can only vote once.');
+        localStorage.setItem(state.storageKey.voteChoice, 'like');
+        await statsRef.set({ likes: firebase.firestore.FieldValue.increment(1) }, { merge: true });
+        toast('Like saved.');
+        renderVoteState();
+      };
+      ui.dislikeBtn.onclick = async () => {
+        if (getVoteChoice()) return toast('You can only vote once.');
+        localStorage.setItem(state.storageKey.voteChoice, 'dislike');
+        await statsRef.set({ dislikes: firebase.firestore.FieldValue.increment(1) }, { merge: true });
+        toast('Dislike saved.');
+        renderVoteState();
+      };
       return true;
     }
 
-    // Glow tracking
-    document.querySelectorAll('.panel, .glass-card, .modal').forEach(el => {
-      el.addEventListener('pointermove', (e) => {
-        const r = el.getBoundingClientRect();
-        const x = ((e.clientX - r.left) / r.width) * 100;
-        const y = ((e.clientY - r.top) / r.height) * 100;
-        el.style.setProperty('--mx', x + '%');
-        el.style.setProperty('--my', y + '%');
-      });
-    });
+    document.querySelectorAll('.panel, .glass-card, .modal').forEach(el => { el.addEventListener('pointermove', (e) => { const r = el.getBoundingClientRect(); const x = ((e.clientX - r.left) / r.width) * 100; const y = ((e.clientY - r.top) / r.height) * 100; el.style.setProperty('--mx', x + '%'); el.style.setProperty('--my', y + '%'); }); });
 
-    // Background particles
-    const canvas = document.getElementById('bgCanvas');
-    const ctx = canvas.getContext('2d', { alpha: true });
-    let W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 2);
-    const pods = [], arcs = [];
+    const canvas = document.getElementById('bgCanvas'); const ctx = canvas.getContext('2d', { alpha: true }); let W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 2); const pods = [], arcs = [];
     function resize(){ W = canvas.width = Math.floor(window.innerWidth * DPR); H = canvas.height = Math.floor(window.innerHeight * DPR); canvas.style.width = window.innerWidth + 'px'; canvas.style.height = window.innerHeight + 'px'; }
     class Pod { constructor(){ this.reset(); } reset(){ this.x=Math.random()*W; this.y=Math.random()*H; this.vx=(Math.random()*0.55+.12)*(Math.random()<.5?-1:1)*DPR; this.vy=(Math.random()*0.45+.1)*(Math.random()<.5?-1:1)*DPR; this.r=(Math.random()*1.6+.9)*DPR; this.alpha=Math.random()*.55+.15; } update(){ this.x+=this.vx; this.y+=this.vy; if(this.x<-30*DPR||this.x>W+30*DPR||this.y<-30*DPR||this.y>H+30*DPR) this.reset(); } draw(){ ctx.beginPath(); ctx.fillStyle = `rgba(124,218,255,${this.alpha})`; ctx.arc(this.x,this.y,this.r,0,Math.PI*2); ctx.fill(); } }
     class Arc { constructor(i){ this.a=Math.random()*Math.PI*2; this.r=(120+i*30)*DPR; this.speed=(Math.random()*0.006+.003)*(Math.random()<.5?-1:1); this.alpha=.04+Math.random()*.05; } update(){ this.a+=this.speed; } draw(cx,cy){ ctx.beginPath(); ctx.strokeStyle=`rgba(255,255,255,${this.alpha})`; ctx.lineWidth=1.2*DPR; ctx.arc(cx,cy,this.r,this.a,this.a+1.8); ctx.stroke(); } }
@@ -448,20 +426,22 @@
     function draw(){ ctx.clearRect(0,0,W,H); const cx=W*.52, cy=H*.46; arcs.forEach(a=>{a.update();a.draw(cx,cy)}); pods.forEach(p=>{p.update();p.draw()}); requestAnimationFrame(draw); }
     window.addEventListener('resize', () => { DPR = Math.min(window.devicePixelRatio || 1, 2); resize(); initParticles(); }); resize(); initParticles(); draw();
 
-    // Boot page
     (async function boot(){
       renderApp(DEFAULT_MANIFEST);
-      let connected = false;
       try {
-        connected = await bootFirebase();
+        const ok = await bootFirebaseStats();
+        if (!ok) loadLocalStats();
       } catch (err) {
         console.error('Firebase boot error:', err);
-        connected = false;
+        loadLocalStats();
       }
-      if (!connected) loadLocalMode();
-      if (connected) toast('Firebase connected.');
+      if (state.statsMode === 'firebase') {
+        toast('Firebase connected.');
+      }
     })();
 
+    // expose helpers for debugging
     window.__launcher = { state };
-  </script></body>
+  </script>
+</body>
 </html>
