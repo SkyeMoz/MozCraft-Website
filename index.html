@@ -50,44 +50,19 @@ body::before{
   z-index:0;
 }
 #bgCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;filter:saturate(1.08)}
-
 .wrap{position:relative;z-index:1;width:min(1180px, calc(100% - 28px));margin:0 auto;padding:18px 0 56px}
-
 .topbar{position:sticky;top:14px;z-index:30;margin-bottom:22px;display:flex;justify-content:center;pointer-events:none}
-.dock{
-  pointer-events:auto; display:flex; gap:10px; padding:10px;
-  border:1px solid var(--stroke); border-radius:999px;
-  background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.05));
-  backdrop-filter:blur(22px) saturate(170%);
-  box-shadow:var(--shadow); overflow:auto; max-width:100%;
-}
+.dock{pointer-events:auto;display:flex;gap:10px;padding:10px;border:1px solid var(--stroke);border-radius:999px;background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.05));backdrop-filter:blur(22px) saturate(170%);box-shadow:var(--shadow);overflow:auto;max-width:100%}
 .dock::-webkit-scrollbar{height:0;width:0}
-.nav-btn{
-  appearance:none;border:0;color:var(--muted);background:transparent;padding:12px 16px;border-radius:999px;
-  display:flex;align-items:center;gap:10px;font-size:14px;font-weight:650;letter-spacing:.2px;cursor:pointer;
-  transition:transform .25s ease, background .25s ease, color .25s ease;white-space:nowrap;
-}
+.nav-btn{appearance:none;border:0;color:var(--muted);background:transparent;padding:12px 16px;border-radius:999px;display:flex;align-items:center;gap:10px;font-size:14px;font-weight:650;letter-spacing:.2px;cursor:pointer;transition:transform .25s ease, background .25s ease, color .25s ease;white-space:nowrap}
 .nav-btn:hover{transform:translateY(-1px);color:var(--text);background:rgba(255,255,255,.06)}
 .nav-btn.active{color:#09111d;background:linear-gradient(135deg, rgba(124,218,255,1), rgba(155,123,255,1));box-shadow:0 10px 24px rgba(124,218,255,.28)}
 .icon{width:16px;height:16px;flex:none;opacity:.96}
-
 .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:stretch;padding:8px 0 26px}
-.panel,.glass-card,.modal{
-  position:relative;border:1px solid var(--stroke);border-radius:var(--radius-xl);
-  background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
-  backdrop-filter:blur(20px) saturate(170%);
-  box-shadow:var(--shadow);overflow:hidden;
-}
-.panel::before,.glass-card::after,.modal::before{
-  content:"";position:absolute;inset:0;background:radial-gradient(600px 220px at var(--mx, 50%) var(--my, 0%), rgba(255,255,255,.13), transparent 38%);pointer-events:none;opacity:.85;
-}
-
+.panel,.glass-card,.modal{position:relative;border:1px solid var(--stroke);border-radius:var(--radius-xl);background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));backdrop-filter:blur(20px) saturate(170%);box-shadow:var(--shadow);overflow:hidden}
+.panel::before,.glass-card::after,.modal::before{content:"";position:absolute;inset:0;background:radial-gradient(600px 220px at var(--mx, 50%) var(--my, 0%), rgba(255,255,255,.13), transparent 38%);pointer-events:none;opacity:.85}
 .hero-main{padding:28px;min-height:350px;display:flex;flex-direction:column;justify-content:space-between;gap:22px}
-.eyebrow{
-  display:inline-flex;align-items:center;gap:8px;width:max-content;padding:9px 14px;border-radius:999px;
-  border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:var(--muted);font-size:13px;font-weight:700;
-  letter-spacing:.35px;text-transform:uppercase;
-}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;width:max-content;padding:9px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:var(--muted);font-size:13px;font-weight:700;letter-spacing:.35px;text-transform:uppercase}
 .title-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
 .app-icon{width:92px;height:92px;border-radius:26px;object-fit:cover;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);box-shadow:0 16px 32px rgba(0,0,0,.35)}
 .hero-copy h1{margin:0;font-size:clamp(2.4rem, 5vw, 4.6rem);line-height:.95;letter-spacing:-1.6px}
@@ -96,7 +71,6 @@ body::before{
 .meta{padding:14px 15px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11)}
 .meta .k{display:block;font-size:12px;color:var(--soft);margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px}
 .meta .v{font-size:14px;font-weight:700}
-
 .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:4px}
 .btn{appearance:none;border:0;cursor:pointer;border-radius:999px;padding:13px 18px;font-weight:800;font-size:14px;letter-spacing:.2px;display:inline-flex;align-items:center;gap:10px;position:relative;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:manipulation}
 .btn:hover{transform:translateY(-2px)}
@@ -109,20 +83,17 @@ body::before{
 .btn.vote-locked{opacity:.62;cursor:not-allowed;filter:saturate(.85)}
 .btn.like.selected{background:rgba(52,211,153,.24);box-shadow:0 12px 28px rgba(52,211,153,.14)}
 .btn.dislike.selected{background:rgba(255,93,122,.24);box-shadow:0 12px 28px rgba(255,93,122,.14)}
-
 .hero-side{padding:24px;display:flex;flex-direction:column;gap:16px}
 .stat{padding:18px;border-radius:22px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11)}
 .stat .label{font-size:12px;letter-spacing:.25px;text-transform:uppercase;color:var(--soft)}
 .stat .value{display:flex;justify-content:space-between;align-items:baseline;margin-top:8px;gap:12px}
 .stat .value strong{font-size:28px;letter-spacing:-.8px}
 .stat .value span{color:var(--muted);font-size:13px}
-
 section{margin-top:22px}
 .section-title{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:18px 2px 14px}
 .section-title h2{margin:0;font-size:22px;letter-spacing:-.5px}
 .section-title p{margin:0;color:var(--muted);font-size:14px;max-width:60ch}
 .grid{display:grid;grid-template-columns:repeat(12, minmax(0,1fr));gap:16px}
-
 .tutorial{grid-column:span 4;min-height:250px;padding:16px;display:flex;flex-direction:column;gap:12px}
 .thumb{height:124px;border-radius:20px;overflow:hidden;position:relative;background:linear-gradient(135deg, rgba(124,218,255,.26), rgba(155,123,255,.22), rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.12)}
 .thumb img{width:100%;height:100%;object-fit:cover;filter:saturate(1.03) contrast(1.02);transform:scale(1.02)}
@@ -130,7 +101,6 @@ section{margin-top:22px}
 .tutorial h3{margin:0;font-size:17px;letter-spacing:-.3px}
 .tutorial p{margin:0;color:var(--muted);font-size:13px;line-height:1.6;flex:1}
 .tutorial .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-
 .launch-main{padding:18px}
 .launcher-card{display:grid;grid-template-columns:140px 1fr;gap:16px;padding:16px;border-radius:24px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11)}
 .launcher-thumb{width:100%;aspect-ratio:1/1;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:linear-gradient(135deg, rgba(124,218,255,.2), rgba(155,123,255,.2))}
@@ -147,7 +117,6 @@ section{margin-top:22px}
 .brand span{color:var(--muted);font-size:13px;line-height:1.6}
 .links{display:flex;flex-wrap:wrap;gap:10px}
 .links a{color:var(--text);text-decoration:none}
-
 .modal-backdrop{position:fixed;inset:0;background:rgba(2,4,8,.62);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;z-index:60;padding:18px}
 .modal-backdrop.show{display:flex}
 .modal{width:min(820px, 100%);border-radius:32px;overflow:hidden;position:relative}
@@ -176,6 +145,7 @@ section{margin-top:22px}
 .hidden{display:none !important}
 .video-box{margin-top:14px;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.28)}
 .video-box video{display:block;width:100%;max-height:420px;background:#000}
+.vote-cooldown{opacity:.8}
 
 @media (max-width:1020px){
   .hero{grid-template-columns:1fr}.meta-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tutorial{grid-column:span 6}
@@ -313,9 +283,7 @@ section{margin-top:22px}
         <div class="progress"><span id="progressFill"></span></div>
       </div>
 
-      <div class="log" id="modalLog">
-        <div class="entry"><span class="pulse"></span><span>Ready.</span></div>
-      </div>
+      <div class="log" id="modalLog"><div class="entry"><span class="pulse"></span><span>Ready.</span></div></div>
     </div>
   </div>
 </div>
@@ -474,9 +442,10 @@ section{margin-top:22px}
       timer: null,
       progressTimer: null,
       voteChoice: localStorage.getItem('amongus_vote_choice'),
-      viewCounted: sessionStorage.getItem('amongus_view_counted') === '1',
+      voteUnlockAt: Number(localStorage.getItem('amongus_vote_unlock_at') || '0'),
       counterPath: 'launcher_stats_v2',
-      statsRef: null
+      statsRef: null,
+      voteCountdownTimer: null
     };
 
     const firebaseConfig = {
@@ -490,15 +459,12 @@ section{margin-top:22px}
       measurementId: "G-5RZPQFDF75"
     };
 
+    const VOTE_COOLDOWN_MS = 120000;
+
     function formatNumber(n){ return new Intl.NumberFormat().format(Number(n || 0)); }
     function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
     function hasFirebase(){ return !!(window.firebase && firebaseConfig.databaseURL && firebaseConfig.apiKey && firebaseConfig.projectId); }
-
-    function applyImage(el, src, fallback = PLACEHOLDER){
-      if(!el) return;
-      el.src = src || fallback;
-      el.onerror = () => { if(el.src !== fallback) el.src = fallback; };
-    }
+    function applyImage(el, src, fallback = PLACEHOLDER){ if(!el) return; el.src = src || fallback; el.onerror = () => { if(el.src !== fallback) el.src = fallback; }; }
 
     function toast(message){
       let el = document.getElementById('toast');
@@ -515,8 +481,17 @@ section{margin-top:22px}
       el._t = setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateX(-50%) translateY(20px)'; }, 1800);
     }
 
-    function renderVoteState(){
-      const locked = !!state.voteChoice;
+    function formatCountdown(ms){
+      const sec = Math.max(0, Math.ceil(ms / 1000));
+      return sec;
+    }
+
+    function isVoteLocked(){
+      return Date.now() < state.voteUnlockAt;
+    }
+
+    function updateVoteButtons(){
+      const locked = isVoteLocked();
       ui.likeBtn.disabled = locked;
       ui.dislikeBtn.disabled = locked;
       ui.likeBtn.classList.toggle('vote-locked', locked);
@@ -525,6 +500,45 @@ section{margin-top:22px}
       ui.dislikeBtn.classList.toggle('selected', state.voteChoice === 'dislike');
       ui.likeBtn.setAttribute('aria-pressed', state.voteChoice === 'like' ? 'true' : 'false');
       ui.dislikeBtn.setAttribute('aria-pressed', state.voteChoice === 'dislike' ? 'true' : 'false');
+      if (locked) {
+        const left = formatCountdown(state.voteUnlockAt - Date.now());
+        ui.likeBtn.innerHTML = `<svg class="icon"><use href="#i-thumbs-up"></use></svg>Like <span class="vote-count" id="likesCount">${ui.likesCount.textContent}</span>`;
+        ui.dislikeBtn.innerHTML = `<svg class="icon"><use href="#i-thumbs-down"></use></svg>Dislike <span class="vote-count" id="dislikesCount">${ui.dislikesCount.textContent}</span>`;
+        ui.likeBtn.title = `Wait ${left}s to vote again`;
+        ui.dislikeBtn.title = `Wait ${left}s to vote again`;
+      } else {
+        ui.likeBtn.title = '';
+        ui.dislikeBtn.title = '';
+      }
+    }
+
+    function persistVoteCooldown(){
+      localStorage.setItem('amongus_vote_unlock_at', String(state.voteUnlockAt));
+      localStorage.setItem('amongus_vote_choice', state.voteChoice || '');
+    }
+
+    function setVote(choice){
+      state.voteChoice = choice;
+      state.voteUnlockAt = Date.now() + VOTE_COOLDOWN_MS;
+      persistVoteCooldown();
+      updateVoteButtons();
+      startVoteCountdown();
+    }
+
+    function startVoteCountdown(){
+      clearInterval(state.voteCountdownTimer);
+      state.voteCountdownTimer = setInterval(() => {
+        if (!isVoteLocked()) {
+          clearInterval(state.voteCountdownTimer);
+          state.voteChoice = null;
+          state.voteUnlockAt = 0;
+          localStorage.removeItem('amongus_vote_choice');
+          localStorage.removeItem('amongus_vote_unlock_at');
+          updateVoteButtons();
+          return;
+        }
+        updateVoteButtons();
+      }, 1000);
     }
 
     function renderCounts(data = {}){
@@ -537,7 +551,7 @@ section{margin-top:22px}
       ui.dislikesCount.textContent = formatNumber(dislikes);
       const total = likes + dislikes;
       ui.likesStat.textContent = `${(total ? (likes / total) * 5 : 0).toFixed(1)}⭐`;
-      renderVoteState();
+      updateVoteButtons();
     }
 
     function openModal(mode, data = {}){
@@ -693,16 +707,10 @@ section{margin-top:22px}
       ui.keyDesc.textContent = keyAccess.description || '';
       renderTutorials(tutorials);
 
-      ui.launchBtn.onclick = () => openModal('load', {
-        title: main.name || 'Launch Now',
-        tag: 'App launcher',
-        info: main.description || '',
-        icon: main.icon || app.icon,
-        source: 'Android',
-        state: 'Ready',
-        window: '1s',
-        link: main.link || '#'
-      });
+      ui.launchBtn.onclick = async () => {
+        await incrementGlobalView();
+        window.location.href = main.link || '#';
+      };
       ui.tutorialBtn.onclick = () => document.getElementById('guide').scrollIntoView({behavior:'smooth', block:'start'});
       ui.getKeyBtn.onclick = () => openModal('load', {
         title: keyAccess.name || 'Key Access',
@@ -727,92 +735,78 @@ section{margin-top:22px}
       wireNavigation();
     }
 
-    function setVote(choice){
-      state.voteChoice = choice;
-      localStorage.setItem('amongus_vote_choice', choice);
-      renderVoteState();
+    function setCountsFromSnapshot(data){
+      renderCounts({
+        views: Number(data.views || 0),
+        likes: Number(data.likes || 0),
+        dislikes: Number(data.dislikes || 0)
+      });
     }
 
-    function renderLocalCounts(counts){
-      ui.viewsCount.textContent = formatNumber(counts.views || 0);
-      ui.subtitleText.textContent = `👁 ${formatNumber(counts.views || 0)} Views`;
-      ui.likesCount.textContent = formatNumber(counts.likes || 0);
-      ui.dislikesCount.textContent = formatNumber(counts.dislikes || 0);
-      const total = (counts.likes || 0) + (counts.dislikes || 0);
-      ui.likesStat.textContent = `${(total ? (counts.likes / total) * 5 : 0).toFixed(1)}⭐`;
-      renderVoteState();
+    async function incrementGlobalView(){
+      if (state.statsRef) {
+        await state.statsRef.child('views').transaction(v => (Number(v) || 0) + 1);
+        return;
+      }
+      const counts = JSON.parse(localStorage.getItem('amongus_local_counts') || '{"views":0,"likes":0,"dislikes":0}');
+      counts.views = Number(counts.views || 0) + 1;
+      localStorage.setItem('amongus_local_counts', JSON.stringify(counts));
+      setCountsFromSnapshot(counts);
+    }
+
+    function recordVote(field){
+      if (!state.statsRef) {
+        const counts = JSON.parse(localStorage.getItem('amongus_local_counts') || '{"views":0,"likes":0,"dislikes":0}');
+        counts[field] = Number(counts[field] || 0) + 1;
+        localStorage.setItem('amongus_local_counts', JSON.stringify(counts));
+        setCountsFromSnapshot(counts);
+        return Promise.resolve();
+      }
+      return state.statsRef.child(field).transaction(v => (Number(v) || 0) + 1);
+    }
+
+    function handleVote(field, label){
+      if (isVoteLocked()) {
+        toast(`Wait ${formatCountdown(state.voteUnlockAt - Date.now())}s to vote again.`);
+        return;
+      }
+      setVote(field === 'likes' ? 'like' : 'dislike');
+      recordVote(field).then(() => toast(`${label} saved.`));
     }
 
     async function bootLocal(){
-      const counts = { views: 0, likes: 0, dislikes: 0 };
-      if (!state.viewCounted) {
-        sessionStorage.setItem('amongus_view_counted', '1');
-        state.viewCounted = true;
-        counts.views += 1;
-      }
-      renderLocalCounts(counts);
-
-      ui.likeBtn.onclick = () => {
-        if (state.voteChoice) return toast('You can only vote once.');
-        counts.likes += 1;
-        setVote('like');
-        renderLocalCounts(counts);
-        toast('Like saved.');
-      };
-      ui.dislikeBtn.onclick = () => {
-        if (state.voteChoice) return toast('You can only vote once.');
-        counts.dislikes += 1;
-        setVote('dislike');
-        renderLocalCounts(counts);
-        toast('Dislike saved.');
-      };
+      const counts = JSON.parse(localStorage.getItem('amongus_local_counts') || '{"views":0,"likes":0,"dislikes":0}');
+      counts.views = Number(counts.views || 0) + 1;
+      localStorage.setItem('amongus_local_counts', JSON.stringify(counts));
+      setCountsFromSnapshot(counts);
+      ui.likeBtn.onclick = () => handleVote('likes', 'Like');
+      ui.dislikeBtn.onclick = () => handleVote('dislikes', 'Dislike');
     }
 
     async function bootFirebase(){
       if (!hasFirebase()) return false;
       if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
       const db = firebase.database();
-      const statsRef = db.ref(state.counterPath);
-      state.statsRef = statsRef;
+      state.statsRef = db.ref(state.counterPath);
 
-      const snap = await statsRef.get();
+      const snap = await state.statsRef.get();
       if (!snap.exists()) {
-        await statsRef.set({ views: 0, likes: 0, dislikes: 0 });
+        await state.statsRef.set({ views: 0, likes: 0, dislikes: 0 });
       }
 
-      statsRef.on('value', snap => {
+      state.statsRef.on('value', snap => {
         const data = snap.val() || { views: 0, likes: 0, dislikes: 0 };
-        ui.viewsCount.textContent = formatNumber(data.views || 0);
-        ui.subtitleText.textContent = `👁 ${formatNumber(data.views || 0)} Views`;
-        ui.likesCount.textContent = formatNumber(data.likes || 0);
-        ui.dislikesCount.textContent = formatNumber(data.dislikes || 0);
-        const total = (data.likes || 0) + (data.dislikes || 0);
-        ui.likesStat.textContent = `${(total ? (data.likes / total) * 5 : 0).toFixed(1)}⭐`;
-        renderVoteState();
+        setCountsFromSnapshot(data);
       });
 
-      if (!state.viewCounted) {
-        sessionStorage.setItem('amongus_view_counted', '1');
-        state.viewCounted = true;
-        await statsRef.child('views').transaction(v => (Number(v) || 0) + 1);
-      }
+      await incrementGlobalView();
 
-      ui.likeBtn.onclick = async () => {
-        if (state.voteChoice) return toast('You can only vote once.');
-        setVote('like');
-        await statsRef.child('likes').transaction(v => (Number(v) || 0) + 1);
-        toast('Like saved.');
-      };
-      ui.dislikeBtn.onclick = async () => {
-        if (state.voteChoice) return toast('You can only vote once.');
-        setVote('dislike');
-        await statsRef.child('dislikes').transaction(v => (Number(v) || 0) + 1);
-        toast('Dislike saved.');
-      };
+      ui.likeBtn.onclick = () => handleVote('likes', 'Like');
+      ui.dislikeBtn.onclick = () => handleVote('dislikes', 'Dislike');
+
       return true;
     }
 
-    // Glow tracking
     document.querySelectorAll('.panel, .glass-card, .modal').forEach(el => {
       el.addEventListener('pointermove', (e) => {
         const r = el.getBoundingClientRect();
@@ -823,17 +817,11 @@ section{margin-top:22px}
       });
     });
 
-    // Background particles
     const canvas = document.getElementById('bgCanvas');
     const ctx = canvas.getContext('2d', { alpha: true });
     let W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 2);
     const pods = [], arcs = [];
-    function resize(){
-      W = canvas.width = Math.floor(window.innerWidth * DPR);
-      H = canvas.height = Math.floor(window.innerHeight * DPR);
-      canvas.style.width = window.innerWidth + 'px';
-      canvas.style.height = window.innerHeight + 'px';
-    }
+    function resize(){ W = canvas.width = Math.floor(window.innerWidth * DPR); H = canvas.height = Math.floor(window.innerHeight * DPR); canvas.style.width = window.innerWidth + 'px'; canvas.style.height = window.innerHeight + 'px'; }
     class Pod { constructor(){ this.reset(); } reset(){ this.x=Math.random()*W; this.y=Math.random()*H; this.vx=(Math.random()*0.55+.12)*(Math.random()<.5?-1:1)*DPR; this.vy=(Math.random()*0.45+.1)*(Math.random()<.5?-1:1)*DPR; this.r=(Math.random()*1.6+.9)*DPR; this.alpha=Math.random()*.55+.15; } update(){ this.x+=this.vx; this.y+=this.vy; if(this.x<-30*DPR||this.x>W+30*DPR||this.y<-30*DPR||this.y>H+30*DPR) this.reset(); } draw(){ ctx.beginPath(); ctx.fillStyle = `rgba(124,218,255,${this.alpha})`; ctx.arc(this.x,this.y,this.r,0,Math.PI*2); ctx.fill(); } }
     class Arc { constructor(i){ this.a=Math.random()*Math.PI*2; this.r=(120+i*30)*DPR; this.speed=(Math.random()*0.006+.003)*(Math.random()<.5?-1:1); this.alpha=.04+Math.random()*.05; } update(){ this.a+=this.speed; } draw(cx,cy){ ctx.beginPath(); ctx.strokeStyle=`rgba(255,255,255,${this.alpha})`; ctx.lineWidth=1.2*DPR; ctx.arc(cx,cy,this.r,this.a,this.a+1.8); ctx.stroke(); } }
     function initParticles(){ pods.length=0; arcs.length=0; for(let i=0;i<64;i++) pods.push(new Pod()); for(let i=0;i<8;i++) arcs.push(new Arc(i)); }
@@ -845,6 +833,7 @@ section{margin-top:22px}
       renderApp(DEFAULT_MANIFEST);
       const ok = await bootFirebase().catch(() => false);
       if (!ok) await bootLocal();
+      startVoteCountdown();
     })();
   </script></body>
 </html>
