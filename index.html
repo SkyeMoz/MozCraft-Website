@@ -311,7 +311,8 @@
         views: 'amongus_views',
         likes: 'amongus_likes',
         dislikes: 'amongus_dislikes'
-      }
+      },
+      counterPath: 'launcher_stats_v2'
     };
 
     const firebaseConfig = {
@@ -360,25 +361,25 @@
 
     // Local fallback if Firebase is not configured or fails.
     function loadLocalMode(){
-      const base = state.manifest.stats || { views: 0, likes: 0, dislikes: 0 };
-      const counts = {
-        views: Number(localStorage.getItem(state.storageKey.views) || base.views || 0),
-        likes: Number(localStorage.getItem(state.storageKey.likes) || base.likes || 0),
-        dislikes: Number(localStorage.getItem(state.storageKey.dislikes) || base.dislikes || 0)
-      };
+      const counts = { views: 0, likes: 0, dislikes: 0 };
       if (!sessionStorage.getItem(state.storageKey.viewCounted)) {
         sessionStorage.setItem(state.storageKey.viewCounted, '1');
         counts.views += 1;
-        localStorage.setItem(state.storageKey.views, String(counts.views));
       }
       renderCounts(counts);
       ui.likeBtn.onclick = async () => {
         if (getVoteChoice()) return toast('You can only vote once.');
-        setLocalVote('like'); counts.likes += 1; localStorage.setItem(state.storageKey.likes, String(counts.likes)); renderCounts(counts); toast('Like saved.');
+        setLocalVote('like');
+        counts.likes += 1;
+        renderCounts(counts);
+        toast('Like saved.');
       };
       ui.dislikeBtn.onclick = async () => {
         if (getVoteChoice()) return toast('You can only vote once.');
-        setLocalVote('dislike'); counts.dislikes += 1; localStorage.setItem(state.storageKey.dislikes, String(counts.dislikes)); renderCounts(counts); toast('Dislike saved.');
+        setLocalVote('dislike');
+        counts.dislikes += 1;
+        renderCounts(counts);
+        toast('Dislike saved.');
       };
     }
     function setLocalVote(choice){ localStorage.setItem(state.storageKey.voteChoice, choice); renderVoteState(); }
@@ -388,8 +389,12 @@
       if (!window.firebase || !hasRealFirebaseConfig()) return false;
       if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
       const db = firebase.database();
-      const statsRef = db.ref('stats');
-      await statsRef.update({ views: 0, likes: 0, dislikes: 0 }).catch(() => statsRef.set({ views: 0, likes: 0, dislikes: 0 }));
+      const statsRef = db.ref(state.counterPath);
+
+      const snap = await statsRef.get();
+      if (!snap.exists()) {
+        await statsRef.set({ views: 0, likes: 0, dislikes: 0 });
+      }
 
       statsRef.on('value', (snap) => {
         const data = snap.val() || { views: 0, likes: 0, dislikes: 0 };
@@ -398,14 +403,14 @@
 
       if (!sessionStorage.getItem(state.storageKey.viewCounted)) {
         sessionStorage.setItem(state.storageKey.viewCounted, '1');
-        statsRef.child('views').transaction(v => (v || 0) + 1);
+        await statsRef.child('views').transaction(v => (Number(v) || 0) + 1);
       }
 
       ui.likeBtn.onclick = async () => {
         if (getVoteChoice()) return toast('You can only vote once.');
         localStorage.setItem(state.storageKey.voteChoice, 'like');
         renderVoteState();
-        await statsRef.child('likes').transaction(v => (v || 0) + 1);
+        await statsRef.child('likes').transaction(v => (Number(v) || 0) + 1);
         toast('Like saved.');
       };
 
@@ -413,7 +418,7 @@
         if (getVoteChoice()) return toast('You can only vote once.');
         localStorage.setItem(state.storageKey.voteChoice, 'dislike');
         renderVoteState();
-        await statsRef.child('dislikes').transaction(v => (v || 0) + 1);
+        await statsRef.child('dislikes').transaction(v => (Number(v) || 0) + 1);
         toast('Dislike saved.');
       };
 
@@ -459,4 +464,4 @@
 
     window.__launcher = { state };
   </script></body>
-        </html>
+</html>
