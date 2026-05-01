@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -20,191 +19,188 @@
       --radius-xl:30px;
       --radius-lg:22px;
       --radius-md:18px;
-    }
+    }*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+body{
+  margin:0;
+  min-height:100vh;
+  overflow-x:hidden;
+  color:var(--text);
+  background:
+    radial-gradient(1200px 700px at 12% 16%, rgba(124,218,255,.14), transparent 45%),
+    radial-gradient(900px 600px at 82% 20%, rgba(155,123,255,.14), transparent 48%),
+    radial-gradient(900px 700px at 50% 90%, rgba(73,240,164,.07), transparent 40%),
+    linear-gradient(180deg, #04060b 0%, #05070d 35%, #05070d 100%);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  user-select:none;
+  -webkit-user-select:none;
+  touch-action:manipulation;
+}
+::selection{background:transparent;color:inherit}
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+  background-size:72px 72px;
+  mask-image:radial-gradient(circle at center, rgba(0,0,0,.8), transparent 82%);
+  opacity:.35;
+  z-index:0;
+}
+#bgCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;filter:saturate(1.08)}
 
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
-    body{
-      margin:0;
-      min-height:100vh;
-      overflow-x:hidden;
-      color:var(--text);
-      background:
-        radial-gradient(1200px 700px at 12% 16%, rgba(124,218,255,.14), transparent 45%),
-        radial-gradient(900px 600px at 82% 20%, rgba(155,123,255,.14), transparent 48%),
-        radial-gradient(900px 700px at 50% 90%, rgba(73,240,164,.07), transparent 40%),
-        linear-gradient(180deg, #04060b 0%, #05070d 35%, #05070d 100%);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      user-select:none;
-      -webkit-user-select:none;
-      touch-action:manipulation;
-    }
-    ::selection{background:transparent;color:inherit}
-    body::before{
-      content:"";
-      position:fixed; inset:0;
-      pointer-events:none;
-      background-image:
-        linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
-      background-size:72px 72px;
-      mask-image:radial-gradient(circle at center, rgba(0,0,0,.8), transparent 82%);
-      opacity:.35;
-      z-index:0;
-    }
-    #bgCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;filter:saturate(1.08)}
+.wrap{position:relative;z-index:1;width:min(1180px, calc(100% - 28px));margin:0 auto;padding:18px 0 56px}
 
-    .wrap{position:relative;z-index:1;width:min(1180px, calc(100% - 28px));margin:0 auto;padding:18px 0 56px}
+.topbar{position:sticky;top:14px;z-index:30;margin-bottom:22px;display:flex;justify-content:center;pointer-events:none}
+.dock{
+  pointer-events:auto; display:flex; gap:10px; padding:10px;
+  border:1px solid var(--stroke); border-radius:999px;
+  background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.05));
+  backdrop-filter:blur(22px) saturate(170%);
+  box-shadow:var(--shadow); overflow:auto; max-width:100%;
+}
+.dock::-webkit-scrollbar{height:0;width:0}
+.nav-btn{
+  appearance:none;border:0;color:var(--muted);background:transparent;padding:12px 16px;border-radius:999px;
+  display:flex;align-items:center;gap:10px;font-size:14px;font-weight:650;letter-spacing:.2px;cursor:pointer;
+  transition:transform .25s ease, background .25s ease, color .25s ease;white-space:nowrap;
+}
+.nav-btn:hover{transform:translateY(-1px);color:var(--text);background:rgba(255,255,255,.06)}
+.nav-btn.active{color:#09111d;background:linear-gradient(135deg, rgba(124,218,255,1), rgba(155,123,255,1));box-shadow:0 10px 24px rgba(124,218,255,.28)}
+.icon{width:16px;height:16px;flex:none;opacity:.96}
 
-    .topbar{position:sticky;top:14px;z-index:30;margin-bottom:22px;display:flex;justify-content:center;pointer-events:none}
-    .dock{
-      pointer-events:auto; display:flex; gap:10px; padding:10px;
-      border:1px solid var(--stroke); border-radius:999px;
-      background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.05));
-      backdrop-filter:blur(22px) saturate(17l0%);
-      box-shadow:var(--shadow); overflow:auto; max-width:100%;
-    }
-    .dock::-webkit-scrollbar{height:0;width:0}
-    .nav-btn{
-      appearance:none;border:0;color:var(--muted);background:transparent;padding:12px 16px;border-radius:999px;
-      display:flex;align-items:center;gap:10px;font-size:14px;font-weight:650;letter-spacing:.2px;cursor:pointer;
-      transition:transform .25s ease, background .25s ease, color .25s ease;white-space:nowrap;
-    }
-    .nav-btn:hover{transform:translateY(-1px);color:var(--text);background:rgba(255,255,255,.06)}
-    .nav-btn.active{color:#09111d;background:linear-gradient(135deg, rgba(124,218,255,1), rgba(155,123,255,1));box-shadow:0 10px 24px rgba(124,218,255,.28)}
-    .icon{width:16px;height:16px;flex:none;opacity:.96}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:stretch;padding:8px 0 26px}
+.panel,.glass-card,.modal{
+  position:relative;border:1px solid var(--stroke);border-radius:var(--radius-xl);
+  background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+  backdrop-filter:blur(20px) saturate(170%);
+  box-shadow:var(--shadow);overflow:hidden;
+}
+.panel::before,.glass-card::after,.modal::before{
+  content:"";position:absolute;inset:0;background:radial-gradient(600px 220px at var(--mx, 50%) var(--my, 0%), rgba(255,255,255,.13), transparent 38%);pointer-events:none;opacity:.85;
+}
 
-    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:stretch;padding:8px 0 26px}
-    .panel,.glass-card,.modal{
-      position:relative;border:1px solid var(--stroke);border-radius:var(--radius-xl);
-      background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
-      backdrop-filter:blur(20px) saturate(170%);
-      box-shadow:var(--shadow);overflow:hidden;
-    }
-    .panel::before,.glass-card::after,.modal::before{
-      content:"";position:absolute;inset:0;background:radial-gradient(600px 220px at var(--mx, 50%) var(--my, 0%), rgba(255,255,255,.13), transparent 38%);pointer-events:none;opacity:.85;
-    }
+.hero-main{padding:28px;min-height:350px;display:flex;flex-direction:column;justify-content:space-between;gap:22px}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;width:max-content;padding:9px 14px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:var(--muted);font-size:13px;font-weight:700;
+  letter-spacing:.35px;text-transform:uppercase;
+}
+.title-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.app-icon{width:92px;height:92px;border-radius:26px;object-fit:cover;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);box-shadow:0 16px 32px rgba(0,0,0,.35)}
+.hero-copy h1{margin:0;font-size:clamp(2.4rem, 5vw, 4.6rem);line-height:.95;letter-spacing:-1.6px}
+.hero-copy p{margin:12px 0 0;color:var(--muted);font-size:15px;line-height:1.65;max-width:62ch}
+.meta-grid{display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:12px;margin-top:8px}
+.meta{padding:14px 15px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11)}
+.meta .k{display:block;font-size:12px;color:var(--soft);margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px}
+.meta .v{font-size:14px;font-weight:700}
 
-    .hero-main{padding:28px;min-height:350px;display:flex;flex-direction:column;justify-content:space-between;gap:22px}
-    .eyebrow{
-      display:inline-flex;align-items:center;gap:8px;width:max-content;padding:9px 14px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:var(--muted);font-size:13px;font-weight:700;
-      letter-spacing:.35px;text-transform:uppercase;
-    }
-    .title-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-    .app-icon{width:92px;height:92px;border-radius:26px;object-fit:cover;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);box-shadow:0 16px 32px rgba(0,0,0,.35)}
-    .hero-copy h1{margin:0;font-size:clamp(2.4rem, 5vw, 4.6rem);line-height:.95;letter-spacing:-1.6px}
-    .hero-copy p{margin:12px 0 0;color:var(--muted);font-size:15px;line-height:1.65;max-width:62ch}
-    .meta-grid{display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:12px;margin-top:8px}
-    .meta{padding:14px 15px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11)}
-    .meta .k{display:block;font-size:12px;color:var(--soft);margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px}
-    .meta .v{font-size:14px;font-weight:700}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:4px}
+.btn{appearance:none;border:0;cursor:pointer;border-radius:999px;padding:13px 18px;font-weight:800;font-size:14px;letter-spacing:.2px;display:inline-flex;align-items:center;gap:10px;position:relative;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0) scale(.99)}
+.btn.primary{color:#081018;background:linear-gradient(135deg, #7cdaff, #9b7bff);box-shadow:0 14px 28px rgba(124,218,255,.22)}
+.btn.ghost{color:var(--text);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+.btn.small{padding:11px 14px;font-size:13px}
+.btn.like{background:rgba(52,211,153,.14);border:1px solid rgba(52,211,153,.28);color:#c9ffe8}
+.btn.dislike{background:rgba(255,93,122,.14);border:1px solid rgba(255,93,122,.28);color:#ffd6de}
+.btn.vote-locked{opacity:.62;cursor:not-allowed;filter:saturate(.85)}
+.btn.like.selected{background:rgba(52,211,153,.24);box-shadow:0 12px 28px rgba(52,211,153,.14)}
+.btn.dislike.selected{background:rgba(255,93,122,.24);box-shadow:0 12px 28px rgba(255,93,122,.14)}
 
-    .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:4px}
-    .btn{appearance:none;border:0;cursor:pointer;border-radius:999px;padding:13px 18px;font-weight:800;font-size:14px;letter-spacing:.2px;display:inline-flex;align-items:center;gap:10px;position:relative;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:manipulation}
-    .btn:hover{transform:translateY(-2px)}
-    .btn:active{transform:translateY(0) scale(.99)}
-    .btn.primary{color:#081018;background:linear-gradient(135deg, #7cdaff, #9b7bff);box-shadow:0 14px 28px rgba(124,218,255,.22)}
-    .btn.ghost{color:var(--text);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
-    .btn.small{padding:11px 14px;font-size:13px}
-    .btn.like{background:rgba(52,211,153,.14);border:1px solid rgba(52,211,153,.28);color:#c9ffe8}
-    .btn.dislike{background:rgba(255,93,122,.14);border:1px solid rgba(255,93,122,.28);color:#ffd6de}
-    .btn.vote-locked{opacity:.62;cursor:not-allowed;filter:saturate(.85)}
-    .btn.like.selected{background:rgba(52,211,153,.24);box-shadow:0 12px 28px rgba(52,211,153,.14)}
-    .btn.dislike.selected{background:rgba(255,93,122,.24);box-shadow:0 12px 28px rgba(255,93,122,.14)}
+.hero-side{padding:24px;display:flex;flex-direction:column;gap:16px}
+.stat{padding:18px;border-radius:22px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11)}
+.stat .label{font-size:12px;letter-spacing:.25px;text-transform:uppercase;color:var(--soft)}
+.stat .value{display:flex;justify-content:space-between;align-items:baseline;margin-top:8px;gap:12px}
+.stat .value strong{font-size:28px;letter-spacing:-.8px}
+.stat .value span{color:var(--muted);font-size:13px}
 
-    .hero-side{padding:24px;display:flex;flex-direction:column;gap:16px}
-    .stat{padding:18px;border-radius:22px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11)}
-    .stat .label{font-size:12px;letter-spacing:.25px;text-transform:uppercase;color:var(--soft)}
-    .stat .value{display:flex;justify-content:space-between;align-items:baseline;margin-top:8px;gap:12px}
-    .stat .value strong{font-size:28px;letter-spacing:-.8px}
-    .stat .value span{color:var(--muted);font-size:13px}
+section{margin-top:22px}
+.section-title{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:18px 2px 14px}
+.section-title h2{margin:0;font-size:22px;letter-spacing:-.5px}
+.section-title p{margin:0;color:var(--muted);font-size:14px;max-width:60ch}
+.grid{display:grid;grid-template-columns:repeat(12, minmax(0,1fr));gap:16px}
 
-    section{margin-top:22px}
-    .section-title{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:18px 2px 14px}
-    .section-title h2{margin:0;font-size:22px;letter-spacing:-.5px}
-    .section-title p{margin:0;color:var(--muted);font-size:14px;max-width:60ch}
-    .grid{display:grid;grid-template-columns:repeat(12, minmax(0,1fr));gap:16px}
+.tutorial{grid-column:span 4;min-height:250px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.thumb{height:124px;border-radius:20px;overflow:hidden;position:relative;background:linear-gradient(135deg, rgba(124,218,255,.26), rgba(155,123,255,.22), rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.12)}
+.thumb img{width:100%;height:100%;object-fit:cover;filter:saturate(1.03) contrast(1.02);transform:scale(1.02)}
+.tag{position:absolute;left:12px;top:12px;padding:7px 10px;border-radius:999px;background:rgba(0,0,0,.42);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(12px);font-size:12px;font-weight:700}
+.tutorial h3{margin:0;font-size:17px;letter-spacing:-.3px}
+.tutorial p{margin:0;color:var(--muted);font-size:13px;line-height:1.6;flex:1}
+.tutorial .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
 
-    .tutorial{grid-column:span 4;min-height:250px;padding:16px;display:flex;flex-direction:column;gap:12px}
-    .thumb{height:124px;border-radius:20px;overflow:hidden;position:relative;background:linear-gradient(135deg, rgba(124,218,255,.26), rgba(155,123,255,.22), rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.12)}
-    .thumb img{width:100%;height:100%;object-fit:cover;filter:saturate(1.03) contrast(1.02);transform:scale(1.02)}
-    .tag{position:absolute;left:12px;top:12px;padding:7px 10px;border-radius:999px;background:rgba(0,0,0,.42);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(12px);font-size:12px;font-weight:700}
-    .tutorial h3{margin:0;font-size:17px;letter-spacing:-.3px}
-    .tutorial p{margin:0;color:var(--muted);font-size:13px;line-height:1.6;flex:1}
-    .tutorial .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.launch-main{padding:18px}
+.launcher-card{display:grid;grid-template-columns:140px 1fr;gap:16px;padding:16px;border-radius:24px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11)}
+.launcher-thumb{width:100%;aspect-ratio:1/1;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:linear-gradient(135deg, rgba(124,218,255,.2), rgba(155,123,255,.2))}
+.launcher-thumb img{width:100%;height:100%;object-fit:cover}
+.launcher-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+.launcher-copy h3{margin:0;font-size:24px;letter-spacing:-.4px}
+.launcher-copy p{margin:8px 0 0;color:var(--muted);line-height:1.7;font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);color:var(--muted);font-size:12px;font-weight:700}
+.launch-actions{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+.vote-row{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
+.vote-count{margin-left:4px;opacity:.9}
 
-    .launch-main{padding:18px}
-    .launcher-card{display:grid;grid-template-columns:140px 1fr;gap:16px;padding:16px;border-radius:24px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11)}
-    .launcher-thumb{width:100%;aspect-ratio:1/1;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:linear-gradient(135deg, rgba(124,218,255,.2), rgba(155,123,255,.2))}
-    .launcher-thumb img{width:100%;height:100%;object-fit:cover}
-    .launcher-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
-    .launcher-copy h3{margin:0;font-size:24px;letter-spacing:-.4px}
-    .launcher-copy p{margin:8px 0 0;color:var(--muted);line-height:1.7;font-size:14px}
-    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-    .chip{padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);color:var(--muted);font-size:12px;font-weight:700}
-    .launch-actions{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
-    .vote-row{margin-top:14px;display:flex;gap:10px;flex-wrap:wrap}
-    .vote-count{margin-left:4px;opacity:.9}
+.community{margin:24px 0 8px;padding:22px 24px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px}
+.brand{display:flex;flex-direction:column;gap:6px}
+.brand strong{font-size:18px;letter-spacing:-.25px}
+.brand span{color:var(--muted);font-size:13px;line-height:1.6}
+.links{display:flex;flex-wrap:wrap;gap:10px}
+.links a{color:var(--text);text-decoration:none}
 
-    .community{margin:24px 0 8px;padding:22px 24px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px}
-    .brand{display:flex;flex-direction:column;gap:6px}
-    .brand strong{font-size:18px;letter-spacing:-.25px}
-    .brand span{color:var(--muted);font-size:13px;line-height:1.6}
-    .links{display:flex;flex-wrap:wrap;gap:10px}
-    .links a{color:var(--text);text-decoration:none}
+.modal-backdrop{position:fixed;inset:0;background:rgba(2,4,8,.62);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;z-index:60;padding:18px}
+.modal-backdrop.show{display:flex}
+.modal{width:min(820px, 100%);border-radius:32px;overflow:hidden;position:relative}
+.modal .inner{padding:22px;display:grid;grid-template-columns:88px 1fr;gap:18px}
+.modal .avatar{width:88px;height:88px;border-radius:26px;overflow:hidden;border:1px solid rgba(255,255,255,.16);box-shadow:0 18px 38px rgba(0,0,0,.42);background:rgba(255,255,255,.06)}
+.modal .avatar img{width:100%;height:100%;object-fit:cover}
+.modal h3{margin:0;font-size:24px;letter-spacing:-.5px}
+.modal .info{margin-top:6px;color:var(--muted);line-height:1.7;font-size:13px}
+.modal .specs{margin-top:14px;display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:10px}
+.spec{padding:12px 14px;border-radius:18px;border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.06);display:flex;flex-direction:column;gap:4px}
+.spec span{font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.3px}
+.spec strong{font-size:14px}
+.modal .actions-row{margin-top:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.progress-wrap{margin-top:18px;padding:14px;border-radius:20px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05)}
+.progress-top{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:12px;margin-bottom:10px}
+.progress{height:12px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.09)}
+.progress>span{display:block;height:100%;width:0%;border-radius:inherit;background:linear-gradient(135deg, #7cdaff, #9b7bff, #49f0a4);box-shadow:0 10px 18px rgba(124,218,255,.22);transition:width .15s linear}
+.log{margin-top:14px;display:grid;gap:8px;max-height:170px;overflow:auto;padding-right:4px}
+.log::-webkit-scrollbar{width:6px}
+.log::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:999px}
+.entry{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px}
+.entry .pulse{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 5px rgba(124,218,255,.12);flex:none}
+.close{position:absolute;top:14px;right:14px;width:42px;height:42px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:var(--text);cursor:pointer;display:grid;place-items:center;transition:transform .22s ease, background .22s ease;z-index:2}
+.close:hover{transform:rotate(6deg) scale(1.03);background:rgba(255,255,255,.09)}
+.close svg{width:18px;height:18px}
+.hidden{display:none !important}
+.video-box{margin-top:14px;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.28)}
+.video-box video{display:block;width:100%;max-height:420px;background:#000}
 
-    .modal-backdrop{position:fixed;inset:0;background:rgba(2,4,8,.62);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;z-index:60;padding:18px}
-    .modal-backdrop.show{display:flex}
-    .modal{width:min(820px, 100%);border-radius:32px;overflow:hidden;position:relative}
-    .modal .inner{padding:22px;display:grid;grid-template-columns:88px 1fr;gap:18px}
-    .modal .avatar{width:88px;height:88px;border-radius:26px;overflow:hidden;border:1px solid rgba(255,255,255,.16);box-shadow:0 18px 38px rgba(0,0,0,.42);background:rgba(255,255,255,.06)}
-    .modal .avatar img{width:100%;height:100%;object-fit:cover}
-    .modal h3{margin:0;font-size:24px;letter-spacing:-.5px}
-    .modal .info{margin-top:6px;color:var(--muted);line-height:1.7;font-size:13px}
-    .modal .specs{margin-top:14px;display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:10px}
-    .spec{padding:12px 14px;border-radius:18px;border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.06);display:flex;flex-direction:column;gap:4px}
-    .spec span{font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.3px}
-    .spec strong{font-size:14px}
-    .modal .actions-row{margin-top:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-    .progress-wrap{margin-top:18px;padding:14px;border-radius:20px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05)}
-    .progress-top{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:12px;margin-bottom:10px}
-    .progress{height:12px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.09)}
-    .progress>span{display:block;height:100%;width:0%;border-radius:inherit;background:linear-gradient(135deg, #7cdaff, #9b7bff, #49f0a4);box-shadow:0 10px 18px rgba(124,218,255,.22);transition:width .15s linear}
-    .log{margin-top:14px;display:grid;gap:8px;max-height:170px;overflow:auto;padding-right:4px}
-    .log::-webkit-scrollbar{width:6px}
-    .log::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:999px}
-    .entry{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px}
-    .entry .pulse{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 5px rgba(124,218,255,.12);flex:none}
-    .close{position:absolute;top:14px;right:14px;width:42px;height:42px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:var(--text);cursor:pointer;display:grid;place-items:center;transition:transform .22s ease, background .22s ease;z-index:2}
-    .close:hover{transform:rotate(6deg) scale(1.03);background:rgba(255,255,255,.09)}
-    .close svg{width:18px;height:18px}
-    .hidden{display:none !important}
-    .video-box{margin-top:14px;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.28)}
-    .video-box video{display:block;width:100%;max-height:420px;background:#000}
+@media (max-width:1020px){
+  .hero{grid-template-columns:1fr}.meta-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tutorial{grid-column:span 6}
+}
+@media (max-width:640px){
+  .wrap{width:min(100% - 18px, 1180px)}
+  .hero-main,.hero-side,.community,.launch-main{padding:18px}
+  .meta-grid{grid-template-columns:1fr}
+  .tutorial{grid-column:span 12}
+  .modal .inner{grid-template-columns:1fr}.modal .avatar{width:76px;height:76px}
+  .section-title{align-items:flex-start;flex-direction:column}
+  .dock{justify-content:flex-start}.hero-copy h1{font-size:2.45rem}.launcher-card{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
+  #bgCanvas{display:none}
+}
 
-    @media (max-width:1020px){
-      .hero{grid-template-columns:1fr}.meta-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tutorial{grid-column:span 6}
-    }
-    @media (max-width:640px){
-      .wrap{width:min(100% - 18px, 1180px)}
-      .hero-main,.hero-side,.community,.launch-main{padding:18px}
-      .meta-grid{grid-template-columns:1fr}
-      .tutorial{grid-column:span 12}
-      .modal .inner{grid-template-columns:1fr}.modal .avatar{width:76px;height:76px}
-      .section-title{align-items:flex-start;flex-direction:column}
-      .dock{justify-content:flex-start}.hero-copy h1{font-size:2.45rem}.launcher-card{grid-template-columns:1fr}
-    }
-    @media (prefers-reduced-motion:reduce){
-      *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
-      #bgCanvas{display:none}
-    }
   </style>
 </head>
 <body>
-  <canvas id="bgCanvas"></canvas>
-
-  <div class="wrap">
+  <canvas id="bgCanvas"></canvas>  <div class="wrap">
     <div class="topbar">
       <nav class="dock" id="dock">
         <button class="nav-btn active" data-target="home"><svg class="icon"><use href="#i-home"></use></svg></button>
@@ -212,118 +208,115 @@
         <button class="nav-btn" data-target="keyAccessCard"><svg class="icon"><use href="#i-key"></use></svg></button>
         <button class="nav-btn" data-target="discord"><svg class="icon"><use href="#i-link"></use></svg></button>
       </nav>
+    </div><main id="home" class="hero">
+  <section class="panel hero-main">
+    <div>
+      <span class="eyebrow"><svg class="icon" style="width:14px;height:14px"><use href="#i-spark"></use></svg><span id="subtitleText">👁 0 Views</span></span>
+      <div class="title-row" style="margin-top:18px">
+        <img class="app-icon" id="appIcon" alt="Launcher icon" />
+        <div class="hero-copy">
+          <h1 id="appName">Among Us Launcher</h1>
+          <p id="appDesc">A smooth launcher hub with animated cards, a clean glass layout, and quick access to the key tutorial.</p>
+        </div>
+      </div>
+
+      <div class="meta-grid">
+        <div class="meta"><span class="k">Version</span><span class="v" id="appVersion">2026.4.7</span></div>
+        <div class="meta"><span class="k">Pack Type</span><span class="v" id="mainPackType">APK</span></div>
+        <div class="meta"><span class="k">Uid</span><span class="v" id="mainUid">Obfuscated</span></div>
+        <div class="meta"><span class="k">Creator</span><span class="v" id="appCreator">Moz Studio &amp; AN1-com</span></div>
+      </div>
     </div>
 
-    <main id="home" class="hero">
-      <section class="panel hero-main">
-        <div>
-          <span class="eyebrow"><svg class="icon" style="width:14px;height:14px"><use href="#i-spark"></use></svg><span id="subtitleText">👁 0 Views</span></span>
-          <div class="title-row" style="margin-top:18px">
-            <img class="app-icon" id="appIcon" alt="Launcher icon" />
-            <div class="hero-copy">
-              <h1 id="appName">Among Us Launcher</h1>
-              <p id="appDesc">A smooth launcher hub with animated cards, a clean glass layout, and quick access to the key tutorial.</p>
-            </div>
-          </div>
-
-          <div class="meta-grid">
-            <div class="meta"><span class="k">Version</span><span class="v" id="appVersion">2026.4.7</span></div>
-            <div class="meta"><span class="k">Pack Type</span><span class="v" id="mainPackType">APK</span></div>
-            <div class="meta"><span class="k">Uid</span><span class="v" id="mainUid">Obfuscated</span></div>
-            <div class="meta"><span class="k">Creator</span><span class="v" id="appCreator">Moz Studio &amp; AN1-com</span></div>
-          </div>
-        </div>
-
-        <div>
-          <div class="actions">
-            <button class="btn primary" id="launchBtn"><svg class="icon"><use href="#i-play"></use></svg>Launch Now</button>
-            <button class="btn ghost" id="tutorialBtn"><svg class="icon"><use href="#i-book"></use></svg>View Tutorial</button>
-            <a class="btn ghost" id="discordBtn" href="#" target="_blank" rel="noreferrer"><svg class="icon"><use href="#i-discord"></use></svg>Discord Community</a>
-          </div>
-
-          <div class="vote-row">
-            <button class="btn like" id="likeBtn"><svg class="icon"><use href="#i-thumbs-up"></use></svg>Like <span class="vote-count" id="likesCount">0</span></button>
-            <button class="btn dislike" id="dislikeBtn"><svg class="icon"><use href="#i-thumbs-down"></use></svg>Dislike <span class="vote-count" id="dislikesCount">0</span></button>
-          </div>
-        </div>
-      </section>
-
-      <aside class="panel hero-side">
-        <div class="stat">
-          <div class="label">Views</div>
-          <div class="value"><strong id="viewsCount">0</strong><span>Total</span></div>
-        </div>
-        <div class="stat">
-          <div class="label">Average Likes</div>
-          <div class="value"><strong id="likesStat">4.7⭐</strong><span>Community</span></div>
-        </div>
-        <div class="stat">
-          <div class="label">File Size</div>
-          <div class="value"><strong>844mb</strong><span>File size</span></div>
-        </div>
-        <div class="stat">
-          <div class="label">Updated On</div>
-          <div class="value"><strong id="themeHighlight">2025, May 01</strong><span>Last update</span></div>
-        </div>
-      </aside>
-    </main>
-
-    <section id="guide">
-      <div class="section-title">
-        <div>
-          <h2>Tutorial</h2>
-          <p>Only one video tutorial is shown here now.</p>
-        </div>
+    <div>
+      <div class="actions">
+        <button class="btn primary" id="launchBtn"><svg class="icon"><use href="#i-play"></use></svg>Launch Now</button>
+        <button class="btn ghost" id="tutorialBtn"><svg class="icon"><use href="#i-book"></use></svg>View Tutorial</button>
+        <a class="btn ghost" id="discordBtn" href="#" target="_blank" rel="noreferrer"><svg class="icon"><use href="#i-discord"></use></svg>Discord Community</a>
       </div>
-      <div class="grid" id="tutorialGrid"></div>
-    </section>
 
-    <section id="keyAccessCard">
-      <div class="section-title">
-        <div>
-          <h2>Key Accession</h2>
-          <p>Get the key, then jump back to the tutorial anytime you need a quick reminder.</p>
-        </div>
+      <div class="vote-row">
+        <button class="btn like" id="likeBtn"><svg class="icon"><use href="#i-thumbs-up"></use></svg>Like <span class="vote-count" id="likesCount">0</span></button>
+        <button class="btn dislike" id="dislikeBtn"><svg class="icon"><use href="#i-thumbs-down"></use></svg>Dislike <span class="vote-count" id="dislikesCount">0</span></button>
       </div>
-      <div class="panel launch-main">
-        <div class="launcher-card">
-          <div class="launcher-thumb"><img id="keyThumb" alt="Key access thumbnail" /></div>
-          <div>
-            <div class="launcher-head">
-              <div class="launcher-copy">
-                <h3 id="keyTitle">Key Access</h3>
-                <p id="keyDesc">Open the key page with a short loading step, then return here to watch the tutorial video whenever you need help.</p>
-              </div>
-            </div>
-            <div class="chips">
-              <span class="chip">Video tutorial</span>
-              <span class="chip">Fast redirect</span>
-              <span class="chip">Auto saved</span>
-            </div>
-            <div class="launch-actions">
-              <button class="btn primary" id="getKeyBtn"><svg class="icon"><use href="#i-key"></use></svg>Get Key</button>
-              <button class="btn ghost" id="scrollTutorialBtn"><svg class="icon"><use href="#i-book"></use></svg>Tutorial</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    </div>
+  </section>
 
-    <section id="community">
-      <div class="panel community">
-        <div class="brand">
-          <strong id="footerName">Among Us Launcher</strong>
-          <span id="footerInfo">Creator: Moz Studio &amp; AN1-com</span>
-        </div>
-        <div class="links" id="discord">
-          <a class="btn ghost small" id="discordLink" href="#" target="_blank" rel="noreferrer"><svg class="icon"><use href="#i-discord"></use></svg>Discord Invite</a>
-          <button class="btn ghost small" id="copyInvite"><svg class="icon"><use href="#i-copy"></use></svg>Copy Invite</button>
-        </div>
-      </div>
-    </section>
+  <aside class="panel hero-side">
+    <div class="stat">
+      <div class="label">Views</div>
+      <div class="value"><strong id="viewsCount">0</strong><span>Total</span></div>
+    </div>
+    <div class="stat">
+      <div class="label">Average Likes</div>
+      <div class="value"><strong id="likesStat">0.0⭐</strong><span>Community</span></div>
+    </div>
+    <div class="stat">
+      <div class="label">File Size</div>
+      <div class="value"><strong>844mb</strong><span>File size</span></div>
+    </div>
+    <div class="stat">
+      <div class="label">Updated On</div>
+      <div class="value"><strong id="themeHighlight">2025, May 01</strong><span>Last update</span></div>
+    </div>
+  </aside>
+</main>
+
+<section id="guide">
+  <div class="section-title">
+    <div>
+      <h2>Tutorial</h2>
+      <p>Only one video tutorial is shown here now.</p>
+    </div>
   </div>
+  <div class="grid" id="tutorialGrid"></div>
+</section>
 
-  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+<section id="keyAccessCard">
+  <div class="section-title">
+    <div>
+      <h2>Key Accession</h2>
+      <p>Get the key, then jump back to the tutorial anytime you need a quick reminder.</p>
+    </div>
+  </div>
+  <div class="panel launch-main">
+    <div class="launcher-card">
+      <div class="launcher-thumb"><img id="keyThumb" alt="Key access thumbnail" /></div>
+      <div>
+        <div class="launcher-head">
+          <div class="launcher-copy">
+            <h3 id="keyTitle">Key Access</h3>
+            <p id="keyDesc">Open the key page with a short loading step, then return here to watch the tutorial video whenever you need help.</p>
+          </div>
+        </div>
+        <div class="chips">
+          <span class="chip">Video tutorial</span>
+          <span class="chip">Fast redirect</span>
+          <span class="chip">Auto saved</span>
+        </div>
+        <div class="launch-actions">
+          <button class="btn primary" id="getKeyBtn"><svg class="icon"><use href="#i-key"></use></svg>Get Key</button>
+          <button class="btn ghost" id="scrollTutorialBtn"><svg class="icon"><use href="#i-book"></use></svg>Tutorial</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="community">
+  <div class="panel community">
+    <div class="brand">
+      <strong id="footerName">Among Us Launcher</strong>
+      <span id="footerInfo">Creator: Moz Studio &amp; AN1-com</span>
+    </div>
+    <div class="links" id="discord">
+      <a class="btn ghost small" id="discordLink" href="#" target="_blank" rel="noreferrer"><svg class="icon"><use href="#i-discord"></use></svg>Discord Invite</a>
+      <button class="btn ghost small" id="copyInvite"><svg class="icon"><use href="#i-copy"></use></svg>Copy Invite</button>
+    </div>
+  </div>
+</section>
+
+  </div>  <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <button class="close" id="closeModal" aria-label="Close modal"><svg><use href="#i-close"></use></svg></button>
       <div class="inner">
@@ -331,38 +324,35 @@
         <div>
           <span class="eyebrow" style="margin-bottom:10px"><svg class="icon" style="width:14px;height:14px"><use href="#i-chip"></use></svg><span id="modalTag">Launcher</span></span>
           <h3 id="modalTitle">Modal</h3>
-          <div class="info" id="modalInfo"></div>
+          <div class="info" id="modalInfo"></div><div id="modalVideoWrap" class="video-box hidden">
+        <video id="tutorialVideo" controls playsinline preload="metadata" src="settings/media/key.mp4"></video>
+      </div>
 
-          <div id="modalVideoWrap" class="video-box hidden">
-            <video id="tutorialVideo" controls playsinline preload="metadata" src="settings/media/key.mp4"></video>
-          </div>
+      <div class="specs" id="modalSpecs">
+        <div class="spec"><span>State</span><strong id="modalState">Waiting</strong></div>
+        <div class="spec"><span>Timer</span><strong id="modalWindow">1s</strong></div>
+        <div class="spec"><span>Progress</span><strong id="progressLabel">0%</strong></div>
+        <div class="spec"><span>Source</span><strong id="modalSource">Local</strong></div>
+      </div>
 
-          <div class="specs" id="modalSpecs">
-            <div class="spec"><span>State</span><strong id="modalState">Waiting</strong></div>
-            <div class="spec"><span>Timer</span><strong id="modalWindow">1s</strong></div>
-            <div class="spec"><span>Progress</span><strong id="progressLabel">0%</strong></div>
-            <div class="spec"><span>Source</span><strong id="modalSource">Local</strong></div>
-          </div>
+      <div class="actions-row" id="modalActions">
+        <button class="btn ghost" id="cancelBtn">Cancel</button>
+        <button class="btn primary" id="initBtn"><svg class="icon"><use href="#i-play"></use></svg>Start</button>
+      </div>
 
-          <div class="actions-row" id="modalActions">
-            <button class="btn ghost" id="cancelBtn">Cancel</button>
-            <button class="btn primary" id="initBtn"><svg class="icon"><use href="#i-play"></use></svg>Start</button>
-          </div>
+      <div class="progress-wrap" id="modalProgressWrap">
+        <div class="progress-top"><span>Loading</span><span id="progressLabelTop">0%</span></div>
+        <div class="progress"><span id="progressFill"></span></div>
+      </div>
 
-          <div class="progress-wrap" id="modalProgressWrap">
-            <div class="progress-top"><span>Loading</span><span id="progressLabelTop">0%</span></div>
-            <div class="progress"><span id="progressFill"></span></div>
-          </div>
-
-          <div class="log" id="modalLog">
-            <div class="entry"><span class="pulse"></span><span>Ready.</span></div>
-          </div>
-        </div>
+      <div class="log" id="modalLog">
+        <div class="entry"><span class="pulse"></span><span>Ready.</span></div>
       </div>
     </div>
   </div>
+</div>
 
-  <svg width="0" height="0" style="position:absolute;left:-9999px;top:-9999px" aria-hidden="true" focusable="false">
+  </div>  <svg width="0" height="0" style="position:absolute;left:-9999px;top:-9999px" aria-hidden="true" focusable="false">
     <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3.1 3 10.4v9.6h5.7v-6.3h6.6V20H21v-9.6L12 3.1Z"/></symbol>
     <symbol id="i-book" viewBox="0 0 24 24"><path fill="currentColor" d="M6 4.5A2.5 2.5 0 0 1 8.5 2H20v16.5A2.5 2.5 0 0 1 17.5 21H7a3 3 0 0 0-3 3V4.5Z"/><path fill="currentColor" d="M7 7h9v2H7z"/></symbol>
     <symbol id="i-link" viewBox="0 0 24 24"><path fill="currentColor" d="M10.5 13.5a4.7 4.7 0 0 1 0-6.7l1.5-1.5a4.7 4.7 0 0 1 6.7 6.7l-1.4 1.4-1.4-1.4 1.4-1.4a2.7 2.7 0 1 0-3.8-3.8L12 8.3a2.7 2.7 0 0 0 0 3.8z"/><path fill="currentColor" d="M13.5 10.5a4.7 4.7 0 0 1 0 6.7L12 18.7a4.7 4.7 0 0 1-6.7-6.7l1.4-1.4 1.4 1.4-1.4 1.4a2.7 2.7 0 1 0 3.8 3.8l1.5-1.5a2.7 2.7 0 0 0 0-3.8z"/></symbol>
@@ -375,9 +365,7 @@
     <symbol id="i-key" viewBox="0 0 24 24"><path fill="currentColor" d="M14 3a7 7 0 1 0 4.2 12.6L23 20.4 20.4 23l-4.8-4.8A7 7 0 1 0 14 3Zm0 2.2A4.8 4.8 0 1 1 14 15a4.8 4.8 0 0 1 0-9.8Z"/></symbol>
     <symbol id="i-thumbs-up" viewBox="0 0 24 24"><path fill="currentColor" d="M9 21h8a2 2 0 0 0 2-1.5l1.5-7.5a2 2 0 0 0-2-2.5h-6V7a4 4 0 0 0-4-4h-.5L5 10v11h4z"/></symbol>
     <symbol id="i-thumbs-down" viewBox="0 0 24 24"><path fill="currentColor" d="M15 3H7a2 2 0 0 0-2 1.5L3.5 12A2 2 0 0 0 5.5 14h6v3a4 4 0 0 0 4 4h.5l2-8V3h-3z"/></symbol>
-  </svg>
-
-  <script id="manifestFallback" type="application/json">{
+  </svg>  <script id="manifestFallback" type="application/json">{
     "app": {
       "name": "Among Us VIP",
       "version": "2026.4.7",
@@ -390,7 +378,7 @@
       "name": "Among us Vip",
       "description": "5.6k Has downloaded this app!",
       "button": "Launch & Install",
-      "link": "https://www.mediafire.com/file/mpu1b1b8d19hhqr/Among+Us+2026.4.7.zip/file",
+      "link": "https://www.mediafire.com/file/aj14i8nkmf4unua/among-us-mod_2026.4.7-an1.com.apk.bak/file",
       "thumbnail": "github/settings/media/app.png",
       "icon": "settings/media/appicon.png",
       "size": "844 MB",
@@ -426,9 +414,7 @@
       "likes": 1420,
       "dislikes": 52
     }
-  }</script>
-
-  <script>
+  }</script>  <!-- Firebase SDKs -->  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>  <script>
     const DEFAULT_MANIFEST = JSON.parse(document.getElementById('manifestFallback').textContent);
     const PLACEHOLDER = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700">
@@ -522,15 +508,12 @@
       timer: null,
       progressTimer: null,
       storageKey: {
-        views: 'amongus_views',
-        likes: 'amongus_likes',
-        dislikes: 'amongus_dislikes',
-        voteChoice: 'amongus_vote_choice'
+        voteChoice: 'amongus_vote_choice',
+        viewCounted: 'amongus_view_counted'
       }
     };
 
     const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
-    const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
     function applyImage(el, src, fallback = PLACEHOLDER){
       if(!el) return;
@@ -538,23 +521,27 @@
       el.onerror = () => { if(el.src !== fallback) el.src = fallback; };
     }
 
-    function getCounts(){
-      const stats = state.manifest.stats || {};
-      const views = Number(localStorage.getItem(state.storageKey.views) || stats.views || 0);
-      const likes = Number(localStorage.getItem(state.storageKey.likes) || stats.likes || 0);
-      const dislikes = Number(localStorage.getItem(state.storageKey.dislikes) || stats.dislikes || 0);
-      return { views, likes, dislikes };
+    // Firebase setup
+    const firebaseConfig = {
+      apiKey: "PASTE_YOUR_API_KEY",
+      authDomain: "PASTE_YOUR_AUTH_DOMAIN",
+      projectId: "PASTE_YOUR_PROJECT_ID",
+      storageBucket: "PASTE_YOUR_STORAGE_BUCKET",
+      messagingSenderId: "PASTE_YOUR_MESSAGING_SENDER_ID",
+      appId: "PASTE_YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const statsRef = db.collection('stats').doc('global');
+
+    function formatNumber(n){
+      return new Intl.NumberFormat().format(Number(n || 0));
     }
 
     function getVoteChoice(){
       const choice = localStorage.getItem(state.storageKey.voteChoice);
       return choice === 'like' || choice === 'dislike' ? choice : null;
-    }
-
-    function saveCounts(counts){
-      localStorage.setItem(state.storageKey.views, String(counts.views));
-      localStorage.setItem(state.storageKey.likes, String(counts.likes));
-      localStorage.setItem(state.storageKey.dislikes, String(counts.dislikes));
     }
 
     function renderVoteState(){
@@ -570,51 +557,48 @@
       ui.dislikeBtn.setAttribute('aria-pressed', choice === 'dislike' ? 'true' : 'false');
     }
 
-    function renderCounts(){
-      const c = getCounts();
-      ui.viewsCount.textContent = formatNumber(c.views);
-      ui.subtitleText.textContent = `👁 ${formatNumber(c.views)} Views`;
-      ui.likesCount.textContent = formatNumber(c.likes);
-      ui.dislikesCount.textContent = formatNumber(c.dislikes);
-      ui.likesStat.textContent = formatNumber(c.likes);
-      ui.themeHighlight.textContent = '2025, May 01';
+    function renderCounts(data = {}){
+      const views = Number(data.views || 0);
+      const likes = Number(data.likes || 0);
+      const dislikes = Number(data.dislikes || 0);
+      ui.viewsCount.textContent = formatNumber(views);
+      ui.subtitleText.textContent = `👁 ${formatNumber(views)} Views`;
+      ui.likesCount.textContent = formatNumber(likes);
+      ui.dislikesCount.textContent = formatNumber(dislikes);
+      ui.likesStat.textContent = `${((likes + dislikes) ? (likes / (likes + dislikes)) * 5 : 0).toFixed(1)}⭐`;
       renderVoteState();
     }
 
-    function formatNumber(n){
-      return new Intl.NumberFormat().format(n);
+    async function ensureStatsDoc(){
+      await statsRef.set({ views: 0, likes: 0, dislikes: 0 }, { merge: true });
     }
 
-    function incrementView(){
-      const c = getCounts();
-      c.views += 1;
-      saveCounts(c);
-      renderCounts();
+    function startRealtimeStats(){
+      statsRef.onSnapshot((snap) => {
+        const data = snap.exists ? snap.data() : { views: 0, likes: 0, dislikes: 0 };
+        renderCounts(data);
+      });
     }
 
-    function bumpLike(){
-      if (getVoteChoice()) {
-        toast('You can only vote once.');
-        return;
-      }
-      const c = getCounts();
-      c.likes += 1;
-      saveCounts(c);
+    async function countViewOncePerSession(){
+      if (sessionStorage.getItem(state.storageKey.viewCounted) === '1') return;
+      sessionStorage.setItem(state.storageKey.viewCounted, '1');
+      await statsRef.set({ views: firebase.firestore.FieldValue.increment(1) }, { merge: true });
+    }
+
+    async function bumpLike(){
+      if (getVoteChoice()) { toast('You can only vote once.'); return; }
       localStorage.setItem(state.storageKey.voteChoice, 'like');
-      renderCounts();
+      await statsRef.set({ likes: firebase.firestore.FieldValue.increment(1) }, { merge: true });
+      renderVoteState();
       toast('Like saved.');
     }
 
-    function bumpDislike(){
-      if (getVoteChoice()) {
-        toast('You can only vote once.');
-        return;
-      }
-      const c = getCounts();
-      c.dislikes += 1;
-      saveCounts(c);
+    async function bumpDislike(){
+      if (getVoteChoice()) { toast('You can only vote once.'); return; }
       localStorage.setItem(state.storageKey.voteChoice, 'dislike');
-      renderCounts();
+      await statsRef.set({ dislikes: firebase.firestore.FieldValue.increment(1) }, { merge: true });
+      renderVoteState();
       toast('Dislike saved.');
     }
 
@@ -630,7 +614,6 @@
       state.currentTarget = data.link || '#';
       ui.modalBackdrop.classList.add('show');
       ui.modalBackdrop.setAttribute('aria-hidden', 'false');
-
       ui.modalTitle.textContent = data.title || 'Modal';
       ui.modalInfo.innerHTML = data.info || '';
       ui.modalIcon.src = data.icon || PLACEHOLDER;
@@ -744,15 +727,6 @@
       const tutorials = manifest.tutorials || [];
       const keyAccess = manifest.keyAccess || {};
       const community = manifest.community || {};
-      const counts = getCounts();
-      if(!localStorage.getItem(state.storageKey.views)) {
-        saveCounts({
-          views: Number((manifest.stats && manifest.stats.views) || 0),
-          likes: Number((manifest.stats && manifest.stats.likes) || 0),
-          dislikes: Number((manifest.stats && manifest.stats.dislikes) || 0)
-        });
-      }
-      incrementView();
 
       document.title = app.name || 'Among Us Launcher';
       ui.appName.textContent = app.name || 'Among Us Launcher';
@@ -771,7 +745,6 @@
       ui.keyTitle.textContent = keyAccess.name || 'Key Accession';
       ui.keyDesc.textContent = keyAccess.description || 'Open the key page with a short loading step, then return here to watch the tutorial video whenever you need help.';
 
-      renderCounts();
       renderTutorials(tutorials);
 
       ui.launchBtn.onclick = () => openModal('load', {
@@ -799,8 +772,8 @@
       });
       ui.scrollTutorialBtn.onclick = () => document.getElementById('guide').scrollIntoView({behavior:'smooth', block:'start'});
       ui.copyInvite.onclick = async () => {
-        try{ await navigator.clipboard.writeText(community.discord || ''); toast('Invite copied to clipboard.'); }
-        catch{ toast('Copy failed on this device.'); }
+        try { await navigator.clipboard.writeText(community.discord || ''); toast('Invite copied to clipboard.'); }
+        catch { toast('Copy failed on this device.'); }
       };
 
       ui.closeModal.onclick = closeModal;
@@ -809,6 +782,7 @@
       ui.initBtn.onclick = startLoadingAndRedirect;
 
       wireNavigation();
+      renderCounts(manifest.stats || { views: 0, likes: 0, dislikes: 0 });
     }
 
     function wireNavigation(){
@@ -843,7 +817,6 @@
       el._t = setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateX(-50%) translateY(20px)'; }, 1800);
     }
 
-    // Glow tracking
     document.querySelectorAll('.panel, .glass-card, .modal').forEach(el => {
       el.addEventListener('pointermove', (e) => {
         const r = el.getBoundingClientRect();
@@ -854,7 +827,6 @@
       });
     });
 
-    // Background particles
     const canvas = document.getElementById('bgCanvas');
     const ctx = canvas.getContext('2d', { alpha: true });
     let W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 2);
@@ -872,8 +844,16 @@
     window.addEventListener('resize', () => { DPR = Math.min(window.devicePixelRatio || 1, 2); resize(); initParticles(); });
     resize(); initParticles(); draw();
 
-    // Remove intro screen entirely: just render immediately.
-    renderApp(DEFAULT_MANIFEST);
-  </script>
-</body>
+    (async function bootFirebaseAndApp(){
+      try {
+        await ensureStatsDoc();
+        startRealtimeStats();
+        await countViewOncePerSession();
+      } catch (err) {
+        console.error('Firebase boot error:', err);
+        toast('Firebase error — check config and rules.');
+      }
+      renderApp(DEFAULT_MANIFEST);
+    })();
+  </script></body>
 </html>
