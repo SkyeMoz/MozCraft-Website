@@ -164,6 +164,9 @@
     .comment-text{margin:12px 0 0;color:var(--text);line-height:1.7;font-size:14px;white-space:pre-wrap;word-break:break-word}
     .comment-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
     .comment-actions .btn{padding:9px 12px;font-size:12px}
+    .comment-actions .danger{background:rgba(255,93,122,.12);border:1px solid rgba(255,93,122,.22);color:#ffd6de}
+    .comment-owner{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .own-badge{padding:5px 9px;border-radius:999px;background:rgba(124,218,255,.12);border:1px solid rgba(124,218,255,.2);color:#dff7ff;font-size:11px;font-weight:800;letter-spacing:.2px}
     .comment-replies{margin-top:12px;padding-left:14px;border-left:1px solid rgba(255,255,255,.12);display:grid;gap:10px}
     .comment-empty{padding:18px;border-radius:22px;background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.12);color:var(--muted);font-size:14px;line-height:1.6}
     .setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
@@ -322,7 +325,10 @@
           <textarea id="commentInput" class="comment-textarea" placeholder="Write something..."></textarea>
           <div class="composer-actions">
             <small id="commentHint" style="color:var(--muted)">Your username cannot be changed after signing on this device.</small>
-            <button class="btn primary" id="postCommentBtn"><svg class="icon"><use href="#i-chat"></use></svg>Comment</button>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <button class="btn ghost" id="editProfileBtn"><svg class="icon"><use href="#i-spark"></use></svg>Edit Profile</button>
+              <button class="btn primary" id="postCommentBtn"><svg class="icon"><use href="#i-chat"></use></svg>Comment</button>
+            </div>
           </div>
         </div>
 
@@ -605,8 +611,10 @@
       cancelReplyBtn: document.getElementById('cancelReplyBtn'),
       commentInput: document.getElementById('commentInput'),
       postCommentBtn: document.getElementById('postCommentBtn'),
+      editProfileBtn: document.getElementById('editProfileBtn'),
       commentList: document.getElementById('commentList'),
       commentSetupBackdrop: document.getElementById('commentSetupBackdrop'),
+      commentSetupTitle: document.getElementById('commentSetupTitle'),
       closeCommentSetup: document.getElementById('closeCommentSetup'),
       cancelCommentSetup: document.getElementById('cancelCommentSetup'),
       acceptCommentSetup: document.getElementById('acceptCommentSetup'),
@@ -635,6 +643,7 @@
       deviceId: null,
       setupAvatarData: null,
       setupAvatarName: '',
+      setupMode: 'create',
       commentsCache: []
     };
 
@@ -691,13 +700,14 @@
     function renderProfileUI(){
       const hasProfile = !!state.profile;
       ui.commentComposer.classList.toggle('hidden', !hasProfile);
-      ui.commentAccessText.textContent = hasProfile ? `Signed as @${state.profile.username}. Your name is locked on this device.` : 'Sign Comment to unlock the comment box.';
+      ui.commentAccessText.textContent = hasProfile ? `Signed as @${state.profile.username}.` : 'Sign Comment to unlock the comment box.';
       ui.openCommentSetup.textContent = hasProfile ? 'Signed' : 'Sign Comment';
       ui.openCommentSetup.disabled = hasProfile;
+      ui.editProfileBtn.classList.toggle('hidden', !hasProfile);
       if(hasProfile){
         applyImage(ui.composerAvatar, state.profile.avatar || FALLBACK_AVATAR, FALLBACK_AVATAR);
         ui.composerName.textContent = state.profile.username;
-        ui.composerLockText.textContent = 'Locked on this device';
+        ui.composerLockText.textContent = 'Profile ready';
       }
     }
 
@@ -923,6 +933,7 @@
       }
 
       const makeCard = (c, depth = 0) => {
+        const isOwner = !!state.deviceId && c.uid === state.deviceId;
         const card = document.createElement('article');
         card.className = 'comment-card';
         card.style.marginLeft = depth ? `${Math.min(depth, 3) * 18}px` : '0';
@@ -935,12 +946,16 @@
                 <span>${c.createdAt ? timeAgo(c.createdAt) : 'just now'}</span>
               </div>
             </div>
-            ${c.parentId ? '<span class="chip">Reply</span>' : ''}
+            <div class="comment-owner">
+              ${c.parentId ? '<span class="chip">Reply</span>' : ''}
+              ${isOwner ? '<span class="own-badge">Your comment</span>' : ''}
+            </div>
           </div>
           <div class="comment-text">${escapeHTML(c.text || '')}</div>
           <div class="comment-actions">
             <button class="btn ghost small like-comment" data-id="${c.id}"><svg class="icon"><use href="#i-thumbs-up"></use></svg><span>${Number(c.likeCount || 0)}</span></button>
             <button class="btn ghost small reply-comment" data-id="${c.id}" data-name="${escapeHTML(c.name || 'User')}"><svg class="icon"><use href="#i-chat"></use></svg>Reply</button>
+            ${isOwner ? `<button class="btn ghost small edit-comment" data-id="${c.id}"><svg class="icon"><use href="#i-chip"></use></svg>Edit</button><button class="btn ghost small danger delete-comment" data-id="${c.id}"><svg class="icon"><use href="#i-close"></use></svg>Delete</button>` : ''}
           </div>
         `;
 
@@ -994,6 +1009,49 @@
       ui.commentInput.placeholder = 'Write something...';
     }
 
+    function canManageComment(comment){
+      return !!comment && !!state.deviceId && comment.uid === state.deviceId;
+    }
+
+    async function editComment(commentId){
+      const comment = state.commentsCache.find(c => c.id === commentId);
+      if(!canManageComment(comment)) return toast('You can only edit your own comment.');
+      const nextText = window.prompt('Edit your comment', comment.text || '');
+      if(nextText === null) return;
+      const cleaned = nextText.trim();
+      if(!cleaned) return toast('Comment cannot be empty.');
+      if(cleaned.length > COMMENT_MAX_LEN) return toast('Comment too long.');
+      await state.commentsCol.doc(commentId).update({
+        text: cleaned,
+        editedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      toast('Comment updated.');
+    }
+
+    async function deleteCommentTree(commentId){
+      let deletedCount = 1;
+      const descendants = state.commentsCache.filter(c => c.parentId === commentId).map(c => c.id);
+      for(const childId of descendants){
+        deletedCount += await deleteCommentTree(childId);
+      }
+      const likeDocs = await state.commentLikesCol.doc(commentId).collection('devices').get();
+      const batch = db.batch();
+      likeDocs.forEach(doc => batch.delete(doc.ref));
+      batch.delete(state.commentLikesCol.doc(commentId));
+      batch.delete(state.commentsCol.doc(commentId));
+      await batch.commit();
+      return deletedCount;
+    }
+
+    async function deleteComment(commentId){
+      const comment = state.commentsCache.find(c => c.id === commentId);
+      if(!canManageComment(comment)) return toast('You can only delete your own comment.');
+      if(!confirm('Delete this comment?')) return;
+      const deletedCount = await deleteCommentTree(commentId);
+      try{ await state.statsRef.set({ comments: firebase.firestore.FieldValue.increment(-deletedCount) }, { merge: true }); }catch{}
+      toast('Comment deleted.');
+    }
+
     async function postComment(){
       if(!state.profile) return toast('Sign Comment first.');
       const text = ui.commentInput.value.trim();
@@ -1025,15 +1083,20 @@
       toast('Comment liked.');
     }
 
-    function openCommentSetup(){
+    function openCommentSetup(mode = 'create'){
+      state.setupMode = mode;
       ui.commentSetupBackdrop.classList.add('show');
       ui.commentSetupBackdrop.setAttribute('aria-hidden', 'false');
       ui.setupUsername.value = state.profile?.username || '';
+      ui.setupUsername.disabled = mode === 'edit' && !!state.profile;
+      ui.commentSetupTitle.textContent = mode === 'edit' ? 'Edit profile picture' : 'Enter username';
+      ui.acceptCommentSetup.textContent = mode === 'edit' ? 'Save' : 'Accept';
+      ui.pickAvatarBtn.textContent = mode === 'edit' ? 'Change Photo' : 'Choose Photo';
       const thumb = state.setupAvatarData || state.profile?.avatar || FALLBACK_AVATAR;
       ui.setupAvatarPreview.src = thumb;
       ui.setupAvatarThumb.src = thumb;
       ui.setupAvatarLabel.textContent = state.setupAvatarName || (state.profile ? 'Saved avatar' : 'No photo selected');
-      ui.acceptCommentSetup.disabled = !ui.setupUsername.value.trim();
+      ui.acceptCommentSetup.disabled = mode === 'edit' ? false : !ui.setupUsername.value.trim();
       setTimeout(() => ui.setupUsername.focus(), 50);
     }
 
@@ -1091,7 +1154,8 @@
     }
 
     function wireCommentSetup(){
-      ui.openCommentSetup.onclick = openCommentSetup;
+      ui.openCommentSetup.onclick = () => openCommentSetup('create');
+      ui.editProfileBtn.onclick = () => openCommentSetup('edit');
       ui.closeCommentSetup.onclick = closeCommentSetup;
       ui.cancelCommentSetup.onclick = closeCommentSetup;
       ui.commentSetupBackdrop.onclick = (e) => { if(e.target === ui.commentSetupBackdrop) closeCommentSetup(); };
@@ -1109,13 +1173,22 @@
         }catch{ toast('Could not load image.'); }
       };
       ui.setupUsername.oninput = () => {
-        ui.acceptCommentSetup.disabled = !ui.setupUsername.value.trim();
+        ui.acceptCommentSetup.disabled = state.setupMode === 'edit' ? false : !ui.setupUsername.value.trim();
       };
       ui.acceptCommentSetup.onclick = () => {
+        if(state.setupMode === 'edit' && state.profile){
+          const avatar = state.setupAvatarData || state.profile.avatar || FALLBACK_AVATAR;
+          saveProfile({ ...state.profile, avatar });
+          state.setupAvatarData = null;
+          state.setupAvatarName = '';
+          return;
+        }
         const username = ui.setupUsername.value.trim().replace(/\s+/g, ' ');
         if(!username) return toast('Enter username first.');
         const avatar = state.setupAvatarData || state.profile?.avatar || buildAvatarFromName(username);
         saveProfile({ username, avatar, locked: true, createdAt: Date.now() });
+        state.setupAvatarData = null;
+        state.setupAvatarName = '';
       };
     }
 
@@ -1126,7 +1199,11 @@
         const replyBtn = e.target.closest('.reply-comment');
         if(replyBtn){ setReplyTarget(replyBtn.dataset.id, replyBtn.dataset.name || 'User'); return; }
         const likeBtn = e.target.closest('.like-comment');
-        if(likeBtn){ await likeComment(likeBtn.dataset.id); }
+        if(likeBtn){ await likeComment(likeBtn.dataset.id); return; }
+        const editBtn = e.target.closest('.edit-comment');
+        if(editBtn){ await editComment(editBtn.dataset.id); return; }
+        const deleteBtn = e.target.closest('.delete-comment');
+        if(deleteBtn){ await deleteComment(deleteBtn.dataset.id); return; }
       });
     }
 
@@ -1258,6 +1335,8 @@
     function initCommentIdentity(){
       state.deviceId = getDeviceId();
       state.profile = loadProfile();
+      state.setupAvatarData = null;
+      state.setupAvatarName = '';
       renderProfileUI();
       wireCommentSetup();
       wireCommentActions();
