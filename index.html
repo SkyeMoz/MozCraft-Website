@@ -3,617 +3,1364 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#07111f" />
-  <title>MozLaunch</title>
+  <meta name="theme-color" content="#05070d" />
+  <title>Moz Launcher</title>
   <style>
     :root{
-      --bg0:#050b16;
-      --bg1:#081220;
-      --bg2:#0d1a2d;
-      --glass:rgba(9, 18, 32, .58);
-      --glass-strong:rgba(12, 23, 41, .78);
-      --line:rgba(148, 163, 184, .12);
-      --line-strong:rgba(96, 165, 250, .18);
-      --text:#e5eefc;
-      --muted:#91a4c2;
-      --accent:#3b82f6;
-      --accent2:#7c3aed;
-      --accent3:#22d3ee;
-      --shadow:0 28px 70px rgba(0,0,0,.36);
-      --shadow-soft:0 18px 44px rgba(0,0,0,.22);
-      --nav-h:76px;
+      --bg:#05070d;
+      --stroke:rgba(255,255,255,.14);
+      --text:rgba(255,255,255,.94);
+      --muted:rgba(255,255,255,.68);
+      --soft:rgba(255,255,255,.38);
+      --accent:#7cdaff;
+      --accent2:#9b7bff;
+      --good:#34d399;
+      --bad:#ff5d7a;
+      --shadow:0 28px 80px rgba(0,0,0,.48);
+      --radius-xl:30px;
+      --radius-lg:22px;
+      --radius-md:18px;
     }
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    html,body{
-      margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
-      color:var(--text);
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+    body{
+      margin:0; min-height:100vh; overflow-x:hidden; color:var(--text);
       background:
-        radial-gradient(circle at 10% 12%, rgba(59,130,246,.14), transparent 26%),
-        radial-gradient(circle at 90% 4%, rgba(124,58,237,.15), transparent 22%),
-        radial-gradient(circle at 50% 100%, rgba(34,211,238,.08), transparent 26%),
-        linear-gradient(180deg,var(--bg0),var(--bg1) 44%,var(--bg2));
-      overflow-x:hidden;
-      user-select:none;
-      -webkit-user-select:none;
+        radial-gradient(1200px 700px at 12% 16%, rgba(124,218,255,.14), transparent 45%),
+        radial-gradient(900px 600px at 82% 20%, rgba(155,123,255,.14), transparent 48%),
+        radial-gradient(900px 700px at 50% 90%, rgba(73,240,164,.07), transparent 40%),
+        linear-gradient(180deg, #04060b 0%, #05070d 35%, #05070d 100%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      user-select:none; -webkit-user-select:none; touch-action:manipulation;
     }
+    ::selection{background:transparent;color:inherit}
     body::before{
-      content:"";position:fixed;inset:0;pointer-events:none;
-      background:linear-gradient(135deg,rgba(255,255,255,.07),transparent 24%,rgba(255,255,255,.03));
-      z-index:0;
+      content:""; position:fixed; inset:0; pointer-events:none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size:72px 72px;
+      mask-image:radial-gradient(circle at center, rgba(0,0,0,.8), transparent 82%);
+      opacity:.35; z-index:0;
     }
-    canvas{position:fixed;inset:0;width:100%;height:100%;display:block;pointer-events:none}
-    #bgCanvas{z-index:0} #fxCanvas{z-index:1}
-    .app{position:relative;z-index:2;min-height:100vh;padding:18px}
-    .wrap{width:min(1380px,100%);margin:0 auto;display:grid;gap:16px;padding-top:calc(var(--nav-h) + 8px)}
-    .glass{background:linear-gradient(180deg,var(--glass-strong),var(--glass));border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(26px) saturate(160%);-webkit-backdrop-filter:blur(26px) saturate(160%)}
-
-    .nav{position:fixed;top:14px;left:50%;transform:translateX(-50%);width:min(1380px,calc(100% - 20px));height:var(--nav-h);border-radius:999px;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 14px 12px 16px}
-    .brand{display:flex;align-items:center;gap:12px;min-width:0;cursor:pointer;padding:6px 10px 6px 6px;border-radius:999px;transition:transform 160ms ease,background 160ms ease,box-shadow 160ms ease}
-    .brand:hover{transform:translateY(-1px);background:rgba(255,255,255,.05);box-shadow:0 10px 24px rgba(15,23,42,.18)}
-    .brandMark{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;flex:0 0 auto;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 14px 28px rgba(59,130,246,.24)}
-    .brandText{min-width:0;display:grid;gap:2px}
-    .brandText strong{font-size:1rem;line-height:1.1;letter-spacing:.2px}
-    .brandText span{font-size:.86rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:34ch}
-    .navCenter{display:flex;align-items:center;gap:10px;flex:1;justify-content:center;min-width:0}
-    .navLink{display:inline-flex;align-items:center;gap:8px;border:1px solid transparent;background:transparent;color:var(--muted);font-weight:800;font-size:.92rem;padding:10px 14px;border-radius:999px;cursor:pointer;transition:transform 160ms ease,background 160ms ease,color 160ms ease,border-color 160ms ease,box-shadow 160ms ease;text-decoration:none;white-space:nowrap}
-    .navLink:hover,.navLink.active{color:var(--text);background:rgba(255,255,255,.06);border-color:rgba(96,165,250,.16);box-shadow:0 10px 24px rgba(0,0,0,.12);transform:translateY(-1px)}
-    .navRight{display:flex;align-items:center;gap:10px;flex:0 0 auto}
-    .statusPill{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--muted);font-weight:800;font-size:.9rem;white-space:nowrap}
-    .dot{width:9px;height:9px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 5px rgba(34,197,94,.14)}
-
-    .hero{border-radius:36px;padding:22px;animation:rise .7s ease both}
-    .heroTop{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:stretch}
-    .heroCopy{display:grid;gap:14px;align-content:start;min-width:0}
-    .heroBadgeRow{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-    .badge{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:10px 14px;font-size:.88rem;font-weight:800;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--text);box-shadow:0 10px 20px rgba(0,0,0,.12)}
-    .hero h1{margin:0;font-size:clamp(2rem,4vw,3.8rem);line-height:1;letter-spacing:-.04em}
-    .hero p{margin:0;max-width:68ch;color:var(--muted);line-height:1.6;font-size:1rem}
-    .heroStats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    .statCard{border-radius:24px;padding:16px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));border:1px solid var(--line);box-shadow:var(--shadow-soft);min-height:106px;display:grid;align-content:space-between;gap:12px}
-    .statIcon{width:40px;height:40px;border-radius:14px;display:grid;place-items:center;background:rgba(59,130,246,.12);border:1px solid rgba(96,165,250,.12)}
-    .statCard strong{display:block;font-size:1.2rem;line-height:1.1;margin-top:2px}
-    .statCard span{font-size:.88rem;color:var(--muted)}
-
-    .toolbar{border-radius:28px;padding:14px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;animation:rise .78s ease both}
-    .search{position:relative;min-width:0}
-    .search input{width:100%;border:1px solid var(--line);background:rgba(2,6,23,.38);color:var(--text);padding:16px 16px 16px 50px;border-radius:18px;outline:none;font-size:1rem;transition:border-color 160ms ease,box-shadow 160ms ease,transform 160ms ease,background 160ms ease;user-select:text;-webkit-user-select:text}
-    .search input:focus{border-color:rgba(59,130,246,.34);box-shadow:0 0 0 4px rgba(59,130,246,.12);transform:translateY(-1px);background:rgba(2,6,23,.56)}
-    .searchIcon{position:absolute;left:16px;top:50%;transform:translateY(-50%);opacity:.82;pointer-events:none}
-    .controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-    .chip{border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--muted);padding:11px 14px;border-radius:999px;font-size:.9rem;font-weight:800;cursor:pointer;transition:transform 160ms ease,background 160ms ease,color 160ms ease,border-color 160ms ease,box-shadow 160ms ease;display:inline-flex;align-items:center;gap:8px}
-    .chip:hover,.chip.active{transform:translateY(-1px);color:var(--text);background:rgba(255,255,255,.07);border-color:rgba(96,165,250,.2);box-shadow:0 12px 24px rgba(0,0,0,.12)}
-    .count{white-space:nowrap;color:var(--muted);font-weight:800;padding:11px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04)}
-
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;padding-bottom:8px}
-    .card{position:relative;overflow:hidden;border-radius:30px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));backdrop-filter:blur(24px) saturate(165%);-webkit-backdrop-filter:blur(24px) saturate(165%);box-shadow:var(--shadow-soft);padding:18px;opacity:0;transform:translateY(18px) scale(.985);animation:cardIn .72s ease forwards;transition:transform 180ms ease,border-color 180ms ease,box-shadow 180ms ease;min-height:340px;display:grid;grid-template-rows:auto auto 1fr auto auto;gap:14px}
-    .card:hover{transform:translateY(-4px) scale(1);border-color:rgba(96,165,250,.2);box-shadow:0 26px 54px rgba(0,0,0,.26)}
-    .cardGlow{position:absolute;inset:auto -20% -30% auto;width:250px;height:250px;background:radial-gradient(circle,rgba(59,130,246,.11),transparent 72%);pointer-events:none;filter:blur(10px)}
-    .cardTop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-    .appInfo{display:flex;gap:14px;min-width:0;flex:1}
-    .appThumb{width:74px;height:74px;border-radius:22px;overflow:hidden;flex:0 0 auto;background:linear-gradient(135deg,rgba(59,130,246,.12),rgba(124,58,237,.12));border:1px solid var(--line);box-shadow:0 14px 24px rgba(0,0,0,.12);display:grid;place-items:center}
-    .appThumb img{width:100%;height:100%;object-fit:cover;display:block}
-    .appIconFallback{color:#d9e6fb;display:grid;place-items:center}
-    .appText{min-width:0;flex:1;display:grid;gap:7px}
-    .titleRow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-    .titleRow h2{margin:0;font-size:1.06rem;line-height:1.15;letter-spacing:-.02em}
-    .tag{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;font-size:.76rem;font-weight:900;letter-spacing:.2px;color:#dbeafe;border:1px solid rgba(96,165,250,.18);background:rgba(59,130,246,.10)}
-    .desc{margin:0;color:var(--muted);line-height:1.56;font-size:.96rem;min-height:3.1lh}
-    .meta{display:flex;flex-wrap:wrap;gap:10px;align-items:center;color:#d7e5fb;font-size:.88rem;font-weight:700;padding-top:2px}
-    .metaItem{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
-    .launchBtn{width:100%;border:0;border-radius:18px;padding:13px 16px;color:#fff;cursor:pointer;font-weight:900;font-size:.98rem;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 16px 28px rgba(59,130,246,.18);transition:transform 160ms ease,filter 160ms ease,box-shadow 160ms ease,opacity 160ms ease}
-    .launchBtn:hover{transform:translateY(-1px);filter:brightness(1.03);box-shadow:0 18px 30px rgba(0,0,0,.12)}
-    .launchBtn:disabled{opacity:.82;cursor:wait;transform:none}
-    .progress{display:none;gap:10px;padding-top:2px}
-    .progress.active{display:grid}
-    .progressTop{display:flex;justify-content:space-between;align-items:center;gap:10px;color:#d7e5fb;font-size:.87rem;font-weight:800}
-    .bar{height:11px;border-radius:999px;overflow:hidden;border:1px solid var(--line);background:rgba(255,255,255,.04)}
-    .bar>span{display:block;height:100%;width:0%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),var(--accent3),var(--accent2));transition:width 120ms linear}
-    .empty{grid-column:1 / -1;padding:40px 20px;text-align:center;color:var(--muted);border-radius:28px;border:1px dashed rgba(148,163,184,.18);background:rgba(255,255,255,.03);backdrop-filter:blur(18px)}
-    .footer{color:rgba(145,164,194,.75);font-size:.84rem;text-align:center;padding:2px 0 10px}
-    .srOnly{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-    ::selection{background:rgba(59,130,246,.28);color:#eff6ff}
-    ::-moz-selection{background:rgba(59,130,246,.28);color:#eff6ff}
-    img,a,button,input,textarea{-webkit-user-drag:none}
-    svg{display:block;flex:0 0 auto}
-    @keyframes rise{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
-    @keyframes cardIn{to{opacity:1;transform:translateY(0) scale(1)}}
-    @keyframes pop{from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    @media (max-width:1060px){
-      .heroTop{grid-template-columns:1fr}
-      .heroStats{grid-template-columns:repeat(3,1fr)}
-      .navCenter{display:none}
-      .nav{justify-content:space-between}
+    #bgCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;filter:saturate(1.08)}
+    .wrap{position:relative;z-index:1;width:min(1180px, calc(100% - 28px));margin:0 auto;padding:18px 0 56px}
+    .topbar{position:sticky;top:14px;z-index:30;margin-bottom:22px;display:flex;justify-content:center;pointer-events:none}
+    .dock{pointer-events:auto;display:flex;gap:10px;padding:10px;border:1px solid var(--stroke);border-radius:999px;background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.05));backdrop-filter:blur(22px) saturate(170%);box-shadow:var(--shadow);overflow:auto;max-width:100%}
+    .dock::-webkit-scrollbar{height:0;width:0}
+    .nav-btn{appearance:none;border:0;color:var(--muted);background:transparent;padding:12px 16px;border-radius:999px;display:flex;align-items:center;gap:10px;font-size:14px;font-weight:650;letter-spacing:.2px;cursor:pointer;transition:transform .25s ease, background .25s ease, color .25s ease;white-space:nowrap}
+    .nav-btn:hover{transform:translateY(-1px);color:var(--text);background:rgba(255,255,255,.06)}
+    .nav-btn.active{color:#09111d;background:linear-gradient(135deg, rgba(124,218,255,1), rgba(155,123,255,1));box-shadow:0 10px 24px rgba(124,218,255,.28)}
+    .icon{width:16px;height:16px;flex:none;opacity:.96}
+    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:stretch;padding:8px 0 26px}
+    .panel,.glass-card,.modal{position:relative;border:1px solid var(--stroke);border-radius:var(--radius-xl);background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.06));backdrop-filter:blur(20px) saturate(170%);box-shadow:var(--shadow);overflow:hidden}
+    .panel::before,.glass-card::after,.modal::before{content:"";position:absolute;inset:0;background:radial-gradient(600px 220px at var(--mx, 50%) var(--my, 0%), rgba(255,255,255,.13), transparent 38%);pointer-events:none;opacity:.85}
+    .hero-main{padding:28px;min-height:350px;display:flex;flex-direction:column;justify-content:space-between;gap:22px}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;width:max-content;padding:9px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:var(--muted);font-size:13px;font-weight:700;letter-spacing:.35px;text-transform:uppercase}
+    .title-row{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+    .app-icon{width:92px;height:92px;border-radius:26px;object-fit:cover;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);box-shadow:0 16px 32px rgba(0,0,0,.35)}
+    .hero-copy h1{margin:0;font-size:clamp(2.4rem, 5vw, 4.6rem);line-height:.95;letter-spacing:-1.6px}
+    .hero-copy p{margin:12px 0 0;color:var(--muted);font-size:15px;line-height:1.65;max-width:62ch}
+    .meta-grid{display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:12px;margin-top:8px}
+    .meta{padding:14px 15px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11)}
+    .meta .k{display:block;font-size:12px;color:var(--soft);margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px}
+    .meta .v{font-size:14px;font-weight:700}
+    .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:4px}
+    .btn{appearance:none;border:0;cursor:pointer;border-radius:999px;padding:13px 18px;font-weight:800;font-size:14px;letter-spacing:.2px;display:inline-flex;align-items:center;gap:10px;position:relative;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+    .btn:hover{transform:translateY(-2px)}
+    .btn:active{transform:translateY(0) scale(.99)}
+    .btn.primary{color:#081018;background:linear-gradient(135deg, #7cdaff, #9b7bff);box-shadow:0 14px 28px rgba(124,218,255,.22)}
+    .btn.ghost{color:var(--text);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+    .btn.small{padding:11px 14px;font-size:13px}
+    .btn.like{background:rgba(52,211,153,.14);border:1px solid rgba(52,211,153,.28);color:#c9ffe8}
+    .btn.dislike{background:rgba(255,93,122,.14);border:1px solid rgba(255,93,122,.28);color:#ffd6de}
+    .btn.vote-locked{opacity:.62;cursor:not-allowed;filter:saturate(.85)}
+    .btn.like.selected{background:rgba(52,211,153,.24);box-shadow:0 12px 28px rgba(52,211,153,.14)}
+    .btn.dislike.selected{background:rgba(255,93,122,.24);box-shadow:0 12px 28px rgba(255,93,122,.14)}
+    .hero-side{padding:24px;display:flex;flex-direction:column;gap:16px}
+    .stat{padding:18px;border-radius:22px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11)}
+    .stat .label{font-size:12px;letter-spacing:.25px;text-transform:uppercase;color:var(--soft)}
+    .stat .value{display:flex;justify-content:space-between;align-items:baseline;margin-top:8px;gap:12px}
+    .stat .value strong{font-size:28px;letter-spacing:-.8px}
+    .stat .value span{color:var(--muted);font-size:13px}
+    section{margin-top:22px}
+    .section-title{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:18px 2px 14px}
+    .section-title h2{margin:0;font-size:22px;letter-spacing:-.5px}
+    .section-title p{margin:0;color:var(--muted);font-size:14px;max-width:60ch}
+    .grid{display:grid;grid-template-columns:repeat(12, minmax(0,1fr));gap:16px}
+    .tutorial{grid-column:span 4;min-height:250px;padding:16px;display:flex;flex-direction:column;gap:12px}
+    .thumb{height:124px;border-radius:20px;overflow:hidden;position:relative;background:linear-gradient(135deg, rgba(124,218,255,.26), rgba(155,123,255,.22), rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.12)}
+    .thumb img{width:100%;height:100%;object-fit:cover;filter:saturate(1.03) contrast(1.02);transform:scale(1.02)}
+    .tag{position:absolute;left:12px;top:12px;padding:7px 10px;border-radius:999px;background:rgba(0,0,0,.42);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(12px);font-size:12px;font-weight:700}
+    .tutorial h3{margin:0;font-size:17px;letter-spacing:-.3px}
+    .tutorial p{margin:0;color:var(--muted);font-size:13px;line-height:1.6;flex:1}
+    .tutorial .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .launch-main{padding:18px}
+    .launcher-card{display:grid;grid-template-columns:140px 1fr;gap:16px;padding:16px;border-radius:24px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11)}
+    .launcher-thumb{width:100%;aspect-ratio:1/1;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:linear-gradient(135deg, rgba(124,218,255,.2), rgba(155,123,255,.2))}
+    .launcher-thumb img{width:100%;height:100%;object-fit:cover}
+    .launcher-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+    .launcher-copy h3{margin:0;font-size:24px;letter-spacing:-.4px}
+    .launcher-copy p{margin:8px 0 0;color:var(--muted);line-height:1.7;font-size:14px}
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+    .chip{padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);color:var(--muted);font-size:12px;font-weight:700}
+    .launch-actions{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+    .community{margin:24px 0 8px;padding:22px 24px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px}
+    .brand{display:flex;flex-direction:column;gap:6px}
+    .brand strong{font-size:18px;letter-spacing:-.25px}
+    .brand span{color:var(--muted);font-size:13px;line-height:1.6}
+    .links{display:flex;flex-wrap:wrap;gap:10px}
+    .links a{color:var(--text);text-decoration:none}
+    .modal-backdrop{position:fixed;inset:0;background:rgba(2,4,8,.62);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;z-index:60;padding:18px}
+    .modal-backdrop.show{display:flex}
+    .modal{width:min(820px, 100%);border-radius:32px;overflow:hidden;position:relative}
+    .modal .inner{padding:22px;display:grid;grid-template-columns:88px 1fr;gap:18px}
+    .modal .avatar{width:88px;height:88px;border-radius:26px;overflow:hidden;border:1px solid rgba(255,255,255,.16);box-shadow:0 18px 38px rgba(0,0,0,.42);background:rgba(255,255,255,.06)}
+    .modal .avatar img{width:100%;height:100%;object-fit:cover}
+    .modal h3{margin:0;font-size:24px;letter-spacing:-.5px}
+    .modal .info{margin-top:6px;color:var(--muted);line-height:1.7;font-size:13px}
+    .modal .specs{margin-top:14px;display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:10px}
+    .spec{padding:12px 14px;border-radius:18px;border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.06);display:flex;flex-direction:column;gap:4px}
+    .spec span{font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.3px}
+    .spec strong{font-size:14px}
+    .modal .actions-row{margin-top:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .progress-wrap{margin-top:18px;padding:14px;border-radius:20px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05)}
+    .progress-top{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:12px;margin-bottom:10px}
+    .progress{height:12px;border-radius:999px;overflow:hidden;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.09)}
+    .progress>span{display:block;height:100%;width:0%;border-radius:inherit;background:linear-gradient(135deg, #7cdaff, #9b7bff, #49f0a4);box-shadow:0 10px 18px rgba(124,218,255,.22);transition:width .15s linear}
+    .log{margin-top:14px;display:grid;gap:8px;max-height:170px;overflow:auto;padding-right:4px}
+    .log::-webkit-scrollbar{width:6px}
+    .log::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:999px}
+    .entry{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px}
+    .entry .pulse{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 5px rgba(124,218,255,.12);flex:none}
+    .close{position:absolute;top:14px;right:14px;width:42px;height:42px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:var(--text);cursor:pointer;display:grid;place-items:center;transition:transform .22s ease, background .22s ease;z-index:2}
+    .close:hover{transform:rotate(6deg) scale(1.03);background:rgba(255,255,255,.09)}
+    .close svg{width:18px;height:18px}
+    .hidden{display:none !important}
+    .video-box{margin-top:14px;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.28)}
+    .video-box video{display:block;width:100%;max-height:420px;background:#000}
+    .comments-shell{display:flex;flex-direction:column;gap:16px}
+    .comments-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+    .comments-top h3{margin:0;font-size:22px;letter-spacing:-.4px}
+    .comments-top p{margin:6px 0 0;color:var(--muted);font-size:14px;line-height:1.6}
+    .comment-composer{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:24px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+    .composer-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .profile-pill{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11)}
+    .profile-pill img{width:34px;height:34px;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,.12)}
+    .profile-pill strong{font-size:14px}
+    .profile-pill span{font-size:12px;color:var(--muted)}
+    .comment-textarea{width:100%;min-height:110px;resize:vertical;border:1px solid rgba(255,255,255,.12);outline:none;border-radius:20px;background:rgba(0,0,0,.18);color:var(--text);padding:14px 16px;font:inherit;line-height:1.6}
+    .comment-textarea::placeholder{color:rgba(255,255,255,.44)}
+    .composer-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    .reply-bar{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:999px;background:rgba(124,218,255,.11);border:1px solid rgba(124,218,255,.2);color:#dff7ff;font-size:13px}
+    .reply-bar button{background:transparent;border:0;color:#dff7ff;cursor:pointer;font-weight:800}
+    .comment-list{display:grid;gap:12px}
+    .comment-card{padding:14px;border-radius:22px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)}
+    .comment-meta{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .comment-user{display:flex;align-items:center;gap:10px;min-width:0}
+    .comment-user img{width:40px;height:40px;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,.12)}
+    .comment-user strong{font-size:14px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40vw}
+    .comment-user span{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+    .comment-text{margin:12px 0 0;color:var(--text);line-height:1.7;font-size:14px;white-space:pre-wrap;word-break:break-word}
+    .comment-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .comment-actions .btn{padding:9px 12px;font-size:12px}
+    .comment-actions .danger{background:rgba(255,93,122,.12);border:1px solid rgba(255,93,122,.22);color:#ffd6de}
+    .comment-owner{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .own-badge{padding:5px 9px;border-radius:999px;background:rgba(124,218,255,.12);border:1px solid rgba(124,218,255,.2);color:#dff7ff;font-size:11px;font-weight:800;letter-spacing:.2px}
+    .comment-replies{margin-top:12px;padding-left:14px;border-left:1px solid rgba(255,255,255,.12);display:grid;gap:10px}
+    .comment-empty{padding:18px;border-radius:22px;background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.12);color:var(--muted);font-size:14px;line-height:1.6}
+    .setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+    .setup-box{padding:14px;border-radius:20px;border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.05);display:flex;flex-direction:column;gap:10px}
+    .setup-box label{font-size:12px;text-transform:uppercase;letter-spacing:.3px;color:var(--soft)}
+    .setup-box input[type="text"]{width:100%;padding:12px 14px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.18);color:var(--text);outline:none;font:inherit}
+    .setup-box input[type="text"]::placeholder{color:rgba(255,255,255,.42)}
+    .setup-preview{display:flex;align-items:center;gap:12px}
+    .setup-preview img{width:58px;height:58px;border-radius:18px;object-fit:cover;border:1px solid rgba(255,255,255,.12)}
+    .setup-preview strong{display:block;font-size:14px}
+    .setup-preview span{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+    @media (max-width:1020px){
+      .hero{grid-template-columns:1fr}.meta-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tutorial{grid-column:span 6}.setup-grid{grid-template-columns:1fr}
     }
-    @media (max-width:760px){
-      .app{padding:12px}
-      .nav{width:calc(100% - 16px);height:68px;padding:10px 12px;top:8px}
-      .brandText span{max-width:20ch}
-      .wrap{padding-top:calc(68px + 10px)}
-      .hero,.toolbar{border-radius:26px}
-      .heroStats{grid-template-columns:1fr}
-      .toolbar{grid-template-columns:1fr}
-      .controls{justify-content:flex-start}
-      .count{justify-self:start}
-      .grid{grid-template-columns:1fr}
+    @media (max-width:640px){
+      .wrap{width:min(100% - 18px, 1180px)}
+      .hero-main,.hero-side,.community,.launch-main{padding:18px}
+      .meta-grid{grid-template-columns:1fr}
+      .tutorial{grid-column:span 12}
+      .modal .inner{grid-template-columns:1fr}.modal .avatar{width:76px;height:76px}
+      .section-title{align-items:flex-start;flex-direction:column}
+      .dock{justify-content:flex-start}.hero-copy h1{font-size:2.45rem}.launcher-card{grid-template-columns:1fr}
+      .comment-meta{align-items:flex-start;flex-direction:column}
     }
+    @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}#bgCanvas{display:none}}
   </style>
 </head>
 <body>
   <canvas id="bgCanvas"></canvas>
-  <canvas id="fxCanvas"></canvas>
 
-  <header class="nav glass">
-    <div class="brand" id="logoButton" role="button" tabindex="0" aria-label="Go to top">
-      <div class="brandMark" aria-hidden="true">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M13 2L4 14h6l-1 8 10-13h-6l0-7Z" stroke="white" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/></svg>
-      </div>
-      <div class="brandText">
-        <strong id="navTitle">MozLaunch</strong>
-        <span id="navSubtitle">by SkyeMoz</span>
-      </div>
+  <div class="wrap">
+    <div class="topbar">
+      <nav class="dock" id="dock">
+        <button class="nav-btn active" data-target="home"><svg class="icon"><use href="#i-home"></use></svg></button>
+        <button class="nav-btn" data-target="guide"><svg class="icon"><use href="#i-book"></use></svg></button>
+        <button class="nav-btn" data-target="keyAccessCard"><svg class="icon"><use href="#i-key"></use></svg></button>
+        <button class="nav-btn" data-target="community"><svg class="icon"><use href="#i-link"></use></svg></button>
+        <button class="nav-btn" data-target="commentsCard"><svg class="icon"><use href="#i-chat"></use></svg></button>
+      </nav>
     </div>
 
-    <nav class="navCenter" aria-label="Primary">
-      <a class="navLink active" href="#top" data-nav="top">Home</a>
-      <a class="navLink" href="#apps" data-nav="apps">Apps</a>
-      <a class="navLink" href="#games" data-nav="games">Games</a>
-      <a class="navLink" href="#all" data-nav="all">All Items</a>
-    </nav>
-
-    <div class="navRight">
-      <div class="statusPill" id="liveStatus"><span class="dot"></span><span>Connecting…</span></div>
-    </div>
-  </header>
-
-  <main class="app" id="top">
-    <div class="wrap">
-      <section class="hero glass">
-        <div class="heroTop">
-          <div class="heroCopy">
-            <div class="heroBadgeRow">
-              <span class="badge">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l2.7 5.48L20.7 8.3l-4.35 4.24L17.37 19 12 16.18 6.63 19l1.02-6.46L3.3 8.3l6-0.82L12 2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-                🟢 Live Feed
-              </span>
-              <span class="badge">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v18M3 12h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7.5 7.5l9 9M16.5 7.5l-9 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-                Global / Realtime
-              </span>
-            </div>
-            <h1 id="heroTitle">MozLaunch</h1>
-            <p id="heroSubtitle">by SkyeMoz</p>
-          </div>
-
-          <div class="heroStats" aria-label="Dashboard stats">
-            <div class="statCard">
-              <div class="statIcon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 8.5h16M4 12h16M4 15.5h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
-              <div><strong id="totalCount">0</strong><span>Total items</span></div>
-            </div>
-            <div class="statCard">
-              <div class="statIcon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M7 7h10l-1 11H8L7 7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 7a3 3 0 0 1 6 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
-              <div><strong id="gamesCount">0</strong><span>Game items</span></div>
-            </div>
-            <div class="statCard">
-              <div class="statIcon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 7.5h12v10H6v-10Z" stroke="currentColor" stroke-width="1.7"/><path d="M9 9h6M9 12h6M9 15h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
-              <div><strong id="appsCount">0</strong><span>App / File items</span></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="toolbar glass" id="all">
-        <div class="search">
-          <svg class="searchIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="rgba(226,232,240,.78)" stroke-width="2"/><path d="M21 21l-4.35-4.35" stroke="rgba(226,232,240,.78)" stroke-width="2" stroke-linecap="round"/></svg>
-          <input id="searchInput" type="text" placeholder="Search titles, tags, sizes, or descriptions" autocomplete="off" />
-        </div>
-        <div class="controls" aria-label="Filters">
-          <button class="chip active" data-filter="All" type="button">All</button>
-          <button class="chip" data-filter="Games" type="button">Games</button>
-          <button class="chip" data-filter="Apps" type="button">Apps</button>
-          <button class="chip" data-filter="File" type="button">File</button>
-          <div class="count" id="countBadge">0 items</div>
-        </div>
-      </section>
-
-      <section id="apps" class="srOnly" aria-hidden="true"></section>
-      <section id="games" class="srOnly" aria-hidden="true"></section>
-      <section id="grid" class="grid" aria-live="polite"></section>
-      <div class="footer">Live synced from Firestore collection <code>global</code>. Every update appears without refresh.</div>
-    </div>
-  </main>
-
-  <div id="modal" class="overlay" aria-hidden="true" style="position:fixed;inset:0;display:none;place-items:center;padding:20px;background:rgba(2,6,23,.58);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);z-index:80;">
-    <div class="modalCard" style="width:min(560px,100%);border-radius:32px;border:1px solid rgba(148,163,184,.12);background:linear-gradient(180deg,rgba(12,23,41,.94),rgba(7,15,28,.92));box-shadow:0 30px 90px rgba(0,0,0,.42);padding:22px;animation:pop .22s ease both;">
-      <div class="modalTop" style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px;">
+    <main id="home" class="hero">
+      <section class="panel hero-main">
         <div>
-          <h3 class="modalTitle" id="modalTitle" style="margin:0;font-size:1.14rem;line-height:1.2;letter-spacing:-.02em;">Launching</h3>
-          <p class="modalSub" id="modalSub" style="margin:6px 0 0;color:var(--muted);line-height:1.5;font-size:.95rem;">Preparing launch</p>
+          <span class="eyebrow"><svg class="icon" style="width:14px;height:14px"><use href="#i-spark"></use></svg><span id="subtitleText">👁 0 Views</span></span>
+          <div class="title-row" style="margin-top:18px">
+            <img class="app-icon" id="appIcon" alt="Launcher icon" />
+            <div class="hero-copy">
+              <h1 id="appName">Moz Launcher</h1>
+              <p id="appDesc">A smooth launcher hub with various of files!.</p>
+            </div>
+          </div>
+          <div class="meta-grid">
+            <div class="meta"><span class="k">Version</span><span class="v" id="appVersion">AutoUpdate</span></div>
+            <div class="meta"><span class="k">Pack Type</span><span class="v" id="mainPackType">APK</span></div>
+            <div class="meta"><span class="k">Uid</span><span class="v" id="mainUid">Obfuscated</span></div>
+            <div class="meta"><span class="k">Creator</span><span class="v" id="appCreator">Moz Studio</span></div>
+          </div>
         </div>
-        <button class="close" id="closeModal" type="button" aria-label="Close" style="width:42px;height:42px;border-radius:14px;border:1px solid rgba(148,163,184,.12);background:rgba(255,255,255,.04);color:var(--text);font-size:20px;cursor:pointer;">×</button>
+        <div>
+          <div class="actions">
+            <button class="btn primary" id="launchBtn"><svg class="icon"><use href="#i-play"></use></svg>Launch Now</button>
+            <button class="btn ghost" id="tutorialBtn"><svg class="icon"><use href="#i-book"></use></svg>View Tutorial</button>
+            <a class="btn ghost" id="discordBtn" href="#" target="_blank" rel="noreferrer"><svg class="icon"><use href="#i-discord"></use></svg>Discord Community</a>
+          </div>
+          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn like" id="likeBtn"><svg class="icon"><use href="#i-thumbs-up"></use></svg>Like <span class="vote-count" id="likesCount">0</span></button>
+            <button class="btn dislike" id="dislikeBtn"><svg class="icon"><use href="#i-thumbs-down"></use></svg>Dislike <span class="vote-count" id="dislikesCount">0</span></button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel hero-side">
+        <div class="stat"><div class="label">Views</div><div class="value"><strong id="viewsCount">0</strong><span>Total</span></div></div>
+        <div class="stat"><div class="label">Average Likes</div><div class="value"><strong id="likesStat">0.0⭐</strong><span>Community</span></div></div>
+        <div class="stat"><div class="label">File Size</div><div class="value"><strong>844mb</strong><span>File size</span></div></div>
+        <div class="stat"><div class="label">Comments</div><div class="value"><strong id="commentsStat">0</strong><span>Live</span></div></div>
+        <div class="stat"><div class="label">Updated On</div><div class="value"><strong id="themeHighlight">2025, May 01</strong><span>Last update</span></div></div>
+      </aside>
+    </main>
+
+    <section id="guide">
+      <div class="section-title"><div><h2>Tutorial</h2><p>Only one video tutorial is shown here now.</p></div></div>
+      <div class="grid" id="tutorialGrid"></div>
+    </section>
+
+    <section id="keyAccessCard">
+      <div class="section-title"><div><h2>Log In Access</h2><p>Logging in can give you access to the mods..</p></div></div>
+      <div class="panel launch-main">
+        <div class="launcher-card">
+          <div class="launcher-thumb"><img id="keyThumb" alt="Key access thumbnail" /></div>
+          <div>
+            <div class="launcher-head">
+              <div class="launcher-copy">
+                <h3 id="keyTitle">Log In Access</h3>
+                <p id="keyDesc">Open the link page with a short loading step, then return here to watch the tutorial video whenever you need help.</p>
+              </div>
+            </div>
+            <div class="chips"><span class="chip">Video tutorial</span><span class="chip">Fast redirect</span><span class="chip">Easy</span></div>
+            <div class="launch-actions">
+              <button class="btn primary" id="getKeyBtn"><svg class="icon"><use href="#i-key"></use></svg>Get Key</button>
+              <button class="btn ghost" id="scrollTutorialBtn"><svg class="icon"><use href="#i-book"></use></svg>Tutorial</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="spinnerRow" style="display:flex;justify-content:center;padding:10px 0 2px;"><div class="spinner" aria-hidden="true" style="width:52px;height:52px;border-radius:50%;border:4px solid rgba(59,130,246,.12);border-top-color:rgba(59,130,246,.96);border-right-color:rgba(124,58,237,.92);animation:spin .9s linear infinite;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)"></div></div>
-      <div class="loaderWrap" style="display:grid;gap:12px;margin-top:12px;">
-        <div class="loaderLine" style="display:flex;justify-content:space-between;gap:12px;align-items:center;color:#d7e5fb;font-size:.92rem;font-weight:800;"><span id="stageLabel">Loading resources</span><span id="stagePct">0%</span></div>
-        <div class="bar" style="height:11px;border-radius:999px;overflow:hidden;border:1px solid rgba(148,163,184,.12);background:rgba(255,255,255,.04)"><span id="modalBar" style="display:block;height:100%;width:0%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),var(--accent3),var(--accent2));transition:width 120ms linear"></span></div>
-        <p class="stageText" style="margin:0;color:var(--muted);font-size:.92rem;line-height:1.5;">Opening item and preparing the direct link.</p>
+    </section>
+
+    <section id="community">
+      <div class="panel community">
+        <div class="brand">
+          <strong id="footerName">MozLauncher</strong>
+          <span id="footerInfo">Creator: Moz Studio</span>
+        </div>
+        <div class="links">
+          <a class="btn ghost small" id="discordLink" href="#" target="_blank" rel="noreferrer"><svg class="icon"><use href="#i-discord"></use></svg>Discord Invite</a>
+          <button class="btn ghost small" id="copyInvite"><svg class="icon"><use href="#i-copy"></use></svg>Copy Invite</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="commentsCard">
+      <div class="section-title">
+        <div>
+          <h2>Comments</h2>
+          <p>Sign once, then comment with your locked username on this device.</p>
+        </div>
+        <span class="chip" id="commentsCountBadge">0</span>
+      </div>
+
+      <div class="panel launch-main comments-shell">
+        <div class="comments-top">
+          <div>
+            <h3>Comment Access</h3>
+            <p id="commentAccessText">Sign Comment to unlock the comment box.</p>
+          </div>
+          <button class="btn primary" id="openCommentSetup"><svg class="icon"><use href="#i-chat"></use></svg>Sign Comment</button>
+        </div>
+
+        <div id="commentComposer" class="comment-composer hidden">
+          <div class="composer-head">
+            <div class="profile-pill">
+              <img id="composerAvatar" alt="Your profile avatar" />
+              <div>
+                <strong id="composerName">Guest</strong>
+                <span id="composerLockText">Locked on this device</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="replyBar" class="reply-bar hidden">
+            <span id="replyBarText">Replying</span>
+            <button type="button" id="cancelReplyBtn">Cancel</button>
+          </div>
+
+          <textarea id="commentInput" class="comment-textarea" placeholder="Write something..."></textarea>
+          <div class="composer-actions">
+            <small id="commentHint" style="color:var(--muted)">Your username cannot be changed after signing on this device.</small>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <button class="btn ghost" id="editProfileBtn"><svg class="icon"><use href="#i-spark"></use></svg>Edit Profile</button>
+              <button class="btn primary" id="postCommentBtn"><svg class="icon"><use href="#i-chat"></use></svg>Comment</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="commentList" class="comment-list">
+          <div class="comment-empty">No comments yet.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="actionModalBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="close" id="closeActionModal" aria-label="Close modal"><svg><use href="#i-close"></use></svg></button>
+      <div class="inner">
+        <div class="avatar"><img id="modalIcon" alt="Modal icon"></div>
+        <div>
+          <span class="eyebrow" style="margin-bottom:10px"><svg class="icon" style="width:14px;height:14px"><use href="#i-chip"></use></svg><span id="modalTag">Launcher</span></span>
+          <h3 id="modalTitle">Modal</h3>
+          <div class="info" id="modalInfo"></div>
+
+          <div id="modalVideoWrap" class="video-box hidden">
+            <video id="tutorialVideo" controls playsinline preload="metadata" src="settings/media/key.mp4"></video>
+          </div>
+
+          <div class="specs" id="modalSpecs">
+            <div class="spec"><span>State</span><strong id="modalState">Waiting</strong></div>
+            <div class="spec"><span>Timer</span><strong id="modalWindow">1s</strong></div>
+            <div class="spec"><span>Progress</span><strong id="progressLabel">0%</strong></div>
+            <div class="spec"><span>Source</span><strong id="modalSource">Local</strong></div>
+          </div>
+
+          <div class="actions-row" id="modalActions">
+            <button class="btn ghost" id="cancelActionBtn">Cancel</button>
+            <button class="btn primary" id="initBtn"><svg class="icon"><use href="#i-play"></use></svg>Start</button>
+          </div>
+
+          <div class="progress-wrap" id="modalProgressWrap">
+            <div class="progress-top"><span>Loading</span><span id="progressLabelTop">0%</span></div>
+            <div class="progress"><span id="progressFill"></span></div>
+          </div>
+
+          <div class="log" id="modalLog"><div class="entry"><span class="pulse"></span><span>Ready.</span></div></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-    import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyCbtNoRho0NAydgqEz0iKXotqBXJpmubZk",
-      authDomain: "modlaunch.firebaseapp.com",
-      projectId: "modlaunch",
-      storageBucket: "modlaunch.firebasestorage.app",
-      messagingSenderId: "16749876586",
-      appId: "1:16749876586:web:6e6afba261424858f40113"
-    };
-
-    const fallbackManifest = { appName: "MozLaunch", subtitle: "by SkyeMoz", items: [] };
-    const state = { manifest: fallbackManifest, filter: "All", query: "" };
-
-    const grid = document.getElementById("grid");
-    const searchInput = document.getElementById("searchInput");
-    const countBadge = document.getElementById("countBadge");
-    const totalCount = document.getElementById("totalCount");
-    const gamesCount = document.getElementById("gamesCount");
-    const appsCount = document.getElementById("appsCount");
-    const heroTitle = document.getElementById("heroTitle");
-    const heroSubtitle = document.getElementById("heroSubtitle");
-    const navTitle = document.getElementById("navTitle");
-    const navSubtitle = document.getElementById("navSubtitle");
-    const chips = [...document.querySelectorAll(".chip")];
-    const navLinks = [...document.querySelectorAll(".navLink")];
-    const logoButton = document.getElementById("logoButton");
-    const modal = document.getElementById("modal");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalSub = document.getElementById("modalSub");
-    const stageLabel = document.getElementById("stageLabel");
-    const stagePct = document.getElementById("stagePct");
-    const modalBar = document.getElementById("modalBar");
-    const closeModal = document.getElementById("closeModal");
-    const liveStatus = document.getElementById("liveStatus");
-    let activeLaunch = null, rafId = 0, backgroundSeed = Math.random();
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const colRef = collection(db, "global");
-
-    function esc(v){ return String(v ?? "").replace(/[&<>"]/g, s => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[s])); }
-    function fmtDate(v){
-      try {
-        if(!v) return "";
-        if(typeof v === "string") return new Intl.DateTimeFormat(undefined, { year:"numeric", month:"short", day:"numeric" }).format(new Date(v));
-        if(v?.toDate) return new Intl.DateTimeFormat(undefined, { year:"numeric", month:"short", day:"numeric" }).format(v.toDate());
-        if(v?.seconds) return new Intl.DateTimeFormat(undefined, { year:"numeric", month:"short", day:"numeric" }).format(new Date(v.seconds * 1000));
-        return new Intl.DateTimeFormat(undefined, { year:"numeric", month:"short", day:"numeric" }).format(new Date(v));
-      } catch { return esc(v); }
-    }
-
-    function iconSvg(n){
-      const i = {
-        note:`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 3.5h7l3.5 3.5V20a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 20V5A1.5 1.5 0 0 1 7 3.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M14 3.5V7h3.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 11h8M8 14h8M8 17h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
-        gamepad:`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 10h10a4 4 0 0 1 4 4v.5A3.5 3.5 0 0 1 17.5 18H6.5A3.5 3.5 0 0 1 3 14.5V14a4 4 0 0 1 4-4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M8.5 13.2h3M10 11.7v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M16.2 12.6h.01M18 14h.01" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"/></svg>`,
-        spark:`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l1.78 5.45L19.5 10.2l-4.18 3.04L16.96 19 12 15.8 7.04 19l1.64-5.76L4.5 10.2l5.72-1.75L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>`,
-        car:`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.3 10.2 7.7 7.4A2 2 0 0 1 9.48 6.3h5.04a2 2 0 0 1 1.78 1.1l1.4 2.8M5 14h14v3a1 1 0 0 1-1 1h-.7a1.3 1.3 0 0 1-1.3-1.3V16H8v.7A1.3 1.3 0 0 1 6.7 18H6a1 1 0 0 1-1-1v-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M7 14.2h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8.5" cy="15.9" r="1" stroke="currentColor" stroke-width="1.5"/><circle cx="15.5" cy="15.9" r="1" stroke="currentColor" stroke-width="1.5"/></svg>`,
-        tools:`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 4.5a4.5 4.5 0 0 0-4.08 6.4L4.6 16.7a1.8 1.8 0 1 0 2.55 2.55l5.8-5.82a4.5 4.5 0 1 0 1.55-8.93Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M15.3 7.2l1.5 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>`,
-        moon:`<svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15.5 3.5a7.5 7.5 0 1 0 5 13.1 8 8 0 1 1-5-13.1Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>`
-      };
-      return i[n] || i.spark;
-    }
-
-    function appPreview(item){ return item.thumbnail ? `<img src="${esc(item.thumbnail)}" alt="${esc(item.title)} thumbnail" loading="lazy" />` : `<div class="appIconFallback">${iconSvg(item.icon)}</div>`; }
-    function normalize(item){ return [item.title,item.description,item.type,item.tag,item.size,item.date,item.icon,item.launch].join(" ").toLowerCase(); }
-
-    function isTimestampLike(v){ return v && typeof v === "object" && (typeof v.seconds === "number" || typeof v.toDate === "function"); }
-    function sortKey(item){
-      if(item.createdAt && isTimestampLike(item.createdAt)) return item.createdAt.seconds || item.createdAt.toDate?.().getTime?.() || 0;
-      if(item.date){ const t = Date.parse(item.date); if(!Number.isNaN(t)) return t; }
-      return 0;
-    }
-
-    function filteredItems(){
-      const q = state.query.trim().toLowerCase();
-      return (state.manifest?.items || []).filter(item => {
-        const typeOk = state.filter === "All" || item.type === state.filter;
-        const queryOk = !q || normalize(item).includes(q);
-        return typeOk && queryOk;
-      });
-    }
-
-    function updateStats(items){
-      const total = state.manifest?.items?.length || 0;
-      const games = (state.manifest?.items || []).filter(i => i.type === "Games").length;
-      const apps = (state.manifest?.items || []).filter(i => i.type !== "Games").length;
-      totalCount.textContent = total;
-      gamesCount.textContent = games;
-      appsCount.textContent = apps;
-      countBadge.textContent = `${items.length} item${items.length === 1 ? "" : "s"}`;
-    }
-
-    function render(){
-      const items = filteredItems();
-      updateStats(items);
-      grid.innerHTML = "";
-      if(!items.length){
-        grid.innerHTML = `<div class="empty">No matching items found. Add uploads in the uploader panel and they will appear here live.</div>`;
-        return;
-      }
-      items.forEach((item, index) => {
-        const card = document.createElement("article");
-        card.className = "card";
-        card.style.animationDelay = `${index * 55}ms`;
-        card.innerHTML = `
-          <div class="cardGlow"></div>
-          <div class="cardTop">
-            <div class="appInfo">
-              <div class="appThumb" aria-hidden="true">${appPreview(item)}</div>
-              <div class="appText">
-                <div class="titleRow">
-                  <h2>${esc(item.title)}</h2>
-                  <span class="tag">${esc(item.tag || item.type || "Item")}</span>
+  <div class="modal-backdrop" id="commentSetupBackdrop" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="commentSetupTitle">
+      <button class="close" id="closeCommentSetup" aria-label="Close modal"><svg><use href="#i-close"></use></svg></button>
+      <div class="inner">
+        <div class="avatar"><img id="setupAvatarPreview" alt="Profile preview"></div>
+        <div>
+          <span class="eyebrow" style="margin-bottom:10px"><svg class="icon" style="width:14px;height:14px"><use href="#i-chat"></use></svg><span>Sign Comment</span></span>
+          <h3 id="commentSetupTitle">Enter username</h3>
+          <div class="info">Pick a profile picture once, enter your username, and it will be locked on this device.</div>
+          <div class="setup-grid">
+            <div class="setup-box">
+              <label>Profile Pic</label>
+              <div class="setup-preview">
+                <img id="setupAvatarThumb" alt="Avatar thumb" />
+                <div>
+                  <strong id="setupAvatarLabel">No photo selected</strong>
+                  <span>Choose image from media picker</span>
                 </div>
-                <p class="desc">${esc(item.description || "")}</p>
               </div>
+              <input id="avatarInput" type="file" accept="image/*" hidden />
+              <button type="button" class="btn ghost small" id="pickAvatarBtn"><svg class="icon"><use href="#i-copy"></use></svg>Choose Photo</button>
+            </div>
+            <div class="setup-box">
+              <label>Username</label>
+              <input id="setupUsername" type="text" maxlength="24" placeholder="Enter username" />
+              <small style="color:var(--muted);line-height:1.6">This name becomes permanent on this device after you tap Accept.</small>
             </div>
           </div>
-          <div class="meta">
-            <span class="metaItem"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M7 3.5v2M17 3.5v2M5 8.5h14M6.5 6.5h11A1.5 1.5 0 0 1 19 8v10.5A1.5 1.5 0 0 1 17.5 20h-11A1.5 1.5 0 0 1 5 18.5V8A1.5 1.5 0 0 1 6.5 6.5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>${fmtDate(item.date)}</span>
-            <span class="metaItem"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 12h12M6 8h7M6 16h9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>${esc(item.size || "")}</span>
-            <span class="metaItem">${esc(item.type || "Item")}</span>
+          <div class="actions-row" style="margin-top:16px">
+            <button class="btn ghost" id="cancelCommentSetup">Cancel</button>
+            <button class="btn primary" id="acceptCommentSetup"><svg class="icon"><use href="#i-check"></use></svg>Accept</button>
           </div>
-          <div class="progress" aria-hidden="true">
-            <div class="progressTop"><span class="pStage">Ready</span><span class="pPct">0%</span></div>
-            <div class="bar"><span></span></div>
-          </div>
-          <div class="actions"><button class="launchBtn" type="button">Launch</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <svg width="0" height="0" style="position:absolute;left:-9999px;top:-9999px" aria-hidden="true" focusable="false">
+    <symbol id="i-home" viewBox="0 0 24 24"><path fill="currentColor" d="M12 3.1 3 10.4v9.6h5.7v-6.3h6.6V20H21v-9.6L12 3.1Z"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path fill="currentColor" d="M6 4.5A2.5 2.5 0 0 1 8.5 2H20v16.5A2.5 2.5 0 0 1 17.5 21H7a3 3 0 0 0-3 3V4.5Z"/><path fill="currentColor" d="M7 7h9v2H7z"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path fill="currentColor" d="M10.5 13.5a4.7 4.7 0 0 1 0-6.7l1.5-1.5a4.7 4.7 0 0 1 6.7 6.7l-1.4 1.4-1.4-1.4 1.4-1.4a2.7 2.7 0 1 0-3.8-3.8L12 8.3a2.7 2.7 0 0 0 0 3.8z"/><path fill="currentColor" d="M13.5 10.5a4.7 4.7 0 0 1 0 6.7L12 18.7a4.7 4.7 0 0 1-6.7-6.7l1.4-1.4 1.4 1.4-1.4 1.4a2.7 2.7 0 1 0 3.8 3.8l1.5-1.5a2.7 2.7 0 0 0 0-3.8z"/></symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2l1.9 5.2L19 9.1l-5.1 1.9L12 16l-1.9-5.1L5 9.1l5.1-1.9z"/><path fill="currentColor" d="M18 14l.9 2.4 2.4.9-2.4.9L18 21l-.9-2.4-2.4-.9 2.4-.9z"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l12-7z"/></symbol>
+    <symbol id="i-discord" viewBox="0 0 24 24"><path fill="currentColor" d="M20.5 4.5a16 16 0 0 0-4-1.3l-.2.4a14 14 0 0 1 3 1.2 12.2 12.2 0 0 0-1.6-.8A11 11 0 0 0 15.6 3a15.4 15.4 0 0 0-.5 1.1 13.3 13.3 0 0 0-6.2 0A15.4 15.4 0 0 0 8.4 3a11 11 0 0 0-2.5.9 12.2 12.2 0 0 0-1.6.8 14 14 0 0 1 3-1.2l-.2-.4a16 16 0 0 0-4 1.3C1.2 8.2.7 11.8 1 15.4a16 16 0 0 0 4.9 2.5l.6-.8a10.7 10.7 0 0 1-1.2-.6 8.3 8.3 0 0 0 .4-.3 11.5 11.5 0 0 0 9.1 0 8.3 8.3 0 0 0 .4.3c-.4.2-.8.4-1.2.6l.6.8a16 16 0 0 0 4.9-2.5c.3-3.6-.2-7.2-2.5-10.9Zm-11.9 9.3c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Zm7.8 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Z"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><path fill="currentColor" d="M8 8h11v13H8z"/><path fill="currentColor" d="M5 3h11v2H7v11H5z"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path fill="currentColor" d="m6.4 5 5.6 5.6L17.6 5 19 6.4 13.4 12 19 17.6 17.6 19l-5.6-5.6L6.4 19 5 17.6 10.6 12 5 6.4Z"/></symbol>
+    <symbol id="i-chip" viewBox="0 0 24 24"><path fill="currentColor" d="M9 3h2v2h2V3h2v2h2v2h2v2h2v2h-2v2h2v2h-2v2h-2v2h-2v2h-2v-2h-2v2H9v-2H7v2H5v-2H3v-2h2v-2H3v-2h2v-2H3V9h2V7H3V5h2V3h2v2h2z"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><path fill="currentColor" d="M14 3a7 7 0 1 0 4.2 12.6L23 20.4 20.4 23l-4.8-4.8A7 7 0 1 0 14 3Zm0 2.2A4.8 4.8 0 1 1 14 15a4.8 4.8 0 0 1 0-9.8Z"/></symbol>
+    <symbol id="i-thumbs-up" viewBox="0 0 24 24"><path fill="currentColor" d="M9 21h8a2 2 0 0 0 2-1.5l1.5-7.5a2 2 0 0 0-2-2.5h-6V7a4 4 0 0 0-4-4h-.5L5 10v11h4z"/></symbol>
+    <symbol id="i-thumbs-down" viewBox="0 0 24 24"><path fill="currentColor" d="M15 3H7a2 2 0 0 0-2 1.5L3.5 12A2 2 0 0 0 5.5 14h6v3a4 4 0 0 0 4 4h.5l2-8V3h-3z"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path fill="currentColor" d="M4 4h16v12H8l-4 4V4zm3 4h10v2H7V8zm0 4h7v2H7v-2z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path fill="currentColor" d="m9.2 16.6-4.8-4.8 1.4-1.4 3.4 3.4 8-8 1.4 1.4z"/></symbol>
+  </svg>
+
+  <script id="manifestFallback" type="application/json">
+  {
+    "app": {
+      "name": "MozLaunch",
+      "version": "Latest",
+      "creator": "Moz Studio",
+      "description": "MozLaunch is a versatile application designed to provide users with seamless access to a wide variety of apps and games, completely free of charge. The platform allows users to explore and download applications that include additional features, modifications, and enhancements not typically available in standard versions. MozLaunch emphasizes user convenience, offering an intuitive interface that simplifies the process of discovering, installing, and managing apps and games. With a focus on personalization and enhanced functionality, MozLaunch serves as a comprehensive hub for users seeking an enriched digital experience.",
+      "icon": "settings/media/app-icon.png",
+      "subtitle": "Views"
+    },
+    "mainLauncher": {
+      "name": "Mozlaunch",
+      "description": "MozLaunch is a versatile application designed to provide users with seamless access to a wide variety of apps and games, completely free of charge. The platform allows users to explore and download applications that include additional features, modifications, and enhancements not typically available in standard versions. MozLaunch emphasizes user convenience, offering an intuitive interface that simplifies the process of discovering, installing, and managing apps and games. With a focus on personalization and enhanced functionality, MozLaunch serves as a comprehensive hub for users seeking an enriched digital experience.",
+      "button": "Launch & Install",
+      "link": "https://www.mediafire.com/file/8stsbkugh085woe/MozLaunch_%2528AutoUpdate%2529.zip/file",
+      "thumbnail": "github/settings/media/app.png",
+      "icon": "settings/media/appicon.png",
+      "size": "18.93 MB",
+      "packType": "APK",
+      "uid": "MOZ-7000-0001",
+      "version": "26.0.0"
+    },
+    "tutorials": [
+      {
+        "name": "Password Access | 🔑",
+        "description": "This video walks you through how to access the app with a key.",
+        "button": "Preview",
+        "action": "preview",
+        "thumbnail": "settings/media/key-thumb.png",
+        "icon": "settings/media/key-thumb.png"
+      }
+    ],
+    "keyAccess": {
+      "name": "Get Password",
+      "description": "Visit the page inorder to access the app!",
+      "button": "Start",
+      "tutorialButton": "Tutorial",
+      "link": "https://among-us-key.vercel.app/",
+      "thumbnail": "settings/media/getkey-thumb.png"
+    },
+    "community": {
+      "discord": "https://discord.gg/QHg5c96dGK",
+      "youtube": "https://youtube.com/@SkyeMozMods",
+      "tiktok": "https://tiktok.com/@SkyeMozMods"
+    },
+    "stats": {
+      "views": 0,
+      "likes": 0,
+      "dislikes": 0,
+      "comments": 0
+    }
+  }
+  </script>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+
+  <script>
+    const DEFAULT_MANIFEST = JSON.parse(document.getElementById('manifestFallback').textContent);
+    const PLACEHOLDER = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700">
+        <defs>
+          <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stop-color="#7cdaff"/>
+            <stop offset="100%" stop-color="#9b7bff"/>
+          </linearGradient>
+          <radialGradient id="r" cx="50%" cy="45%" r="70%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity=".22"/>
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <rect width="1200" height="700" fill="#0a0d16"/>
+        <rect width="1200" height="700" fill="url(#g)" opacity=".30"/>
+        <circle cx="180" cy="160" r="220" fill="url(#r)"/>
+        <circle cx="980" cy="100" r="280" fill="url(#r)" opacity=".85"/>
+      </svg>
+    `);
+    const KEY_THUMB = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+        <defs>
+          <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stop-color="#7cdaff"/>
+            <stop offset="100%" stop-color="#9b7bff"/>
+          </linearGradient>
+        </defs>
+        <rect width="800" height="800" rx="60" fill="#081018"/>
+        <circle cx="400" cy="400" r="235" fill="url(#g)" opacity=".20"/>
+        <path d="M268 434a88 88 0 1 1 110-110l131 131-45 45-32-32-34 34-36-36-34 34-60-60z" fill="url(#g)"/>
+        <rect x="460" y="342" width="98" height="36" rx="18" fill="#fff" opacity=".9"/>
+        <rect x="548" y="342" width="54" height="18" rx="9" fill="#fff" opacity=".7"/>
+      </svg>
+    `);
+    const FALLBACK_AVATAR = 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+        <defs>
+          <linearGradient id="a" x1="0" x2="1" y1="0" y2="1">
+            <stop offset="0%" stop-color="#7cdaff"/>
+            <stop offset="100%" stop-color="#9b7bff"/>
+          </linearGradient>
+        </defs>
+        <rect width="256" height="256" rx="64" fill="#081018"/>
+        <circle cx="128" cy="128" r="92" fill="url(#a)" opacity=".18"/>
+        <path d="M128 128m-36 0a36 36 0 1 0 72 0a36 36 0 1 0-72 0M56 220c10-33 38-54 72-54s62 21 72 54" fill="url(#a)"/>
+      </svg>
+    `);
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAmOgHjmkKNQ17Q3WzwZJApLgta8Dj_hdw",
+      authDomain: "mozstudio-2a43d.firebaseapp.com",
+      projectId: "mozstudio-2a43d",
+      storageBucket: "mozstudio-2a43d.firebasestorage.app",
+      messagingSenderId: "538066492422",
+      appId: "1:538066492422:web:06c2631534b3e35c273787",
+      measurementId: "G-5RZPQFDF75"
+    };
+
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const ui = {
+      appIcon: document.getElementById('appIcon'),
+      appName: document.getElementById('appName'),
+      appDesc: document.getElementById('appDesc'),
+      appVersion: document.getElementById('appVersion'),
+      appCreator: document.getElementById('appCreator'),
+      subtitleText: document.getElementById('subtitleText'),
+      mainPackType: document.getElementById('mainPackType'),
+      mainUid: document.getElementById('mainUid'),
+      tutorialGrid: document.getElementById('tutorialGrid'),
+      footerName: document.getElementById('footerName'),
+      footerInfo: document.getElementById('footerInfo'),
+      discordBtn: document.getElementById('discordBtn'),
+      discordLink: document.getElementById('discordLink'),
+      launchBtn: document.getElementById('launchBtn'),
+      tutorialBtn: document.getElementById('tutorialBtn'),
+      likeBtn: document.getElementById('likeBtn'),
+      dislikeBtn: document.getElementById('dislikeBtn'),
+      likesCount: document.getElementById('likesCount'),
+      dislikesCount: document.getElementById('dislikesCount'),
+      likesStat: document.getElementById('likesStat'),
+      viewsCount: document.getElementById('viewsCount'),
+      commentsStat: document.getElementById('commentsStat'),
+      themeHighlight: document.getElementById('themeHighlight'),
+      keyThumb: document.getElementById('keyThumb'),
+      keyTitle: document.getElementById('keyTitle'),
+      keyDesc: document.getElementById('keyDesc'),
+      getKeyBtn: document.getElementById('getKeyBtn'),
+      scrollTutorialBtn: document.getElementById('scrollTutorialBtn'),
+      actionModalBackdrop: document.getElementById('actionModalBackdrop'),
+      closeActionModal: document.getElementById('closeActionModal'),
+      cancelActionBtn: document.getElementById('cancelActionBtn'),
+      initBtn: document.getElementById('initBtn'),
+      modalTag: document.getElementById('modalTag'),
+      modalTitle: document.getElementById('modalTitle'),
+      modalInfo: document.getElementById('modalInfo'),
+      modalState: document.getElementById('modalState'),
+      modalWindow: document.getElementById('modalWindow'),
+      modalSource: document.getElementById('modalSource'),
+      modalLog: document.getElementById('modalLog'),
+      modalIcon: document.getElementById('modalIcon'),
+      progressFill: document.getElementById('progressFill'),
+      progressLabel: document.getElementById('progressLabel'),
+      progressLabelTop: document.getElementById('progressLabelTop'),
+      modalProgressWrap: document.getElementById('modalProgressWrap'),
+      modalActions: document.getElementById('modalActions'),
+      modalSpecs: document.getElementById('modalSpecs'),
+      modalVideoWrap: document.getElementById('modalVideoWrap'),
+      tutorialVideo: document.getElementById('tutorialVideo'),
+      copyInvite: document.getElementById('copyInvite'),
+      openCommentSetup: document.getElementById('openCommentSetup'),
+      commentsCountBadge: document.getElementById('commentsCountBadge'),
+      commentAccessText: document.getElementById('commentAccessText'),
+      commentComposer: document.getElementById('commentComposer'),
+      composerAvatar: document.getElementById('composerAvatar'),
+      composerName: document.getElementById('composerName'),
+      composerLockText: document.getElementById('composerLockText'),
+      replyBar: document.getElementById('replyBar'),
+      replyBarText: document.getElementById('replyBarText'),
+      cancelReplyBtn: document.getElementById('cancelReplyBtn'),
+      commentInput: document.getElementById('commentInput'),
+      postCommentBtn: document.getElementById('postCommentBtn'),
+      editProfileBtn: document.getElementById('editProfileBtn'),
+      commentList: document.getElementById('commentList'),
+      commentSetupBackdrop: document.getElementById('commentSetupBackdrop'),
+      commentSetupTitle: document.getElementById('commentSetupTitle'),
+      closeCommentSetup: document.getElementById('closeCommentSetup'),
+      cancelCommentSetup: document.getElementById('cancelCommentSetup'),
+      acceptCommentSetup: document.getElementById('acceptCommentSetup'),
+      pickAvatarBtn: document.getElementById('pickAvatarBtn'),
+      avatarInput: document.getElementById('avatarInput'),
+      setupUsername: document.getElementById('setupUsername'),
+      setupAvatarPreview: document.getElementById('setupAvatarPreview'),
+      setupAvatarThumb: document.getElementById('setupAvatarThumb'),
+      setupAvatarLabel: document.getElementById('setupAvatarLabel')
+    };
+
+    const state = {
+      currentTarget: '#',
+      currentMode: null,
+      timer: null,
+      progressTimer: null,
+      voteChoice: localStorage.getItem('amongus_vote_choice') || null,
+      voteUnlockAt: Number(localStorage.getItem('amongus_vote_unlock_at') || '0'),
+      counterPath: 'launcher_stats_v2',
+      statsRef: db.collection('stats').doc('global'),
+      commentsCol: db.collection('comments'),
+      commentLikesCol: db.collection('commentLikes'),
+      voteCountdownTimer: null,
+      replyTo: null,
+      profile: null,
+      deviceId: null,
+      setupAvatarData: null,
+      setupAvatarName: '',
+      setupMode: 'create',
+      commentsCache: []
+    };
+
+    const VOTE_COOLDOWN_MS = 120000;
+    const COMMENT_MAX_LEN = 500;
+
+    function formatNumber(n){ return new Intl.NumberFormat().format(Number(n || 0)); }
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+    function applyImage(el, src, fallback = PLACEHOLDER){ if(!el) return; el.src = src || fallback; el.onerror = () => { if(el.src !== fallback) el.src = fallback; }; }
+    function hasFirebase(){ return !!(window.firebase && firebaseConfig.projectId); }
+
+    function toast(message){
+      let el = document.getElementById('toast');
+      if(!el){
+        el = document.createElement('div');
+        el.id = 'toast';
+        el.style.cssText = 'position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);z-index:80;padding:12px 16px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(18px);color:rgba(255,255,255,.94);box-shadow:0 18px 42px rgba(0,0,0,.4);opacity:0;transition:opacity .25s ease, transform .25s ease;font-size:13px;font-weight:700;';
+        document.body.appendChild(el);
+      }
+      el.textContent = message;
+      el.style.opacity = '1';
+      el.style.transform = 'translateX(-50%) translateY(0)';
+      clearTimeout(el._t);
+      el._t = setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateX(-50%) translateY(20px)'; }, 1800);
+    }
+
+    function getDeviceId(){
+      let id = localStorage.getItem('launcher_device_id');
+      if(!id){
+        id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : 'dev_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+        localStorage.setItem('launcher_device_id', id);
+      }
+      return id;
+    }
+
+    function loadProfile(){
+      try{
+        const raw = localStorage.getItem('launcher_comment_profile');
+        if(!raw) return null;
+        const obj = JSON.parse(raw);
+        if(!obj || !obj.username) return null;
+        return obj;
+      }catch{ return null; }
+    }
+
+    function saveProfile(profile){
+      localStorage.setItem('launcher_comment_profile', JSON.stringify(profile));
+      state.profile = profile;
+      renderProfileUI();
+      closeCommentSetup();
+      toast('Profile saved on this device.');
+    }
+
+    function renderProfileUI(){
+      const hasProfile = !!state.profile;
+      ui.commentComposer.classList.toggle('hidden', !hasProfile);
+      ui.commentAccessText.textContent = hasProfile ? `Signed as @${state.profile.username}.` : 'Sign Comment to unlock the comment box.';
+      ui.openCommentSetup.textContent = hasProfile ? 'Signed' : 'Sign Comment';
+      ui.openCommentSetup.disabled = hasProfile;
+      ui.editProfileBtn.classList.toggle('hidden', !hasProfile);
+      if(hasProfile){
+        applyImage(ui.composerAvatar, state.profile.avatar || FALLBACK_AVATAR, FALLBACK_AVATAR);
+        ui.composerName.textContent = state.profile.username;
+        ui.composerLockText.textContent = 'Profile ready';
+      }
+    }
+
+    function formatCountdown(ms){ return Math.max(0, Math.ceil(ms / 1000)); }
+    function isVoteLocked(){ return Date.now() < state.voteUnlockAt; }
+
+    function updateVoteButtons(){
+      const locked = isVoteLocked();
+      ui.likeBtn.disabled = locked;
+      ui.dislikeBtn.disabled = locked;
+      ui.likeBtn.classList.toggle('vote-locked', locked);
+      ui.dislikeBtn.classList.toggle('vote-locked', locked);
+      ui.likeBtn.classList.toggle('selected', state.voteChoice === 'like');
+      ui.dislikeBtn.classList.toggle('selected', state.voteChoice === 'dislike');
+      ui.likeBtn.setAttribute('aria-pressed', state.voteChoice === 'like' ? 'true' : 'false');
+      ui.dislikeBtn.setAttribute('aria-pressed', state.voteChoice === 'dislike' ? 'true' : 'false');
+      ui.likeBtn.title = locked ? `Wait ${formatCountdown(state.voteUnlockAt - Date.now())}s to vote again` : '';
+      ui.dislikeBtn.title = locked ? `Wait ${formatCountdown(state.voteUnlockAt - Date.now())}s to vote again` : '';
+    }
+
+    function persistVoteCooldown(){
+      localStorage.setItem('amongus_vote_unlock_at', String(state.voteUnlockAt));
+      localStorage.setItem('amongus_vote_choice', state.voteChoice || '');
+    }
+
+    function setVote(choice){
+      state.voteChoice = choice;
+      state.voteUnlockAt = Date.now() + VOTE_COOLDOWN_MS;
+      persistVoteCooldown();
+      updateVoteButtons();
+      startVoteCountdown();
+    }
+
+    function startVoteCountdown(){
+      clearInterval(state.voteCountdownTimer);
+      state.voteCountdownTimer = setInterval(() => {
+        if(!isVoteLocked()){
+          clearInterval(state.voteCountdownTimer);
+          state.voteChoice = null;
+          state.voteUnlockAt = 0;
+          localStorage.removeItem('amongus_vote_choice');
+          localStorage.removeItem('amongus_vote_unlock_at');
+        }
+        updateVoteButtons();
+      }, 1000);
+    }
+
+    async function incrementGlobalView(){
+      await state.statsRef.set({ views: firebase.firestore.FieldValue.increment(1) }, { merge: true });
+    }
+
+    async function bumpCount(field){
+      await state.statsRef.set({ [field]: firebase.firestore.FieldValue.increment(1) }, { merge: true });
+    }
+
+    function renderCounts(data = {}){
+      const views = Number(data.views || 0);
+      const likes = Number(data.likes || 0);
+      const dislikes = Number(data.dislikes || 0);
+      const comments = Number(data.comments || 0);
+      ui.viewsCount.textContent = formatNumber(views);
+      ui.subtitleText.textContent = `👁 ${formatNumber(views)} Views`;
+      ui.likesCount.textContent = formatNumber(likes);
+      ui.dislikesCount.textContent = formatNumber(dislikes);
+      ui.likesStat.textContent = `${((likes + dislikes) ? (likes / (likes + dislikes)) * 5 : 0).toFixed(1)}⭐`;
+      ui.commentsStat.textContent = formatNumber(comments);
+      ui.commentsCountBadge.textContent = formatNumber(comments);
+      updateVoteButtons();
+    }
+
+    function openActionModal(mode, data = {}){
+      state.currentMode = mode;
+      state.currentTarget = data.link || '#';
+      ui.actionModalBackdrop.classList.add('show');
+      ui.actionModalBackdrop.setAttribute('aria-hidden', 'false');
+      ui.modalTitle.textContent = data.title || 'Modal';
+      ui.modalInfo.innerHTML = data.info || '';
+      ui.modalIcon.src = data.icon || PLACEHOLDER;
+      ui.modalState.textContent = data.state || 'Ready';
+      ui.modalWindow.textContent = data.window || '1s';
+      ui.modalSource.textContent = data.source || 'Local';
+      ui.modalTag.textContent = data.tag || 'Launcher';
+      ui.modalLog.innerHTML = '<div class="entry"><span class="pulse"></span><span>Ready.</span></div>';
+      ui.progressFill.style.width = '0%';
+      ui.progressLabel.textContent = '0%';
+      ui.progressLabelTop.textContent = '0%';
+
+      if(mode === 'preview'){
+        ui.modalVideoWrap.classList.remove('hidden');
+        ui.modalProgressWrap.classList.add('hidden');
+        ui.modalSpecs.classList.add('hidden');
+        ui.modalActions.classList.add('hidden');
+        ui.tutorialVideo.currentTime = 0;
+        ui.tutorialVideo.play().catch(() => {});
+        ui.modalLog.innerHTML = `
+          <div class="entry"><span class="pulse"></span><span>Watch the walkthrough video.</span></div>
+          <div class="entry"><span class="pulse"></span><span>Close the panel anytime with X.</span></div>
         `;
-        const btn = card.querySelector(".launchBtn");
-        const progress = card.querySelector(".progress");
-        const pStage = card.querySelector(".pStage");
-        const pPct = card.querySelector(".pPct");
-        const bar = card.querySelector(".bar > span");
-        const stages = ["Loading package","Optimizing assets","Building session","Opening link"];
-        btn.addEventListener("click", () => startLaunch({
-          title: esc(item.title), sub: esc(item.description),
-          progress, pStage, pPct, bar, button: btn, stages, link: item.launch
-        }));
-        grid.appendChild(card);
+      }else{
+        ui.modalVideoWrap.classList.add('hidden');
+        ui.modalProgressWrap.classList.remove('hidden');
+        ui.modalSpecs.classList.remove('hidden');
+        ui.modalActions.classList.remove('hidden');
+      }
+    }
+
+    function closeActionModal(){
+      ui.actionModalBackdrop.classList.remove('show');
+      ui.actionModalBackdrop.setAttribute('aria-hidden', 'true');
+      ui.tutorialVideo.pause();
+      clearTimeout(state.timer);
+      clearInterval(state.progressTimer);
+      ui.initBtn.disabled = false;
+    }
+
+    function startLoadingAndRedirect(){
+      if(!state.currentTarget || state.currentTarget === '#') return;
+      clearTimeout(state.timer);
+      clearInterval(state.progressTimer);
+      ui.initBtn.disabled = true;
+      ui.modalState.textContent = 'Loading';
+      ui.modalWindow.textContent = '1s';
+      ui.modalSource.textContent = 'Redirect';
+      ui.modalLog.innerHTML = '';
+      ['Preparing redirect.', 'Saving access state.', 'Opening destination.'].forEach(text => {
+        const row = document.createElement('div');
+        row.className = 'entry';
+        row.innerHTML = '<span class="pulse"></span><span>' + text + '</span>';
+        ui.modalLog.appendChild(row);
+      });
+
+      const loadingMs = 1000;
+      const start = Date.now();
+      state.progressTimer = setInterval(() => {
+        const pct = clamp(((Date.now() - start) / loadingMs) * 100, 0, 100);
+        ui.progressFill.style.width = pct.toFixed(1) + '%';
+        ui.progressLabel.textContent = Math.round(pct) + '%';
+        ui.progressLabelTop.textContent = Math.round(pct) + '%';
+        if(pct >= 100) clearInterval(state.progressTimer);
+      }, 40);
+
+      state.timer = setTimeout(async () => {
+        ui.progressFill.style.width = '100%';
+        ui.progressLabel.textContent = '100%';
+        ui.progressLabelTop.textContent = '100%';
+        ui.modalState.textContent = 'Redirecting';
+        await incrementGlobalView();
+        setTimeout(() => { window.location.href = state.currentTarget; }, 200);
+      }, loadingMs);
+    }
+
+    function wireNavigation(){
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.onclick = () => {
+          const el = document.getElementById(btn.dataset.target);
+          if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+        };
+      });
+      const sections = ['home','guide','keyAccessCard','community','commentsCard'];
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.target === entry.target.id));
+          }
+        });
+      }, { threshold: 0.45 });
+      sections.forEach(id => { const el = document.getElementById(id); if(el) observer.observe(el); });
+    }
+
+    function renderTutorials(items){
+      ui.tutorialGrid.innerHTML = '';
+      items.slice(0, 1).forEach(t => {
+        const card = document.createElement('article');
+        card.className = 'glass-card tutorial';
+        card.innerHTML = `
+          <div class="thumb">
+            <img alt="${t.name}" src="${t.thumbnail || PLACEHOLDER}">
+            <div class="tag">${t.button || 'Open'}</div>
+          </div>
+          <h3>${t.name}</h3>
+          <p>${t.description}</p>
+          <div class="row">
+            <span class="chip">Video</span>
+            <button class="btn ghost small">${t.button || 'Open'}</button>
+          </div>
+        `;
+        const open = () => openActionModal('preview', {
+          title: t.name,
+          tag: 'Video tutorial',
+          info: 'This video walks you through how to access the app with a key.',
+          icon: t.icon || PLACEHOLDER,
+          source: 'settings/media/key.mp4',
+          state: 'Preview',
+          window: 'Video'
+        });
+        card.addEventListener('click', open);
+        card.querySelector('button').addEventListener('click', e => { e.stopPropagation(); open(); });
+        ui.tutorialGrid.appendChild(card);
       });
     }
 
-    function setFilter(filter){
-      state.filter = filter;
-      chips.forEach(c => c.classList.toggle("active", c.dataset.filter === filter));
-      render();
-      highlightNav(filter === "All" ? "all" : filter.toLowerCase());
-    }
-    chips.forEach(chip => chip.addEventListener("click", () => setFilter(chip.dataset.filter)));
-    searchInput.addEventListener("input", () => { state.query = searchInput.value; render(); });
+    function loadCommentsIntoDOM(snapshotDocs){
+      const items = snapshotDocs.map(doc => ({ id: doc.id, ...doc.data() }));
+      state.commentsCache = items;
+      const roots = items.filter(c => !c.parentId);
+      const replies = items.filter(c => c.parentId);
+      roots.sort((a,b) => (a.createdAt?.toMillis?.() || 0) - (b.createdAt?.toMillis?.() || 0));
+      replies.sort((a,b) => (a.createdAt?.toMillis?.() || 0) - (b.createdAt?.toMillis?.() || 0));
 
-    function openModal(title, sub){
-      modalTitle.textContent = title || "Launching";
-      modalSub.textContent = sub || "Preparing launch";
-      modal.style.display = "grid";
-      modal.setAttribute("aria-hidden","false");
-    }
-    function closeLaunchModal(){ modal.style.display = "none"; modal.setAttribute("aria-hidden","true"); }
-    closeModal.addEventListener("click", () => { if(activeLaunch?.button) activeLaunch.button.disabled = false; activeLaunch = null; closeLaunchModal(); });
-    modal.addEventListener("click", e => { if(e.target === modal){ if(activeLaunch?.button) activeLaunch.button.disabled = false; activeLaunch = null; closeLaunchModal(); } });
+      const replyMap = new Map();
+      replies.forEach(r => {
+        if(!replyMap.has(r.parentId)) replyMap.set(r.parentId, []);
+        replyMap.get(r.parentId).push(r);
+      });
 
-    logoButton.addEventListener("click", () => { window.scrollTo({ top: 0, behavior: "smooth" }); highlightNav("top"); });
-    logoButton.addEventListener("keydown", e => {
-      if(e.key === "Enter" || e.key === " "){
-        e.preventDefault();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        highlightNav("top");
-      }
-    });
+      ui.commentList.innerHTML = '';
+      ui.commentsCountBadge.textContent = formatNumber(items.length);
+      ui.commentsStat.textContent = formatNumber(items.length);
 
-    function goToLink(link){
-      const safeLink = String(link || "").trim();
-      if(!safeLink || safeLink === "#") return;
-      if(safeLink.startsWith("#")){
-        const el = document.querySelector(safeLink);
-        if(el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-        history.replaceState(null, "", safeLink);
+      if(!items.length){
+        ui.commentList.innerHTML = `<div class="comment-empty">No comments yet.</div>`;
         return;
       }
-      if(safeLink.startsWith("./") || safeLink.startsWith("../") || safeLink.startsWith("/")){
-        window.location.href = safeLink;
-        return;
-      }
-      try { window.location.href = new URL(safeLink, window.location.href).href; }
-      catch { window.location.href = safeLink; }
+
+      const makeCard = (c, depth = 0) => {
+        const isOwner = !!state.deviceId && c.uid === state.deviceId;
+        const card = document.createElement('article');
+        card.className = 'comment-card';
+        card.style.marginLeft = depth ? `${Math.min(depth, 3) * 18}px` : '0';
+        card.innerHTML = `
+          <div class="comment-meta">
+            <div class="comment-user">
+              <img src="${c.avatar || FALLBACK_AVATAR}" alt="${escapeHTML(c.name || 'User')}" />
+              <div>
+                <strong>${escapeHTML(c.name || 'User')}</strong>
+                <span>${c.createdAt ? timeAgo(c.createdAt) : 'just now'}</span>
+              </div>
+            </div>
+            <div class="comment-owner">
+              ${c.parentId ? '<span class="chip">Reply</span>' : ''}
+              ${isOwner ? '<span class="own-badge">Your comment</span>' : ''}
+            </div>
+          </div>
+          <div class="comment-text">${escapeHTML(c.text || '')}</div>
+          <div class="comment-actions">
+            <button class="btn ghost small like-comment" data-id="${c.id}"><svg class="icon"><use href="#i-thumbs-up"></use></svg><span>${Number(c.likeCount || 0)}</span></button>
+            <button class="btn ghost small reply-comment" data-id="${c.id}" data-name="${escapeHTML(c.name || 'User')}"><svg class="icon"><use href="#i-chat"></use></svg>Reply</button>
+            ${isOwner ? `<button class="btn ghost small edit-comment" data-id="${c.id}"><svg class="icon"><use href="#i-chip"></use></svg>Edit</button><button class="btn ghost small danger delete-comment" data-id="${c.id}"><svg class="icon"><use href="#i-close"></use></svg>Delete</button>` : ''}
+          </div>
+        `;
+
+        const childReplies = replyMap.get(c.id) || [];
+        if(childReplies.length){
+          const wrap = document.createElement('div');
+          wrap.className = 'comment-replies';
+          childReplies.forEach(r => wrap.appendChild(makeCard(r, depth + 1)));
+          card.appendChild(wrap);
+        }
+        return card;
+      };
+
+      roots.forEach(root => ui.commentList.appendChild(makeCard(root)));
     }
 
-    function startLaunch(ctx){
-      if(activeLaunch) return;
-      activeLaunch = ctx;
-      ctx.button.disabled = true;
-      ctx.progress.classList.add("active");
-      ctx.progress.setAttribute("aria-hidden","false");
-      openModal(ctx.title, ctx.sub);
+    function timeAgo(ts){
+      if(!ts) return 'just now';
+      const timeValue = ts.toMillis ? ts.toMillis() : Number(ts);
+      const diff = Date.now() - timeValue;
+      const s = Math.floor(diff / 1000);
+      if(s < 10) return 'just now';
+      if(s < 60) return `${s}s ago`;
+      const m = Math.floor(s / 60);
+      if(m < 60) return `${m}m ago`;
+      const h = Math.floor(m / 60);
+      if(h < 24) return `${h}h ago`;
+      return `${Math.floor(h / 24)}d ago`;
+    }
 
-      const duration = 1100 + Math.floor(Math.random() * 900);
-      const start = performance.now();
-      const totalStages = ctx.stages.length;
-      cancelAnimationFrame(rafId);
+    function escapeHTML(str){
+      return String(str)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
 
-      const tick = () => {
-        const elapsed = performance.now() - start;
-        const progress = Math.min(100, Math.round((elapsed / duration) * 100));
-        const stageIndex = Math.min(totalStages - 1, Math.floor(progress / (100 / totalStages)));
-        ctx.bar.style.width = `${progress}%`;
-        ctx.pPct.textContent = `${progress}%`;
-        ctx.pStage.textContent = ctx.stages[stageIndex];
-        stageLabel.textContent = ctx.stages[stageIndex];
-        stagePct.textContent = `${progress}%`;
-        modalBar.style.width = `${progress}%`;
+    function setReplyTarget(commentId, username){
+      state.replyTo = { id: commentId, username };
+      ui.replyBar.classList.remove('hidden');
+      ui.replyBarText.textContent = `Replying to @${username}`;
+      ui.commentInput.placeholder = `Reply to @${username}...`;
+      ui.commentInput.focus();
+    }
 
-        if(progress < 100){
-          rafId = requestAnimationFrame(tick);
+    function clearReplyTarget(){
+      state.replyTo = null;
+      ui.replyBar.classList.add('hidden');
+      ui.commentInput.placeholder = 'Write something...';
+    }
+
+    function canManageComment(comment){
+      return !!comment && !!state.deviceId && comment.uid === state.deviceId;
+    }
+
+    async function editComment(commentId){
+      const comment = state.commentsCache.find(c => c.id === commentId);
+      if(!canManageComment(comment)) return toast('You can only edit your own comment.');
+      const nextText = window.prompt('Edit your comment', comment.text || '');
+      if(nextText === null) return;
+      const cleaned = nextText.trim();
+      if(!cleaned) return toast('Comment cannot be empty.');
+      if(cleaned.length > COMMENT_MAX_LEN) return toast('Comment too long.');
+      await state.commentsCol.doc(commentId).update({
+        text: cleaned,
+        editedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      toast('Comment updated.');
+    }
+
+    async function deleteCommentTree(commentId){
+      let deletedCount = 1;
+      const descendants = state.commentsCache.filter(c => c.parentId === commentId).map(c => c.id);
+      for(const childId of descendants){
+        deletedCount += await deleteCommentTree(childId);
+      }
+      const likeDocs = await state.commentLikesCol.doc(commentId).collection('devices').get();
+      const batch = db.batch();
+      likeDocs.forEach(doc => batch.delete(doc.ref));
+      batch.delete(state.commentLikesCol.doc(commentId));
+      batch.delete(state.commentsCol.doc(commentId));
+      await batch.commit();
+      return deletedCount;
+    }
+
+    async function deleteComment(commentId){
+      const comment = state.commentsCache.find(c => c.id === commentId);
+      if(!canManageComment(comment)) return toast('You can only delete your own comment.');
+      if(!confirm('Delete this comment?')) return;
+      const deletedCount = await deleteCommentTree(commentId);
+      try{ await state.statsRef.set({ comments: firebase.firestore.FieldValue.increment(-deletedCount) }, { merge: true }); }catch{}
+      toast('Comment deleted.');
+    }
+
+    async function postComment(){
+      if(!state.profile) return toast('Sign Comment first.');
+      const text = ui.commentInput.value.trim();
+      if(!text) return toast('Write a comment first.');
+      if(text.length > COMMENT_MAX_LEN) return toast('Comment too long.');
+
+      await state.commentsCol.add({
+        text,
+        name: state.profile.username,
+        avatar: state.profile.avatar || FALLBACK_AVATAR,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        parentId: state.replyTo ? state.replyTo.id : null,
+        likeCount: 0,
+        uid: state.deviceId
+      });
+
+      await bumpCount('comments');
+      ui.commentInput.value = '';
+      clearReplyTarget();
+      toast('Comment posted.');
+    }
+
+    async function likeComment(commentId){
+      const likeRef = state.commentLikesCol.doc(commentId).collection('devices').doc(state.deviceId);
+      const already = await likeRef.get();
+      if(already.exists) return toast('You already liked this comment.');
+      await likeRef.set({ likedAt: firebase.firestore.FieldValue.serverTimestamp() });
+      await state.commentsCol.doc(commentId).update({ likeCount: firebase.firestore.FieldValue.increment(1) });
+      toast('Comment liked.');
+    }
+
+    function openCommentSetup(mode = 'create'){
+      state.setupMode = mode;
+      ui.commentSetupBackdrop.classList.add('show');
+      ui.commentSetupBackdrop.setAttribute('aria-hidden', 'false');
+      ui.setupUsername.value = state.profile?.username || '';
+      ui.setupUsername.disabled = mode === 'edit' && !!state.profile;
+      ui.commentSetupTitle.textContent = mode === 'edit' ? 'Edit profile picture' : 'Enter username';
+      ui.acceptCommentSetup.textContent = mode === 'edit' ? 'Save' : 'Accept';
+      ui.pickAvatarBtn.textContent = mode === 'edit' ? 'Change Photo' : 'Choose Photo';
+      const thumb = state.setupAvatarData || state.profile?.avatar || FALLBACK_AVATAR;
+      ui.setupAvatarPreview.src = thumb;
+      ui.setupAvatarThumb.src = thumb;
+      ui.setupAvatarLabel.textContent = state.setupAvatarName || (state.profile ? 'Saved avatar' : 'No photo selected');
+      ui.acceptCommentSetup.disabled = mode === 'edit' ? false : !ui.setupUsername.value.trim();
+      setTimeout(() => ui.setupUsername.focus(), 50);
+    }
+
+    function closeCommentSetup(){
+      ui.commentSetupBackdrop.classList.remove('show');
+      ui.commentSetupBackdrop.setAttribute('aria-hidden', 'true');
+    }
+
+    function buildAvatarFromName(name){
+      const initial = (name || 'U').trim().charAt(0).toUpperCase() || 'U';
+      const hue = Math.floor(Math.random() * 360);
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+          <defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="hsl(${hue} 90% 70%)"/><stop offset="100%" stop-color="hsl(${(hue + 55) % 360} 90% 65%)"/></linearGradient></defs>
+          <rect width="256" height="256" rx="64" fill="#081018"/>
+          <circle cx="128" cy="128" r="92" fill="url(#g)" opacity=".22"/>
+          <text x="50%" y="56%" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="104" font-weight="700" fill="url(#g)">${initial}</text>
+        </svg>`;
+      return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+    }
+
+    async function compressImageFile(file, maxSize = 256){
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.max(1, Math.round(img.width * scale));
+          canvas.height = Math.max(1, Math.round(img.height * scale));
+          const ctx2 = canvas.getContext('2d');
+          ctx2.drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', 0.84));
+        };
+        img.onerror = reject;
+        img.src = dataUrl;
+      });
+    }
+
+    function renderVoteState(){
+      const locked = !!state.voteChoice && isVoteLocked();
+      ui.likeBtn.disabled = locked;
+      ui.dislikeBtn.disabled = locked;
+      ui.likeBtn.classList.toggle('vote-locked', locked);
+      ui.dislikeBtn.classList.toggle('vote-locked', locked);
+      ui.likeBtn.classList.toggle('selected', state.voteChoice === 'like');
+      ui.dislikeBtn.classList.toggle('selected', state.voteChoice === 'dislike');
+      ui.likeBtn.setAttribute('aria-pressed', state.voteChoice === 'like' ? 'true' : 'false');
+      ui.dislikeBtn.setAttribute('aria-pressed', state.voteChoice === 'dislike' ? 'true' : 'false');
+    }
+
+    function wireCommentSetup(){
+      ui.openCommentSetup.onclick = () => openCommentSetup('create');
+      ui.editProfileBtn.onclick = () => openCommentSetup('edit');
+      ui.closeCommentSetup.onclick = closeCommentSetup;
+      ui.cancelCommentSetup.onclick = closeCommentSetup;
+      ui.commentSetupBackdrop.onclick = (e) => { if(e.target === ui.commentSetupBackdrop) closeCommentSetup(); };
+      ui.pickAvatarBtn.onclick = () => ui.avatarInput.click();
+      ui.avatarInput.onchange = async () => {
+        const file = ui.avatarInput.files && ui.avatarInput.files[0];
+        if(!file) return;
+        try{
+          const result = await compressImageFile(file);
+          state.setupAvatarData = result;
+          state.setupAvatarName = file.name;
+          ui.setupAvatarPreview.src = result;
+          ui.setupAvatarThumb.src = result;
+          ui.setupAvatarLabel.textContent = file.name;
+        }catch{ toast('Could not load image.'); }
+      };
+      ui.setupUsername.oninput = () => {
+        ui.acceptCommentSetup.disabled = state.setupMode === 'edit' ? false : !ui.setupUsername.value.trim();
+      };
+      ui.acceptCommentSetup.onclick = () => {
+        if(state.setupMode === 'edit' && state.profile){
+          const avatar = state.setupAvatarData || state.profile.avatar || FALLBACK_AVATAR;
+          saveProfile({ ...state.profile, avatar });
+          state.setupAvatarData = null;
+          state.setupAvatarName = '';
           return;
         }
-
-        ctx.pStage.textContent = "Opening";
-        stageLabel.textContent = "Opening";
-        stagePct.textContent = "100%";
-        setTimeout(() => {
-          ctx.progress.classList.remove("active");
-          ctx.progress.setAttribute("aria-hidden","true");
-          ctx.bar.style.width = "0%";
-          ctx.pPct.textContent = "0%";
-          ctx.pStage.textContent = "Ready";
-          modalBar.style.width = "0%";
-          ctx.button.disabled = false;
-          activeLaunch = null;
-          closeLaunchModal();
-          goToLink(ctx.link);
-        }, 180);
+        const username = ui.setupUsername.value.trim().replace(/\s+/g, ' ');
+        if(!username) return toast('Enter username first.');
+        const avatar = state.setupAvatarData || state.profile?.avatar || buildAvatarFromName(username);
+        saveProfile({ username, avatar, locked: true, createdAt: Date.now() });
+        state.setupAvatarData = null;
+        state.setupAvatarName = '';
       };
-      rafId = requestAnimationFrame(tick);
     }
 
-    function highlightNav(target){ navLinks.forEach(link => link.classList.toggle("active", link.dataset.nav === target)); }
-    navLinks.forEach(link => {
-      link.addEventListener("click", e => {
-        const target = link.getAttribute("href");
-        if(!target || !target.startsWith("#")) return;
-        const el = document.querySelector(target);
-        if(el){
-          e.preventDefault();
-          el.scrollIntoView({ behavior: "smooth", block: "start" });
-          history.replaceState(null, "", target);
-          highlightNav(link.dataset.nav);
-        }
+    function wireCommentActions(){
+      ui.cancelReplyBtn.onclick = clearReplyTarget;
+      ui.postCommentBtn.onclick = postComment;
+      ui.commentList.addEventListener('click', async (e) => {
+        const replyBtn = e.target.closest('.reply-comment');
+        if(replyBtn){ setReplyTarget(replyBtn.dataset.id, replyBtn.dataset.name || 'User'); return; }
+        const likeBtn = e.target.closest('.like-comment');
+        if(likeBtn){ await likeComment(likeBtn.dataset.id); return; }
+        const editBtn = e.target.closest('.edit-comment');
+        if(editBtn){ await editComment(editBtn.dataset.id); return; }
+        const deleteBtn = e.target.closest('.delete-comment');
+        if(deleteBtn){ await deleteComment(deleteBtn.dataset.id); return; }
       });
-    });
-
-    function setLiveStatus(text, live=true){
-      liveStatus.innerHTML = `<span class="dot" style="background:${live ? '#22c55e' : '#f59e0b'};box-shadow:0 0 0 5px ${live ? 'rgba(34,197,94,.14)' : 'rgba(245,158,11,.14)'}"></span><span>${esc(text)}</span>`;
     }
 
-    function loadFirestore(){
-      setLiveStatus("Connecting…", true);
-      onSnapshot(colRef, (snap) => {
-        const items = snap.docs.map(docSnap => {
-          const d = docSnap.data() || {};
-          return {
-            id: docSnap.id,
-            title: d.title || "just.",
-            description: d.description || "",
-            type: d.type || "Apps",
-            tag: d.tag || "",
-            size: d.size || "",
-            date: d.date || d.createdAt || "",
-            icon: d.icon || "spark",
-            thumbnail: d.thumbnail || "",
-            launch: d.launch || "",
-            createdAt: d.createdAt || null,
-            updatedAt: d.updatedAt || null
-          };
+    function wireButtons(){
+      ui.launchBtn.onclick = async () => {
+        await incrementGlobalView();
+        openActionModal('load', {
+          title: 'Launch Now',
+          tag: 'App launcher',
+          info: 'Preparing the app launch.',
+          source: 'Android',
+          state: 'Ready',
+          window: '1s',
+          link: DEFAULT_MANIFEST.mainLauncher.link,
+          icon: DEFAULT_MANIFEST.mainLauncher.icon || DEFAULT_MANIFEST.app.icon
         });
+      };
+      ui.tutorialBtn.onclick = () => document.getElementById('guide').scrollIntoView({behavior:'smooth', block:'start'});
+      ui.getKeyBtn.onclick = () => openActionModal('load', {
+        title: DEFAULT_MANIFEST.keyAccess.name,
+        tag: 'Get key',
+        info: DEFAULT_MANIFEST.keyAccess.description,
+        source: 'Redirect',
+        state: 'Loading',
+        window: '1s',
+        link: DEFAULT_MANIFEST.keyAccess.link,
+        icon: DEFAULT_MANIFEST.keyAccess.thumbnail || KEY_THUMB
+      });
+      ui.scrollTutorialBtn.onclick = () => document.getElementById('guide').scrollIntoView({behavior:'smooth', block:'start'});
+      ui.copyInvite.onclick = async () => {
+        try{ await navigator.clipboard.writeText(DEFAULT_MANIFEST.community.discord || ''); toast('Invite copied to clipboard.'); }
+        catch{ toast('Copy failed on this device.'); }
+      };
+      ui.likeBtn.onclick = async () => {
+        if(isVoteLocked()) return toast(`Wait ${formatCountdown(state.voteUnlockAt - Date.now())}s to vote again.`);
+        setVote('like');
+        await bumpCount('likes');
+        toast('Like saved.');
+      };
+      ui.dislikeBtn.onclick = async () => {
+        if(isVoteLocked()) return toast(`Wait ${formatCountdown(state.voteUnlockAt - Date.now())}s to vote again.`);
+        setVote('dislike');
+        await bumpCount('dislikes');
+        toast('Dislike saved.');
+      };
+      ui.closeActionModal.onclick = closeActionModal;
+      ui.cancelActionBtn.onclick = closeActionModal;
+      ui.actionModalBackdrop.onclick = (e) => { if(e.target === ui.actionModalBackdrop) closeActionModal(); };
+      ui.initBtn.onclick = startLoadingAndRedirect;
+    }
 
-        items.sort((a,b) => sortKey(b) - sortKey(a));
-        state.manifest = { appName: "MozLaunch", subtitle: "by SkyeMoz", items };
-        heroTitle.textContent = "MozLaunch";
-        heroSubtitle.textContent = "by SkyeMoz";
-        navTitle.textContent = "MozLaunch";
-        navSubtitle.textContent = "by SkyeMoz";
-        setLiveStatus(`Live • ${items.length} docs`, true);
-        render();
-      }, (err) => {
-        console.error(err);
-        setLiveStatus("Firestore error", false);
-        grid.innerHTML = `<div class="empty">Live feed could not connect. Check Firestore rules and Firebase config.</div>`;
+    function glowTracking(){
+      document.querySelectorAll('.panel, .glass-card, .modal').forEach(el => {
+        el.addEventListener('pointermove', (e) => {
+          const r = el.getBoundingClientRect();
+          const x = ((e.clientX - r.left) / r.width) * 100;
+          const y = ((e.clientY - r.top) / r.height) * 100;
+          el.style.setProperty('--mx', x + '%');
+          el.style.setProperty('--my', y + '%');
+        });
       });
     }
 
-    function initBackground(){
-      const bg = document.getElementById("bgCanvas"), fx = document.getElementById("fxCanvas");
-      const bctx = bg.getContext("2d"), fctx = fx.getContext("2d");
-      let w = 0, h = 0, t = 0;
-      const bubbles = Array.from({ length: 56 }, () => ({ x: Math.random(), y: Math.random(), r:.9 + Math.random() * 2, a:.08 + Math.random() * .18, vx:(Math.random()-.5)*.00024, vy:(Math.random()-.5)*.00024 }));
-      const particles = Array.from({ length: 72 }, () => ({ x: Math.random(), y: Math.random(), vx:(Math.random()-.5)*.00072, vy:(Math.random()-.5)*.00072, r:1 + Math.random()*2.1 }));
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d', { alpha: true });
+    let W = 0, H = 0, DPR = Math.min(window.devicePixelRatio || 1, 2);
+    const pods = [], arcs = [];
+    function resize(){
+      W = canvas.width = Math.floor(window.innerWidth * DPR);
+      H = canvas.height = Math.floor(window.innerHeight * DPR);
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+    }
+    class Pod { constructor(){ this.reset(); } reset(){ this.x=Math.random()*W; this.y=Math.random()*H; this.vx=(Math.random()*0.55+.12)*(Math.random()<.5?-1:1)*DPR; this.vy=(Math.random()*0.45+.1)*(Math.random()<.5?-1:1)*DPR; this.r=(Math.random()*1.6+.9)*DPR; this.alpha=Math.random()*.55+.15; } update(){ this.x+=this.vx; this.y+=this.vy; if(this.x<-30*DPR||this.x>W+30*DPR||this.y<-30*DPR||this.y>H+30*DPR) this.reset(); } draw(){ ctx.beginPath(); ctx.fillStyle = `rgba(124,218,255,${this.alpha})`; ctx.arc(this.x,this.y,this.r,0,Math.PI*2); ctx.fill(); } }
+    class Arc { constructor(i){ this.a=Math.random()*Math.PI*2; this.r=(120+i*30)*DPR; this.speed=(Math.random()*0.006+.003)*(Math.random()<.5?-1:1); this.alpha=.04+Math.random()*.05; } update(){ this.a+=this.speed; } draw(cx,cy){ ctx.beginPath(); ctx.strokeStyle=`rgba(255,255,255,${this.alpha})`; ctx.lineWidth=1.2*DPR; ctx.arc(cx,cy,this.r,this.a,this.a+1.8); ctx.stroke(); } }
+    function initParticles(){ pods.length=0; arcs.length=0; for(let i=0;i<64;i++) pods.push(new Pod()); for(let i=0;i<8;i++) arcs.push(new Arc(i)); }
+    function draw(){ ctx.clearRect(0,0,W,H); const cx=W*.52, cy=H*.46; arcs.forEach(a=>{a.update();a.draw(cx,cy)}); pods.forEach(p=>{p.update();p.draw()}); requestAnimationFrame(draw); }
+    window.addEventListener('resize', () => { DPR = Math.min(window.devicePixelRatio || 1, 2); resize(); initParticles(); });
 
-      function resize(){
-        w = bg.width = fx.width = Math.floor(window.innerWidth * devicePixelRatio);
-        h = bg.height = fx.height = Math.floor(window.innerHeight * devicePixelRatio);
-        bg.style.width = fx.style.width = window.innerWidth + "px";
-        bg.style.height = fx.style.height = window.innerHeight + "px";
-      }
-      window.addEventListener("resize", resize, { passive:true });
-      resize();
-
-      function draw(){
-        t += .0025;
-        bctx.clearRect(0,0,w,h);
-        fctx.clearRect(0,0,w,h);
-
-        const g = bctx.createLinearGradient(0,0,w,h);
-        g.addColorStop(0, `rgba(59,130,246,${.05 + Math.sin(t + backgroundSeed) * .01})`);
-        g.addColorStop(.5, `rgba(255,255,255,${.09 + Math.cos(t * 1.1) * .01})`);
-        g.addColorStop(1, `rgba(124,58,237,${.05 + Math.sin(t * .8 + 1) * .01})`);
-        bctx.fillStyle = g;
-        bctx.fillRect(0,0,w,h);
-
-        for(const s of bubbles){
-          s.x += s.vx; s.y += s.vy;
-          if(s.x < -.05) s.x = 1.05;
-          if(s.x > 1.05) s.x = -.05;
-          if(s.y < -.05) s.y = 1.05;
-          if(s.y > 1.05) s.y = -.05;
-          bctx.beginPath();
-          bctx.fillStyle = `rgba(59,130,246,${s.a})`;
-          bctx.arc(s.x*w, s.y*h, s.r*devicePixelRatio, 0, Math.PI*2);
-          bctx.fill();
-        }
-
-        for(let i=0;i<particles.length;i++){
-          const p = particles[i];
-          p.x += p.vx; p.y += p.vy;
-          if(p.x < -.1) p.x = 1.1;
-          if(p.x > 1.1) p.x = -.1;
-          if(p.y < -.1) p.y = 1.1;
-          if(p.y > 1.1) p.y = -.1;
-          const x = p.x*w, y = p.y*h;
-          fctx.beginPath();
-          fctx.fillStyle = "rgba(59,130,246,.40)";
-          fctx.arc(x,y,p.r*devicePixelRatio,0,Math.PI*2);
-          fctx.fill();
-          for(let j=i+1;j<particles.length;j++){
-            const q = particles[j];
-            const dx = (p.x-q.x)*w, dy = (p.y-q.y)*h, dist = Math.hypot(dx,dy), maxDist = 170*devicePixelRatio;
-            if(dist < maxDist){
-              fctx.beginPath();
-              fctx.strokeStyle = `rgba(59,130,246,${.08*(1-dist/maxDist)})`;
-              fctx.lineWidth = 1;
-              fctx.moveTo(x,y);
-              fctx.lineTo(q.x*w,q.y*h);
-              fctx.stroke();
-            }
-          }
-        }
-        requestAnimationFrame(draw);
-      }
-      draw();
+    function renderCountsFromDoc(doc){
+      const data = doc.exists ? doc.data() : {};
+      renderCounts(data || {});
     }
 
-    document.addEventListener("contextmenu", e => e.preventDefault());
-    initBackground();
-    loadFirestore();
-
-    // Default hash handling for clean nav state.
-    if(location.hash){
-      const link = navLinks.find(n => n.getAttribute("href") === location.hash);
-      if(link) highlightNav(link.dataset.nav);
+    function listenStats(){
+      state.statsRef.onSnapshot(async snap => {
+        const data = snap.exists ? snap.data() : {};
+        renderCounts(data || {});
+      });
     }
+
+    function listenComments(){
+      state.commentsCol.orderBy('createdAt', 'asc').onSnapshot(snap => {
+        loadCommentsIntoDOM(snap.docs);
+      });
+    }
+
+    async function ensureStatsDoc(){
+      const snap = await state.statsRef.get();
+      if(!snap.exists){
+        await state.statsRef.set({ views: 0, likes: 0, dislikes: 0, comments: 0 });
+      }
+    }
+
+    function renderApp(manifest){
+      const app = manifest.app || {};
+      const main = manifest.mainLauncher || {};
+      const tutorials = manifest.tutorials || [];
+      const keyAccess = manifest.keyAccess || {};
+      const community = manifest.community || {};
+      document.title = app.name || 'Among Us Launcher';
+      ui.appName.textContent = app.name || 'Among Us Launcher';
+      ui.appDesc.textContent = app.description || '';
+      ui.appVersion.textContent = app.version || '';
+      ui.appCreator.textContent = app.creator || '';
+      ui.mainPackType.textContent = main.packType || 'APK';
+      ui.mainUid.textContent = main.uid || 'Obfuscated';
+      ui.footerName.textContent = app.name || 'Among Us Launcher';
+      ui.footerInfo.textContent = 'Creator: ' + (app.creator || 'Unknown');
+      ui.discordBtn.href = community.discord || '#';
+      ui.discordLink.href = community.discord || '#';
+      applyImage(ui.appIcon, app.icon);
+      applyImage(ui.keyThumb, keyAccess.thumbnail, KEY_THUMB);
+      ui.keyTitle.textContent = keyAccess.name || 'Key Access';
+      ui.keyDesc.textContent = keyAccess.description || '';
+      renderTutorials(tutorials);
+    }
+
+    function initCommentIdentity(){
+      state.deviceId = getDeviceId();
+      state.profile = loadProfile();
+      state.setupAvatarData = null;
+      state.setupAvatarName = '';
+      renderProfileUI();
+      wireCommentSetup();
+      wireCommentActions();
+    }
+
+    async function boot(){
+      renderApp(DEFAULT_MANIFEST);
+      wireNavigation();
+      wireButtons();
+      glowTracking();
+      resize(); initParticles(); draw();
+      initCommentIdentity();
+      if(!hasFirebase()) return toast('Firebase not configured.');
+      await ensureStatsDoc();
+      listenStats();
+      listenComments();
+      await incrementGlobalView();
+      startVoteCountdown();
+    }
+
+    boot().catch(err => {
+      console.error(err);
+      toast('Something went wrong loading the page.');
+    });
   </script>
 </body>
-</html>
+  </html>
